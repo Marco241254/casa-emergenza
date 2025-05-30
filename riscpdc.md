@@ -37,17 +37,29 @@
 ## 🎮 CONTROLLI CONTROLLER YOUTAKY
 
 - [ ] **13. Controller YOUTAKY**: ALIMENTATO
-- [ ] **14. Set-point acqua PDC**: INFERIORE a temperatura attuale
-- [ ] **15. Simbolo richiesta caldo**: PRESENTE su display YOUTAKY
+- [ ] **14. Set-point acqua PDC**: SUPERIORE a temperatura di ritorno PDC
+- [ ] **15. Duty cycle 15 min**: RISPETTATO (tempo minimo tra accensioni)
+- [ ] **16. Simbolo richiesta caldo**: PRESENTE su display YOUTAKY
 
 ---
 
 ## 🌐 SOTTO-CHECKLIST INFRASTRUTTURA
 
 ### 📡 CONNETTIVITÀ
-- [ ] **A1. Internet**: ATTIVO
-- [ ] **A2. Wi-Fi**: CONNESSO  
+- [ ] **A1. Internet**: ATTIVO (Router TIM - LED verde lampeggiante a forma di mappamondo)
+- [ ] **A2. Wi-Fi 2.4GHz**: CONNESSO alla rete **MOMA** 
 - [ ] **A3. Router**: ACCESO (Locale Tecnico)
+
+#### 📶 PARAMETRI WI-FI RICHIESTI:
+- **Nome rete**: `MOMA`
+- **Password**: `MOMA24121954`
+- **Banda**: **2.4 GHz** (obbligatoria per dispositivi Shelly)
+
+#### 🌐 CONTROLLO ROUTER TIM:
+- **LED Mappamondo**: deve essere **VERDE LAMPEGGIANTE** ✅
+- **Se LED rosso/spento** → Problema connessione Internet
+
+> 💡 **Per dettagli completi** → Vedere **checklist internet e wi-fi** dedicata
 
 ### 🏠 HOME ASSISTANT
 - [ ] **B1. Server Home Assistant**: FUNZIONANTE
@@ -91,11 +103,16 @@
 **📞 CHIAMARE PAPÀ: [3351354309](tel:3351354309)**
 
 #### 🌐 PROBLEMA DIGITALE (Internet, Home Assistant, Shelly):
-**📞 CHIAMARE PAPA':  [3351354309](tel:3351354309)**
+**📞 CHIAMARE ALESSANDRO: [3703068232](tel:3703068232)** (Abbadia Alpina - Domotica)
+
+**Prima di chiamare, controlla:**
+- Router TIM: LED mappamondo verde lampeggiante
+- Wi-Fi MOMA attiva su banda 2.4GHz
+- Home Assistant raggiungibile da http://homeassistant.local:8123
 
 #### 🎮 PROBLEMA YOUTAKY (controller, set-point):
-**📞 CHIAMARE ELVIS: [3474958076](tel:3474958076)** (specialista PDC):
-**📞 CHIAMARE ALESSANDRO: [370-3068232](tel:370-3068232)** (specialista PDC)
+**📞 CHIAMARE ELVIS: [3474958076](tel:3474958076)** (specialista PDC)
+
 ---
 
 ## 🚨 PROCEDURA EMERGENZA N°1
@@ -112,22 +129,52 @@
 
 ---
 
+## 🔧 PROCEDURA TEST MANUALE - BYPASS AUTOMAZIONE
+
+**Se la PDC non parte dopo tutti i controlli, testa manualmente:**
+
+### ⚠️ TEST SICURO - YOUTAKY SORVEGLIA SEMPRE I PARAMETRI
+
+1. **R1** → Levetta **TUTTA SU** (posizione manuale ON)
+2. **R2** → Levetta **TUTTA SU** (posizione manuale ON)  
+3. **R6** → Levetta **TUTTA GIÙ** (posizione manuale OFF)
+
+### ⏱️ VERIFICA RISULTATO:
+- [ ] **PDC parte entro 5 minuti** ✅
+- [ ] **Pompa P1 gira** (si sente rumore)
+- [ ] **YOUTAKY mostra attivazione**
+
+### 🔄 DOPO IL TEST:
+- **R1** → Rimetti su **AUTOMATICO** (levetta al centro)
+- **R2** → Rimetti su **AUTOMATICO** (levetta al centro)
+- **R6** → Rimetti su **AUTOMATICO** (levetta al centro)
+
+> **💡 NOTA**: Questo test bypassa temporaneamente Home Assistant e forza l'accensione. YOUTAKY continua a proteggere la PDC da eventuali problemi.
+
+---
+
 ## 📋 SCHEMA FUNZIONAMENTO SISTEMA
 
 ### Relè e Contattori (Quadro QE1):
 
-| ID | Tipo | Funzione | Stato Normale | Shelly |
-|----|------|----------|---------------|--------|
-| **R1** | Contattore 25A | Abilitazione PDC tramite YOUTAKY | ROSSO (ON) | `shellyplus1_90150687a670` |
-| **R2** | Contattore 25A | Pompa circolazione P1 termosifoni | ROSSO (ON) | `shellyplus1_1c692008dea0` |
-| **R6** | Contattore 25A | Blocco Smart Grid YOUTAKY | GRIGIO (OFF) | `shellyplus1-8813bfcdbda0` |
-| **R7** | Contattore 25A | Alimentazione Caldaia Gas (antiblocco) | GRIGIO (OFF) | `shellyplus1-1c692044c2ac` |
+| ID | Tipo | Funzione | Stato Normale | Posizioni Levetta | Shelly |
+|----|------|----------|---------------|-------------------|--------|
+| **R1** | Contattore 25A | Abilitazione PDC tramite YOUTAKY | ROSSO (ON) | ⬇️ OFF - 🔄 AUTO - ⬆️ MAN | `shellyplus1_90150687a670` |
+| **R2** | Contattore 25A | Pompa circolazione P1 termosifoni | ROSSO (ON) | ⬇️ OFF - 🔄 AUTO - ⬆️ MAN | `shellyplus1_1c692008dea0` |
+| **R6** | Contattore 25A | Blocco Smart Grid YOUTAKY | GRIGIO (OFF) | ⬆️ ON - 🔄 AUTO - ⬇️ OFF | `shellyplus1-8813bfcdbda0` |
+| **R7** | Contattore 25A | Alimentazione Caldaia Gas (antiblocco) | GRIGIO (OFF) | ⬆️ ON - 🔄 AUTO - ⬇️ OFF | `shellyplus1-1c692044c2ac` |
 
 ### Logica di Funzionamento:
 - **R1 ON** → PDC abilitata tramite YOUTAKY
 - **R2 ON** → Pompa P1 alimentata per circolazione termosifoni  
 - **R6 OFF** → PDC NON bloccata (può funzionare)
 - **R6 ON** → PDC BLOCCATA tramite Smart Grid (non può funzionare)
+
+### ⚠️ Condizioni per Avvio PDC:
+1. **Set-point YOUTAKY** > Temperatura ritorno PDC
+2. **Duty cycle** di 15 minuti rispettato
+3. **R6 (blocco)** deve essere OFF
+4. **R1 (abilitazione)** deve essere ON
 
 ---
 

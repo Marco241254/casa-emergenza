@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QE2 - QUADRO ELETTRICO - CONTROLLI</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: linear-gradient(145deg, #2d3748 0%, #1a202c 100%);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border: 1px solid #4a5568;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid #805ad5;
+        }
+        
+        .header h1 {
+            color: white;
+            font-size: 2.5em;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .relay-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .relay-card {
+            background: linear-gradient(135deg, #fd9644 0%, #f39c12 100%);
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #e67e22;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .relay-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+        
+        .relay-card.checked {
+            background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+            border-color: #00b894;
+        }
+        
+        .relay-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .relay-number {
+            background: white;
+            color: #2c3e50;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-right: 15px;
+        }
+        
+        .relay-title {
+            color: white;
+            font-size: 1.3em;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+        
+        .relay-function {
+            color: white;
+            font-size: 1em;
+            margin: 10px 0;
+            opacity: 0.95;
+        }
+        
+        .relay-status {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+        }
+        
+        .status-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 2px solid white;
+        }
+        
+        .status-red { background: #e74c3c; }
+        .status-green { background: #27ae60; }
+        .status-off { background: #7f8c8d; }
+        
+        .entity-info {
+            background: rgba(255,255,255,0.1);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+        
+        .entity-info code {
+            background: rgba(0,0,0,0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #81c784;
+        }
+        
+        .special-section {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border: 2px solid #e74c3c;
+        }
+        
+        .special-title {
+            color: white;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00b894 0%, #00a085 100%);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 5px;
+        }
+        
+        .progress-text {
+            text-align: center;
+            color: white;
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .pdc-control {
+            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border: 2px solid #9b59b6;
+        }
+        
+        .emergency-info {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #d35400;
+        }
+        
+        .emergency-info h4 {
+            color: white;
+            margin-top: 0;
+        }
+        
+        .contacts-section {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border: 2px solid #27ae60;
+        }
+        
+        .checkbox {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #fff;
+            border-radius: 4px;
+            margin-right: 10px;
+            position: relative;
+            vertical-align: middle;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .relay-card.checked .checkbox {
+            background: #fff;
+            border-color: #fff;
+        }
+        
+        .relay-card.checked .checkbox:after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #00b894;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .relay-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <h1>⚡ QE2 - QUADRO ELETTRICO</h1>
+            <p style="margin: 10px 0; font-size: 1.2em;">Controlli e Verifiche Relè</p>
+        </div>
+        
+        <!-- FOTO QUADRO QE2 -->
+        <div style="background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%); padding: 25px; border-radius: 15px; margin: 30px 0; border: 2px solid #34495e; text-align: center;">
+            <h3 style="color: white; font-size: 1.8em; margin-bottom: 20px; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">📸 FOTO QUADRO QE2</h3>
+            <img src="https://raw.githubusercontent.com/Marco241254/casa-emergenza/main/qe2.jpg" 
+                 alt="Quadro QE2 - Relè R1-R8" 
+                 style="width: 100%; max-width: 800px; border-radius: 10px; border: 3px solid white; box-shadow: 0 10px 30px rgba(0,0,0,0.3);"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <div style="display: none; background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); padding: 40px; border-radius: 10px; color: white;">
+                <div style="font-size: 4em; margin-bottom: 15px;">📋</div>
+                <h4>Foto QE2 non disponibile</h4>
+                <p>Vedere il quadro fisico per identificare i LED dei relè R1-R8</p>
+            </div>
+            <p style="color: #bdc3c7; margin-top: 15px; font-style: italic;">Riferimento visivo per identificare i LED dei relè</p>
+        </div>
+
+        <!-- PROGRESS BAR -->
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-text" id="progressText">0% Verificato</div>
+        
+        <!-- RELAY CARDS -->
+        <div class="relay-grid">
+            <!-- R1 -->
+            <div class="relay-card" onclick="toggleCheck(this)">
+                <div class="relay-header">
+                    <div class="relay-number">R1</div>
+                    <div class="relay-title">PDC (Pompa Di Calore) YOUTAKI</div>
+                    <span class="checkbox"></span>
+                </div>
+                <div class="relay-function">ABILITA PDC + PUNTO DI BIVALENZA YOUTAKI</div>
+                <div class="relay-status">
+                    <div class="status-indicator status-red"></div>
+                    <span>LED ROSSO = PDC (Pompa Di Calore) ATTIVA</span>
+                </div>
+                <div class="entity-info">
+                    🏠 <strong>Home Assistant:</strong><br>
+                    <code>switch.shellyplus1_901906876e70_switch_0</code><br>
+                    <strong>Funzione:</strong> Abilita richiesta caldo su Youtaki per circuito riscaldamento termosifoni
+                </div>
+            </div>
+            
+            <!-- R2 -->
+            <div class="relay-card" onclick="toggleCheck(this)">
+                <div class="relay-header">
+                    <div class="relay-number">R2</div>
+                    <div class="relay-title">POMPA TERMOSIFONI</div>
+                    <span class="checkbox"></span>
+                </div>
+                <div class="relay-function">ON = alimenta circuito impianto termosifoni Danfoss</div>
+                <div class="relay-status">
+                    <div class="status-indicator status-red"></div>
+                    <span>LED ROSSO = POMPA ATTIVA</span>
+                </div>
+                <div class="entity-info">
+                    🏠 <strong>Home Assistant:</strong><br>
+                    <code>switch.shellyplus1_1c6920053e90_switch_0</code><br>
+                    <strong>Funzione:</strong> Abilita funzionamento circolatore Danfoss dietro boiler ACS
+                </div>
+            </div>
+            
+            <!-- R3 -->
+            <div class="relay-card" onclick="toggleCheck(this)">
+                <div class="relay-header">
+                    <div class="relay-number">R3</div>
+                    <div class="relay-title">MODULA PLUS ACS</div>
+                    <span class="checkbox"></span>
+                </div>
+                <div class="relay-function">ON = MODULA PLUS IN PARALLELO A PDC (Pompa Di Calore)</div>
+                <div class="relay-status">
+                    <div class="status-indicator status-off"></div>
+                    <span>NORMALE = SPENTO</span>
+                </div>
+                <div class="entity-info">
+                    🏠 <strong>Home Assistant:</strong><br>
+                    <code>switch.shellyplus1_78ee4c662334_switch_0</code><br>
+                    <strong>Funzione:</strong> Abilita logica di funzionamento caldaia a gas Modula Plus
+                </div>
+            </div>
+            
+            <!-- R4 -->
+            <div class="relay-card" onclick="toggleCheck(this)">
+                <div class="relay-header">
+                    <div class="relay-number">R4</div>
+                    <div class="relay-title">ACS FORZATO MANUALE</div>
+                    <span class="checkbox"></span>
+                </div>
+                <div class="relay-function">ON = ACS (Acqua Calda Sanitaria) FORZATO IN MANUALE SET POINT ACS SU MODULA</div>
+                <div class="relay-status">
+                    <div class="status-indicator status-off"></div>
+                    <span>NORMALE = SPENTO</span>
+                </div>
+                <div class="entity-info">
+                    🏠 <strong>Home Assistant:</strong><br>
+                    <code>switch.shellyplus1_78ee4c67114_switch_0</code><br>
+                    <strong>Funzione:</strong> Forza riscaldamento acqua calda da parte di caldaia a gas Modula
+                </div>
+            </div>
+            
+            <!-- R5 -->
+            <div class="relay-card" onclick="toggleCheck(this)">
+                <div class="relay-header">
+                    <div class="relay-number">R5</div>
+                    <div class="relay-title">RISC FORZATO MANUALE</div>
+                    <span class="checkbox"></span>
+                </div>
+                <div class="relay-function">ON = RISC FORZATO IN MANUALE SET POINT SU MODULA</div>
+                <div class="relay-status">
+                    <div class="status-indicator status-off"></div>
+                    <span>NORMALE = SPENTO</span>
+                </div>
+                <div class="entity-info">
+                    🏠 <strong>Home Assistant:</strong><br>
+                    <code>switch.shellyplus1_78ee4c658a8_switch_0</code><br>
+                    <strong>Funzione:</strong> Forza il riscaldamento termosifoni da parte di caldaia a gas
+                </div>
+            </div>
+            
+            <!-- R6 - SPECIALE -->
+            <div class="relay-card special-section" onclick="toggleCheck(this)">
+                <div class="relay-header">
+                    <div class="relay-number">R6</div>
+                    <div class="relay-title">⚠️ PDC (Pompa Di Calore) OFF (CRITICO)</div>
+                    <span class="checkbox"></span>
+                </div>
+                <div class="relay-function">PDC = OFF R6 = R8GA + ON</div>
+                <div class="relay-status">
+                    <div class="status-indicator status-off"></div>
+                    <span>⚠️ DEVE ESSERE SPENTO per PDC (Pompa Di Calore)</span>
+                </div>
+                <div class="entity-info">
+                    🏠 <strong>Home Assistant:</strong><br>
+                    <code>switch.shellyplus1_8e33bcdbde90_switch_0</code><br>
+                    <strong>⚠️ IMPORTANTE:</strong> Smart grid PDC - blocca la PDC anche se R1 è attivo
+                </div>
+                <div class="emergency-info">
+                    <h4>🚨 CONTROLLO CRITICO</h4>
+                    <p><strong>R6 DEVE RIMANERE SPENTO</strong> durante il normale funzionamento PDC (Pompa Di Calore)!</p>
+                    <p>Se R6 è acceso → la PDC (Pompa Di Calore) non funzionerà mai!</p>
+                </div>
+            </div>
+            
+            <!-- R7 -->
+            <div class="relay-card" onclick="toggleCheck(this)">
+                <div class="relay-header">
+                    <div class="relay-number">R7</div>
+                    <div class="relay-title">MODULA PLUS</div>
+                    <span class="checkbox"></span>
+                </div>
+                <div class="relay-function">MODULA PLUS ALIMENTATA + Switch-ON (R7-ON)</div>
+                <div class="relay-status">
+                    <div class="status-indicator status-off"></div>
+                    <span>NORMALE = SPENTO</span>
+                </div>
+                <div class="entity-info">
+                    🏠 <strong>Home Assistant:</strong><br>
+                    <code>switch.shellyplus1_1c69204424ac_switch_0</code><br>
+                    <strong>Funzione:</strong> Interrompe alimentazione generale a caldaia a gas Modula Plus
+                </div>
+            </div>
+            
+            <!-- R8 -->
+            <div class="relay-card" onclick="toggleCheck(this)">
+                <div class="relay-header">
+                    <div class="relay-number">R8</div>
+                    <div class="relay-title">LUCE LED NICO</div>
+                    <span class="checkbox"></span>
+                </div>
+                <div class="relay-function">LUCE NICO</div>
+                <div class="relay-status">
+                    <div class="status-indicator status-green"></div>
+                    <span>LED VERDE = LUCE ACCESA</span>
+                </div>
+                <div class="entity-info">
+                    🏠 <strong>Home Assistant:</strong><br>
+                    <code>switch.shellyplus1_d86116fbe5c8_switch_0</code><br>
+                    <strong>Funzione:</strong> Riceve segnale da Alexa o da home assistant per luci camera NICO
+                </div>
+            </div>
+        </div>
+        
+        <!-- CONTROLLO PDC SPECIALE -->
+        <div class="pdc-control">
+            <h3 class="special-title">🔥 CONTROLLO PDC (Pompa Di Calore) - SEQUENZA CORRETTA</h3>
+            <div class="emergency-info">
+                <h4>✅ PER ATTIVARE PDC (Pompa Di Calore):</h4>
+                <p><strong>R1 = ON</strong> (LED rosso acceso)</p>
+                <p><strong>R2 = ON</strong> (LED rosso acceso)</p>
+                <p><strong>R6 = OFF</strong> (LED spento) ⚠️</p>
+            </div>
+            <div class="emergency-info">
+                <h4>❌ PER DISATTIVARE PDC (Pompa Di Calore):</h4>
+                <p><strong>R1 = OFF</strong> (LED spento)</p>
+                <p><strong>R2 = OFF</strong> (LED spento)</p>
+                <p><strong>R6 = ON</strong> (LED rosso acceso)</p>
+            </div>
+        </div>
+        
+        <!-- CONTATTI -->
+        <div class="contacts-section">
+            <h3 class="special-title">📞 CONTATTI DI EMERGENZA</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
+                    <strong>🔧 MARCO</strong><br>
+                    Primo contatto<br>
+                    📱 <strong>335-1354309</strong>
+                </div>
+                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
+                    <strong>🔧 Elvis Martinat</strong><br>
+                    Riscaldamento PDC (Pompa Di Calore)<br>
+                    📱 <strong>347-4958076</strong>
+                </div>
+                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
+                    <strong>⚡ Claudio Massello</strong><br>
+                    Elettricista QE2<br>
+                    📱 <strong>348-6977962</strong>
+                </div>
+            </div>
+        </div>
+        
+        <!-- NAVIGATION LINKS -->
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="checklrisc.html" style="color: white; font-size: 18px; text-decoration: none; background: #e74c3c; padding: 15px 30px; border-radius: 10px; display: inline-block; margin: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+                🔥 VAI A CHECKLIST RISCALDAMENTO COMPLETA
+            </a>
+            <a href="r1.html" style="color: white; font-size: 18px; text-decoration: none; background: #3498db; padding: 15px 30px; border-radius: 10px; display: inline-block; margin: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+                🔴 VAI A GUIDA R1
+            </a>
+            <a href="r2.html" style="color: white; font-size: 18px; text-decoration: none; background: #f39c12; padding: 15px 30px; border-radius: 10px; display: inline-block; margin: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+                🔄 VAI A GUIDA R2
+            </a>
+            <a href="index.html" style="color: white; font-size: 18px; text-decoration: none; background: #27ae60; padding: 15px 30px; border-radius: 10px; display: inline-block; margin: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+                🏠 INDICE GENERALE
+            </a>
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px; color: #bdc3c7; font-style: italic;">
+            <p>Aggiornato: 02/06/2025<br>
+            Responsabili: MARCO 335-1354309 | ELVIS 347-4958076 | ALESSANDRO 370-3068232</p>
+        </div>
+    </div>
+    
+    <script>
+        function toggleCheck(element) {
+            element.classList.toggle('checked');
+            updateProgress();
+        }
+        
+        function updateProgress() {
+            const cards = document.querySelectorAll('.relay-card');
+            const checkedCards = document.querySelectorAll('.relay-card.checked');
+            const progress = Math.round((checkedCards.length / cards.length) * 100);
+            
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressText').textContent = progress + '% Verificato';
+            
+            if (progress === 100) {
+                document.getElementById('progressText').innerHTML = '🎉 TUTTI I RELÈ VERIFICATI! 🎉';
+            }
+        }
+        
+        // Inizializza il progresso
+        updateProgress();
+    </script>
+</body>
+</html>

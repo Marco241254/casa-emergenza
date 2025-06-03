@@ -145,6 +145,14 @@
             border: 2px solid #27ae60;
         }
         
+        .docs-section {
+            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border: 2px solid #1976d2;
+        }
+        
         .section-title {
             color: white;
             font-size: 1.8em;
@@ -278,6 +286,28 @@
             border-color: #e74c3c;
         }
         
+        .doc-link {
+            display: inline-block;
+            background: rgba(255,255,255,0.15);
+            color: white;
+            text-decoration: none;
+            padding: 15px 20px;
+            margin: 10px;
+            border-radius: 10px;
+            border: 2px solid rgba(255,255,255,0.3);
+            transition: all 0.3s ease;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .doc-link:hover {
+            background: rgba(255,255,255,0.25);
+            border-color: #3498db;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            color: #3498db;
+        }
+        
         @media (max-width: 768px) {
             .container {
                 padding: 20px;
@@ -299,6 +329,26 @@
         <div class="header">
             <h1>🏠 COMPONENTE R1 - QE1</h1>
             <p style="margin: 10px 0; font-size: 1.2em;">Contattore bobina 220V - QUADRO QE1</p>
+        </div>
+        
+        <!-- DOCUMENTAZIONE CORRELATA -->
+        <div class="docs-section">
+            <h3 class="section-title">📚 DOCUMENTAZIONE TECNICA CORRELATA</h3>
+            <p style="color: white; margin-bottom: 20px;">Per approfondimenti sui componenti collegati a R1:</p>
+            <div style="text-align: center;">
+                <a href="pdc.html" class="doc-link">
+                    🔥 MANUALI PDC RASM-4VNE<br>
+                    <small>Pompa di Calore Hitachi</small>
+                </a>
+                <a href="controller.html" class="doc-link">
+                    🎛️ MANUALI CONTROLLER<br>
+                    <small>PC-ARFH1E YUTAKI</small>
+                </a>
+                <a href="indexnew.html" class="doc-link">
+                    🏠 SISTEMA COMPLETO<br>
+                    <small>Tutti i Componenti</small>
+                </a>
+            </div>
         </div>
         
         <!-- PHOTO SECTION -->
@@ -594,94 +644,3 @@
                 <h4>Problema: Checklist fallisce su più punti</h4>
                 <ol style="color: white;">
                     <li><strong>IDENTIFICARE</strong> quale sezione fallisce di più</li>
-                    <li><strong>INFRASTRUTTURA</strong> → Controllare router/internet</li>
-                    <li><strong>IDRAULICO</strong> → Controllare pressione/pompe</li>
-                    <li><strong>ELETTRICO</strong> → Controllare alimentazioni quadri</li>
-                    <li>Se confuso → chiamare ELVIS (347-4958076)</li>
-                </ol>
-            </div>
-        </div>
-        
-        <!-- TECHNICAL SPECS -->
-        <div style="background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%); padding: 25px; border-radius: 15px; margin: 30px 0; border: 2px solid #34495e;">
-            <h3 class="section-title">🎯 SPECIFICHE TECNICHE</h3>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-                <div class="highlight-box">
-                    <h4>Tipo:</h4>
-                    <p>Contattore 25A a 3 posizioni</p>
-                </div>
-                <div class="highlight-box">
-                    <h4>Posizioni:</h4>
-                    <p>OFF - Automatico - ON manuale</p>
-                </div>
-                <div class="highlight-box">
-                    <h4>Controllo:</h4>
-                    <p>Shelly + Home Assistant</p>
-                </div>
-                <div class="highlight-box">
-                    <h4>Tensione:</h4>
-                    <p>230V</p>
-                </div>
-            </div>
-            
-            <div class="highlight-box" style="margin-top: 20px;">
-                <h4>⚡ RELAZIONE CON ALTRI COMPONENTI</h4>
-                <ul style="color: white;">
-                    <li><strong>R1:</strong> Abilita PDC (QUESTO COMPONENTE)</li>
-                    <li><strong>R2:</strong> Gestisce circolazione</li>
-                    <li><strong>R6:</strong> Può bloccare PDC Smart Grid</li>
-                    <li><strong>R7:</strong> Sistema backup caldaia</li>
-                </ul>
-            </div>
-        </div>
-        
-        <!-- NAVIGATION -->
-        <div style="text-align: center; margin: 30px 0;">
-            <a href="qe2.html" style="color: white; font-size: 18px; text-decoration: none; background: #3498db; padding: 15px 30px; border-radius: 10px; display: inline-block; margin: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
-                ⚡ VAI A QE2 - QUADRO ELETTRICO
-            </a>
-            <a href="chklstrisc.html" style="color: white; font-size: 18px; text-decoration: none; background: #e74c3c; padding: 15px 30px; border-radius: 10px; display: inline-block; margin: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
-                🔥 VAI A CHECKLIST RISCALDAMENTO
-            </a>
-        </div>
-        
-        <div style="text-align: center; margin-top: 30px; color: #bdc3c7; font-style: italic;">
-            <p>Aggiornato: 29/05/2025<br>
-            Responsabili: MARCO 335-1354309 | ELVIS 347-4958076 | ALESSANDRO 370-3068232</p>
-        </div>
-    </div>
-    
-    <script>
-        function toggleCheck(element) {
-            element.classList.toggle('checked');
-            updateProgress();
-        }
-        
-        function updateProgress() {
-            const items = document.querySelectorAll('.checklist-item');
-            const checkedItems = document.querySelectorAll('.checklist-item.checked');
-            const progress = Math.round((checkedItems.length / items.length) * 100);
-            
-            document.getElementById('progressFill').style.width = progress + '%';
-            document.getElementById('progressText').textContent = progress + '% Completato';
-            
-            // Hide all result boxes
-            document.getElementById('resultSuccess').style.display = 'none';
-            document.getElementById('resultPartial').style.display = 'none';
-            document.getElementById('resultProblem').style.display = 'none';
-            
-            // Show appropriate result
-            if (progress === 100) {
-                document.getElementById('resultSuccess').style.display = 'block';
-            } else if (progress >= 80) {
-                document.getElementById('resultPartial').style.display = 'block';
-            } else if (progress < 50) {
-                document.getElementById('resultProblem').style.display = 'block';
-            }
-        }
-        
-        // Inizializza il progresso
-        updateProgress();
-    </script>
-</body>
-</html>

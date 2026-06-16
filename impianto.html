@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Impianto Termico di Casa — TERMO_OPTIMA</title>
+<style>
+  :root{--bg:#f4f6f8;--card:#fff;--ink:#1a202c;--muted:#5a6675;--line:#e2e8f0;--accent:#1976d2;--accent2:#2c5282;--warn:#c0392b}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;padding:16px;max-width:900px;margin:0 auto}
+  header.top{background:linear-gradient(135deg,#1976d2,#2c5282);color:#fff;border-radius:14px;padding:24px;margin-bottom:20px}
+  header.top h1{font-size:1.6em;margin-bottom:4px}
+  header.top p{opacity:.9;font-size:.95em}
+  .toc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:24px}
+  .toc h2{font-size:1.05em;color:var(--accent2);margin-bottom:10px}
+  .toc ul{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  .toc a{color:var(--accent);text-decoration:none;font-size:.92em}
+  .toc a:hover{text-decoration:underline}
+  section.comp{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:18px;scroll-margin-top:16px}
+  section.comp h2{color:var(--accent2);font-size:1.3em;margin-bottom:6px;border-bottom:3px solid var(--accent);padding-bottom:8px}
+  .role{color:var(--muted);font-style:italic;margin-bottom:14px}
+  .photos{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:14px 0}
+  .photos img{width:100%;height:170px;object-fit:cover;border-radius:10px;border:1px solid var(--line);background:#eef1f4}
+  .ph{height:170px;border-radius:10px;background:#e8edf2;display:flex;align-items:center;justify-content:center;color:#9aa7b4;font-size:2.4em}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.92em}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left}
+  th{background:#eef3f8;color:var(--accent2)}
+  .docs{margin-top:14px}
+  .docs a{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;padding:9px 14px;border-radius:8px;margin:4px 6px 4px 0;font-size:.88em;font-weight:600}
+  .docs a:hover{background:var(--accent2)}
+  .warn{background:#fdecea;border-left:4px solid var(--warn);padding:12px;border-radius:8px;margin:12px 0;color:#7a2018}
+  .back{display:inline-block;margin-top:10px;font-size:.85em;color:var(--muted);text-decoration:none}
+  footer{text-align:center;color:var(--muted);font-size:.85em;padding:20px 0;font-style:italic}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <h1>🏠 Impianto Termico di Casa</h1>
+  <p>TERMO_OPTIMA · Pomaretto (TO) · approfondimenti dal libretto</p>
+</header>
+
+<nav class="toc">
+  <h2>Indice componenti</h2>
+  <ul>
+    <li><a href="#pdc">1 · Pompa di calore</a></li>
+    <li><a href="#controller">2 · Controller Yutaki</a></li>
+    <li><a href="#gateway">3 · Gateway Modbus</a></li>
+    <li><a href="#caldaia">4 · Caldaia backup</a></li>
+    <li><a href="#puffer">5 · Puffer RLH</a></li>
+    <li><a href="#pompa">6 · Pompa P1 Grundfos</a></li>
+    <li><a href="#distribuzione">7 · Distribuzione e Tado</a></li>
+    <li><a href="#conteca">8 · Contacalorie</a></li>
+    <li><a href="#quadri">9 · Quadri QE1/QE2</a></li>
+    <li><a href="#sensori">10 · Sensori temperatura</a></li>
+    <li><a href="#termosifoni">11 · Termosifoni</a></li>
+    <li><a href="#ventilati">12 · Termosifoni ventilati</a></li>
+    <li><a href="#strati">13 · Catena di controllo</a></li>
+    <li><a href="#s1">14 · Strato 1 · Sensori</a></li>
+    <li><a href="#s2">15 · Strato 2 · Termostato</a></li>
+    <li><a href="#s3">16 · Strato 3 · Logica e guardie</a></li>
+    <li><a href="#s4">17 · Strato 4 · Setpoint PI</a></li>
+    <li><a href="#s5">18 · Strato 5 · Duty cycle</a></li>
+    <li><a href="#parametri">19 · Parametri</a></li>
+    <li><a href="#flussi">20 · Flussi operativi</a></li>
+    <li><a href="#diagnostica">21 · Diagnostica</a></li>
+  </ul>
+</nav>
+
+<section class="comp" id="pdc">
+  <h2>1 · Pompa di calore Hitachi RASM-4VNE</h2>
+  <p class="role">Il cuore che produce il calore della casa, prelevandolo dall'aria esterna.</p>
+  <div class="photos">
+    <img src="pdc_unita_esterna.jpg" alt="PDC unità esterna" onerror="this.outerHTML='&lt;div class=ph&gt;🔥&lt;/div&gt;'">
+  </div>
+  <table>
+    <tr><th>Parametro</th><th>Valore</th></tr>
+    <tr><td>Modello / Seriale</td><td>RASM-4VNE · S/N 4QE99993 · 2022</td></tr>
+    <tr><td>Refrigerante</td><td>R410A</td></tr>
+    <tr><td>Potenza termica</td><td>3,3 ÷ 11,0 kW (inverter 30÷100%)</td></tr>
+    <tr><td>COP nominale / reale</td><td>5,00 / 3,0÷5,5</td></tr>
+    <tr><td>Abilitazione</td><td>contatto 24V su morsetti C1 PC-ARFH1E, via R1→QE1-R1</td></tr>
+  </table>
+  <div class="docs">
+    <a href="PMIT0342B_rev6_01-21.pdf">📖 Manuale Hitachi (PMIT0342B)</a>
+  </div>
+  <a class="back" href="#">↑ torna all'indice</a>
+</section>
+
+<section class="comp" id="controller">
+  <h2>2 · Remote controller Yutaki PC-ARFH1E</h2>
+  <p class="role">Il pannello con cui si imposta e si controlla la pompa di calore.</p>
+  <div class="photos">
+    <img src="controller_yutaky_acceso.jpg" alt="Controller Yutaki" onerror="this.outerHTML='&lt;div class=ph&gt;🎛️&lt;/div&gt;'">
+  </div>
+  <div class="warn"><strong>Impostazione critica:</strong> modalità Water (CentralMode = 2), altrimenti il segnale di R1 viene ignorato e la pompa non parte sotto comando di Home Assistant. Verifica: addr 1088 = 2.</div>
+  <table>
+    <tr><th>Reg.1090</th><th>Stato</th><th>Significato</th></tr>
+    <tr><td>0</td><td>OFF</td><td>sistema spento</td></tr>
+    <tr><td>5</td><td>ThermoOFF</td><td>T raggiunta, pausa compressore</td></tr>
+    <tr><td>6</td><td>ThermoON</td><td>riscaldamento attivo</td></tr>
+    <tr><td>8</td><td>ACS</td><td>ciclo sanitario (20÷40 min)</td></tr>
+    <tr><td>11</td><td>ALLARME</td><td>annotare codice → Elvis 347-4958076</td></tr>
+  </table>
+  <div class="docs">
+    <a href="PMIT0602_rev1_04-24.pdf">📖 Manuale controllo (PMIT0602)</a>
+  </div>
+  <a class="back" href="#">↑ torna all'indice</a>
+</section>
+
+<section class="comp" id="gateway">
+  <h2>3 · Gateway Modbus ATW-MBS-02</h2>
+  <p class="role">Il traduttore tra Home Assistant (Modbus) e la pompa di calore (H-Link).</p>
+  <div class="warn"><strong>Critico:</strong> addr 1003 deve essere sempre 3 (Fix). Il valore 0 fa ignorare il setpoint di addr 1005 e la macchina torna alla logica interna.</div>
+  <table>
+    <tr><th>addr</th><th>Funzione</th><th>Valore</th></tr>
+    <tr><td>1000</td><td>System Run</td><td>1 = avvio</td></tr>
+    <tr><td>1001</td><td>System Mode</td><td>1 = Heat</td></tr>
+    <tr><td>1003</td><td>W-OTC Heat C1</td><td>3 = Fix</td></tr>
+    <tr><td>1005</td><td>Setpoint acqua</td><td>34÷50°C</td></tr>
+    <tr><td>1088</td><td>R-CentralMode</td><td>2 = Water</td></tr>
+    <tr><td>1090</td><td>R-OpState</td><td>5 o 6 normale</td></tr>
+  </table>
+  <a class="back" href="#">↑ torna all'indice</a>
+</section>
+
+<section class="comp" id="caldaia">
+  <h2>4 · Caldaia backup Modula Plus 35DS</h2>
+  <p class="role">Generatore di riserva a gas — attualmente fuori servizio.</p>
+  <div class="warn"><strong>Stato attuale:</strong> contatore gas sigillato, contratto disdetto per l'inverno 2025/2026. La caldaia non scalda. R7 la alimenta ~2 ore/settimana solo per l'antibloccaggio. L'unica fonte di calore è la pompa di calore.</div>
+  <table>
+    <tr><th>Componente</th><th>Stato</th></tr>
+    <tr><td>Bruciatore gas</td><td>non funziona — gas sigillato</td></tr>
+    <tr><td>PK / LP (pompe interne)</td><td>ferme</td></tr>
+    <tr><td>R7 — Shelly 1c692044c2ac</td><td>antibloccaggio settimanale attivo</td></tr>
+  </table>
+  <a class="back" href="#">↑ torna all'indice</a>
+</section>
+
+<section class="comp" id="puffer">
+  <h2>5 · Puffer RLH con scambiatore ACS</h2>
+  <p class="role">Magazzino di calore, centro di distribuzione e boiler in un solo serbatoio.</p>
+  <table>
+    <tr><th>Zona</th><th>Temperatura</th><th>Sonda</th></tr>
+    <tr><td>Alta</td><td>45÷55°C</td><td>TWO (scambiatore ACS)</td></tr>
+    <tr><td>Media</td><td>40÷50°C</td><td>TPO</td></tr>
+    <tr><td>Bassa</td><td>30÷45°C</td><td>TK (ritorno C1)</td></tr>
+  </table>
+  <a class="back" href="#">↑ torna all'indice</a>
+</section>
+
+<section class="comp" id="pompa">
+  <h2>6 · Pompa P1 di circolazione (Grundfos Alpha1)</h2>
+  <p class="role">Il cuore che spinge l'acqua calda in tutta la casa.</p>
+  <div class="photos">
+    <img src="pompa_grundfos_alpha.jpg" alt="Pompa Grundfos" onerror="this.outerHTML='&lt;div class=ph&gt;🔄&lt;/div&gt;'">
+  </div>
+  <table>
+    <tr><th>Parametro</th><th>Valore</th></tr>
+    <tr><td>Modello</td><td>Grundfos Alpha1 L 25-60 130</td></tr>
+    <tr><td>Alimentazione</td><td>contattore QE1-R2 · Shelly 1c692008dea0</td></tr>
+    <tr><td>Pressione circuito</td><td>1,0÷1,5 bar</td></tr>
+    <tr><td>Levetta QE1-R2</td><td>CENTRALE = auto · ALTA = ON · BASSA = OFF</td></tr>
+  </table>
+  <div class="warn"><strong>Reset:</strong> levetta R2 su BASSA 30 s, poi CENTRALE; attendere 1÷2 min e ascoltare la pompa.</div>
+  <div class="docs">
+    <a href="manuale_grundfos_alpha.pdf">📖 Manuale Grundfos</a>
+  </div>
+  <a class="back" href="#">↑ torna all'indice</a>
+</section>
+
+<section class="comp" id="distribuzione">
+  <h2>7 · Distribuzione: tre piani e valvole Tado</h2>
+  <p class="role">Porta il calore piano per piano, con regolazione automatica stanza per stanza.</p>
+  <div class="photos">
+    <img src="valigetta_tado_termosifoni.jpg" alt="Valvole Tado" onerror="this.outerHTML='&lt;div class=ph&gt;🌡️&lt;/div&gt;'">
+  </div>
+  <table>
+    <tr><th>Piano</th><th>Termosifoni</th><th>Valvole Tado</th></tr>
+    <tr><td>Piano terra</td><td>6</td><td>su tutti</td></tr>
+    <tr><td>Primo piano</td><td>9</td><td>su tutti</td></tr>
+    <tr><td>Mansarda</td><td>4 da installare + 2</td><td>2 + bridge internet</td></tr>
+  </table>
+  <a class="back" href="#">↑ torna all'indice</a>
+</section>
+
+<section class="comp" id="conteca">
+  <h2>8 · Contacalorie CONTECA Caleffi EASY 1¼</h2>
+  <p class="role">Il contatore del calore: misura quanto rende davvero la pompa di calore.</p>
+  <table>
+    <tr><th>Sensore</th><th>Unità</th><th>Uso</th></tr>
+    <tr><td>temperatura mandata / ritorno</td><td>°C</td><td>regolatore PI</td></tr>
+    <tr><td>delta T</td><td>°C</td><td>normale 4÷8°C</td></tr>
+    <tr><td>portata</td><td>m³/h</td><td>fattore 1,159</td></tr>
+    <tr><td>potenza</td><td>kW</td><td>COP reale = P_th / P_el</td></tr>
+    <tr><td>energia cumulata</td><td>kWh</td><td>report, Grafana</td></tr>
+  </table>
+  <a class="back" href="#">↑ torna all'indice</a>
+</section>
+
+<section class="comp" id="quadri">
+  <h2>9 · Quadri elettrici QE1 e QE2</h2>
+  <p class="role">QE1 = potenza e contattori. QE2 = Shelly e LED di stato.</p>
+  <div class="photos">
+    <img src="qe1_quadro_principale.jpg" alt="QE1" onerror="this.outerHTML='&lt;div class=ph&gt;⚡&lt;/div&gt;'">
+    <img src="qe2.jpg" alt="QE2" onerror="this.outerHTML='&lt;div class=ph&gt;🔌&lt;/div&gt;'">
+    <img src="quadro_qe1_alimentato.jpg" alt="QE1 alimentato" onerror="this.outerHTML='&lt;div class=ph&gt;⚡&lt;/div&gt;'">
+    <img src="camera_qe2_alimentato.jpg" alt="QE2 alimentato" onerror="this.outerHTML='&lt;div class=ph&gt;🔌&lt;/div&gt;'">
+  </div>
+  <table>
+    <tr><th>Relè</th><th>Funzione</th><th>LED normale</th></tr>
+    <tr><td>R1 · 90150687a670</td><td>abilita PDC</td><td>spento · rosso = richiesta</td></tr>
+    <tr><td>R2 · 1c692008dea0</td><td>pompa P1</td><td>rosso = P1 attiva</td></tr>
+    <tr><td>R6 · 8813bfcdbda0</td><td>Smart Grid blocco</td><td>spento obbligatorio</td></tr>
+    <tr><td>R7 · 1c692044c2ac</td><td>Modula Plus</td><td>spento</td></tr>
+    <tr><td>EM · c45bbee1c642</td><td>misura potenza</td><td>verde stabile</td></tr>
+  </table>
+  <div class="warn"><strong>R2 spento con PDC accesa = problema critico.</strong> <strong>R6 rosso = PDC bloccata</strong> → levetta R6 su OFF in QE1.</div>
+  <a class="back" href="#">↑ torna all'indice</a>
+</section>
+
+<section class="comp" id="sensori">
+  <h2>10 · Sensori di temperatura</h2>
+  <p class="role">Gli organi di senso: dove fa caldo, dove fa freddo, quanto freddo farà.</p>
+  <div class="photos">
+    <img src="netatmo_sensore.jpg" alt="Sensore Netatmo" onerror="this.outerHTML='&lt;div class=ph&gt;🌡️&lt;/div&gt;'">
+  </div>
+  <table>
+    <tr><th>Misura</th><th>Da dove</th></tr>
+    <tr><td>T interna</td><td>media pesata zone Tado attive (valvola aperta)</td></tr>
+    <tr><td>T esterna</td><td>meteo locale + sonda Moduexpo + previsioni Open-Meteo</td></tr>
+    <tr><td>Gradi giorno</td><td>previsti 24h da Open-Meteo</td></tr>
+  </table>
+  <a class="back" href="#">↑ torna all'indice</a>
+</section>
+
+<section class="comp" id="termosifoni">
+  <h2>11 · Termosifoni</h2>
+  <p class="role">Il punto finale della catena: dove il calore arriva alle persone.</p>
+  <p>Se un radiatore è freddo in alto e caldo in basso contiene aria: va sfiatato. Perdite o radiatori freddi con valvola aperta → Elvis.</p>
+  <a class="back" href="#">↑ torna all'indice</a>
+</section>
+
+<section class="comp" id="ventilati">
+  <h2>12 · Termosifoni ventilati</h2>
+  <p class="role">Radiatori con ventola: rendono bene anche con acqua poco calda, ideali con la pompa di calore.</p>
+  <p>Scaldano più in fretta spingendo l'aria con una ventola. Permettono acqua di mandata più bassa, quindi COP più alto. Se la ventola non gira scaldano comunque, ma lentamente.</p>
+  <a class="back" href="#">↑ torna all'indice</a>
+</section>
+
+<section class="comp" id="strati">
+  <h2>13 · La catena di controllo: i cinque strati</h2>
+  <p class="role">Dalla temperatura di una stanza fino all'accensione del compressore.</p>
+  <table>
+    <tr><th>Strato</th><th>Compito</th></tr>
+    <tr><td>S1 · Sensori</td><td>raccoglie e media le temperature</td></tr>
+    <tr><td>S2 · Termostato</td><td>decide la temperatura voluta (Comfort/ECO)</td></tr>
+    <tr><td>S3 · Logica e guardie</td><td>decide se accendere, con 4 controlli di sicurezza</td></tr>
+    <tr><td>S4 · Setpoint PI</td><td>decide a che temperatura mandare l'acqua</td></tr>
+    <tr><td>S5 · Duty cycle</td><td>pianifica i cicli delle 24 ore</td></tr>
+  </table>
+  <a class="back" href="#">↑ torna all'indice</a>
+</section>
+
+<section class="comp" id="s1">
+  <h2>14 · Strato 1 · Sensori (logica)</h2>
+  <p class="role">Trasforma le tante letture grezze in tre numeri puliti e affidabili.</p>
+  <p>Temperatura interna = media pesata delle sole zone con valvola aperta, aggiornata ogni 30 s. Temperatura esterna = tre sorgenti fuse con peso diverso. Gradi giorno = previsti per le 24 ore successive. Filosofia: ridondanza, più fonti per ogni misura.</p>
+  <a class="back" href="#">↑ torna all'indice</a>
+</section>
+
+<section class="comp" id="s2">
+  <h2>15 · Strato 2 · Termostato a fasce orarie</h2>
+  <p class="role">L'agenda: quando la casa deve essere calda e quando può raffreddarsi un po'.</p>
+  <table>
+    <tr><th>Modalità</th><th>Temperatura</th><th>Quando</th></tr>
+    <tr><td>Comfort</td><td>22,5°C</td><td>nelle fasce attive</td></tr>
+    <tr><td>ECO</td><td>20,0°C</td><td>fuori dalle fasce</td></tr>
+  </table>
+  <p>Accende a −0,3°C sotto il setpoint, spegne a +0,3°C sopra: la banda evita accensioni e spegnimenti ravvicinati.</p>
+  <a class="back" href="#">↑ torna all'indice</a>
+</section>
+
+<section class="comp" id="s3">
+  <h2>16 · Strato 3 · Logica AND/OR e le quattro guardie</h2>
+  <p class="role">Il cervello decisionale: decide se accendere, ma solo se le guardie lo consentono.</p>
+  <p><strong>Due rami in OR:</strong> ramo Comfort (stanza fredda) oppure ramo Accumulo fotovoltaico (surplus solare).</p>
+  <table>
+    <tr><th>Guardia</th><th>Cosa fa</th></tr>
+    <tr><td>1 · Kill switch</td><td>blocca Comfort se T &gt; 23,5°C</td></tr>
+    <tr><td>2 · Lockout</td><td>pausa ~30 min dopo ogni spegnimento</td></tr>
+    <tr><td>3 · Smart Grid R6</td><td>blocco hardware se R6 eccitato</td></tr>
+    <tr><td>4 · Surplus FV</td><td>abilita Accumulo se surplus &gt; 500 W</td></tr>
+  </table>
+  <div class="warn">Se la pompa non parte pur essendo richiesta, è quasi sempre una guardia. Verifica per prima R6.</div>
+  <a class="back" href="#">↑ torna all'indice</a>
+</section>
+
+<section class="comp" id="s4">
+  <h2>17 · Strato 4 · Setpoint di mandata PI</h2>
+  <p class="role">Decide la temperatura dell'acqua, la più bassa possibile per il massimo rendimento.</p>
+  <table>
+    <tr><th>T esterna</th><th>Mandata base</th></tr>
+    <tr><td>≤ 0°C</td><td>sale col freddo (es. −5°C → 39°C)</td></tr>
+    <tr><td>0÷4°C</td><td>~34°C fisso</td></tr>
+    <tr><td>&gt; 4°C</td><td>scende (es. +7°C → 37°C)</td></tr>
+  </table>
+  <p>Alla base si aggiunge una correzione PI (proporzionale-integrale). L'integrale non si azzera allo spegnimento: si azzera a mezzanotte o da dashboard. Richiede addr 1003 = 3 per essere recepito.</p>
+  <a class="back" href="#">↑ torna all'indice</a>
+</section>
+
+<section class="comp" id="s5">
+  <h2>18 · Strato 5 · Duty cycle e ottimizzatore</h2>
+  <p class="role">Lo stratega: pianifica i cicli delle 24 ore per spendere meno.</p>
+  <p>Dimensiona accensioni e pause sul fabbisogno giornaliero (gradi giorno). Un'app Python su AppDaemon ricalcola ogni ora la pausa ottimale, imparando dai cicli reali. Modalità manuale (calcola ma non applica) o AI (applica). Ogni sera produce un report dei consumi.</p>
+  <a class="back" href="#">↑ torna all'indice</a>
+</section>
+
+<section class="comp" id="parametri">
+  <h2>19 · Parametri configurabili</h2>
+  <p class="role">Tutti modificabili dalla dashboard di Home Assistant, senza toccare il codice.</p>
+  <table>
+    <tr><th>Parametro</th><th>Default</th><th>Range</th></tr>
+    <tr><td>Setpoint Comfort</td><td>22,5°C</td><td>10÷25°C</td></tr>
+    <tr><td>Setpoint ECO</td><td>20,0°C</td><td>5÷22°C</td></tr>
+    <tr><td>Kill switch T ambiente</td><td>23,5°C</td><td>18÷28°C</td></tr>
+    <tr><td>Lockout minimo OFF</td><td>30 min</td><td>5÷180 min</td></tr>
+    <tr><td>Soglia surplus FV</td><td>500 W</td><td>0÷3000 W</td></tr>
+    <tr><td>COP stimato</td><td>3,0</td><td>2÷6</td></tr>
+    <tr><td>Partenze max/giorno</td><td>8</td><td>1÷24</td></tr>
+    <tr><td>Modalità AI</td><td>OFF</td><td>ON/OFF</td></tr>
+  </table>
+  <a class="back" href="#">↑ torna all'indice</a>
+</section>
+
+<section class="comp" id="flussi">
+  <h2>20 · Flussi operativi</h2>
+  <p class="role">L'impianto in azione nei tre scenari tipici.</p>
+  <p><strong>Riscaldamento:</strong> Tado apre → termostato chiede calore → guardie OK → R1 (24V al controller) → R2 (parte P1) → soft-start compressore → Reg.1090 = 6 → casa scalda → spegnimento e lockout.</p>
+  <p><strong>Acqua sanitaria:</strong> sonda TWO sotto soglia → modalità ACS (Reg.1090 = 8) → la serpentina nella zona alta scalda l'acqua dei rubinetti → 20÷40 min, termosifoni fermi (normale).</p>
+  <p><strong>Accumulo fotovoltaico:</strong> surplus solare → ramo Accumulo attiva la pompa anche senza richiesta comfort → puffer caricato con energia gratuita → calore ceduto nelle ore senza sole.</p>
+  <a class="back" href="#">↑ torna all'indice</a>
+</section>
+
+<section class="comp" id="diagnostica">
+  <h2>21 · Diagnostica</h2>
+  <p class="role">Quando qualcosa non funziona: dal sintomo alla causa all'azione.</p>
+  <div class="photos">
+    <img src="manometro_pressione.jpg" alt="Manometro" onerror="this.outerHTML='&lt;div class=ph&gt;📊&lt;/div&gt;'">
+  </div>
+  <table>
+    <tr><th>Sintomo</th><th>Verifica</th><th>Azione</th></tr>
+    <tr><td>Termosifoni freddi, tutti i piani</td><td>LED R2 rosso?</td><td>no → reset P1; poi Elvis</td></tr>
+    <tr><td>Freddi un piano solo</td><td>valvole Tado aperte?</td><td>aprire da dashboard, WiFi Tado</td></tr>
+    <tr><td>COP sotto 2,5</td><td>sbrinamento?</td><td>attendere 5÷10 min; poi Elvis</td></tr>
+    <tr><td>Acqua fredda rubinetti</td><td>Reg.1090 = 8?</td><td>forzare boost ACS</td></tr>
+    <tr><td>Pressione &lt; 1,0 bar</td><td>manometro</td><td>cercare perdite → Elvis</td></tr>
+    <tr><td>Display Yutaki spento</td><td>fusibile M2 REG TERM</td><td>verificare trasformatore 24V</td></tr>
+    <tr><td>Reg.1090 = 11</td><td>codice sul display</td><td>annotare → Elvis</td></tr>
+  </table>
+  <div class="warn"><strong>Pompa non parte:</strong> prima verifica sempre R6 (LED in QE2). Se rosso → levetta R6 su OFF in QE1.</div>
+  <a class="back" href="#">↑ torna all'indice</a>
+</section>
+
+<footer>
+  TERMO_OPTIMA · Documentazione tecnica · Pomaretto (TO)<br>
+  Contatti: Marco 335-1354309 · Elvis 347-4958076 · Alessandro 370-3068232 · Claudio 348-6977962
+</footer>
+
+</body>
+</html>

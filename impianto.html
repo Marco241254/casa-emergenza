@@ -83,6 +83,8 @@
   </table>
   <div class="docs">
     <a href="PMIT0342B_rev6_01-21.pdf">📖 Manuale Hitachi (PMIT0342B)</a>
+    <a href="PMML0419A_rev3.pdf">📘 Manuale unità (PMML0419A)</a>
+    <a href="PMML0420B_rev2.pdf">📘 Manuale idronico (PMML0420B)</a>
   </div>
   <a class="back" href="#">↑ torna all'indice</a>
 </section>
@@ -92,6 +94,7 @@
   <p class="role">Il pannello con cui si imposta e si controlla la pompa di calore.</p>
   <div class="photos">
     <img src="controller_yutaky_acceso.jpg" alt="Controller Yutaki" onerror="this.outerHTML='&lt;div class=ph&gt;🎛️&lt;/div&gt;'">
+    <img src="youtaky_controller.jpg" alt="Controller Yutaki dettaglio" onerror="this.outerHTML='&lt;div class=ph&gt;🎛️&lt;/div&gt;'">
   </div>
   <div class="warn"><strong>Impostazione critica:</strong> modalità Water (CentralMode = 2), altrimenti il segnale di R1 viene ignorato e la pompa non parte sotto comando di Home Assistant. Verifica: addr 1088 = 2.</div>
   <table>
@@ -111,6 +114,9 @@
 <section class="comp" id="gateway">
   <h2>3 · Gateway Modbus ATW-MBS-02</h2>
   <p class="role">Il traduttore tra Home Assistant (Modbus) e la pompa di calore (H-Link).</p>
+  <div class="photos">
+    <img src="Nessuna%20interfaccia%20ETHERNET.jpeg" alt="Interfaccia ethernet" onerror="this.outerHTML='&lt;div class=ph&gt;🔌&lt;/div&gt;'">
+  </div>
   <div class="warn"><strong>Critico:</strong> addr 1003 deve essere sempre 3 (Fix). Il valore 0 fa ignorare il setpoint di addr 1005 e la macchina torna alla logica interna.</div>
   <table>
     <tr><th>addr</th><th>Funzione</th><th>Valore</th></tr>
@@ -134,6 +140,10 @@
     <tr><td>PK / LP (pompe interne)</td><td>ferme</td></tr>
     <tr><td>R7 — Shelly 1c692044c2ac</td><td>antibloccaggio settimanale attivo</td></tr>
   </table>
+  <div class="docs">
+    <a href="THIT9550%20Modula%20Plus%2015-35%20per%20utente.pdf">📖 Manuale utente Modula Plus</a>
+    <a href="manuale_installatore_modula_plus.pdf">🔧 Manuale installatore</a>
+  </div>
   <a class="back" href="#">↑ torna all'indice</a>
 </section>
 
@@ -173,7 +183,10 @@
   <h2>7 · Distribuzione: tre piani e valvole Tado</h2>
   <p class="role">Porta il calore piano per piano, con regolazione automatica stanza per stanza.</p>
   <div class="photos">
-    <img src="valigetta_tado_termosifoni.jpg" alt="Valvole Tado" onerror="this.outerHTML='&lt;div class=ph&gt;🌡️&lt;/div&gt;'">
+    <img src="Tado%20valvola%20termostatica%20termo.jpeg" alt="Valvola termostatica Tado" onerror="this.outerHTML='&lt;div class=ph&gt;🌡️&lt;/div&gt;'">
+    <img src="Tado%20termostato%20zona_1.jpeg" alt="Termostato Tado zona 1" onerror="this.outerHTML='&lt;div class=ph&gt;🌡️&lt;/div&gt;'">
+    <img src="Tado%20termostato%20zona_2.jpeg" alt="Termostato Tado zona 2" onerror="this.outerHTML='&lt;div class=ph&gt;🌡️&lt;/div&gt;'">
+    <img src="valigetta_tado_termosifoni.jpg" alt="Valigetta Tado" onerror="this.outerHTML='&lt;div class=ph&gt;🌡️&lt;/div&gt;'">
   </div>
   <table>
     <tr><th>Piano</th><th>Termosifoni</th><th>Valvole Tado</th></tr>
@@ -195,6 +208,11 @@
     <tr><td>potenza</td><td>kW</td><td>COP reale = P_th / P_el</td></tr>
     <tr><td>energia cumulata</td><td>kWh</td><td>report, Grafana</td></tr>
   </table>
+  <div class="docs">
+    <a href="Contatore%20di%20calore%20diretto%20CONTECA.pdf">📖 Manuale CONTECA</a>
+    <a href="Registri%20MODBUS%20per%20CONTECA.pdf">📊 Registri Modbus CONTECA</a>
+    <a href="Trasmissione%20per%20Bus%20RS-485.pdf">🔌 Trasmissione RS-485</a>
+  </div>
   <a class="back" href="#">↑ torna all'indice</a>
 </section>
 
@@ -205,7 +223,7 @@
     <img src="qe1_quadro_principale.jpg" alt="QE1" onerror="this.outerHTML='&lt;div class=ph&gt;⚡&lt;/div&gt;'">
     <img src="qe2.jpg" alt="QE2" onerror="this.outerHTML='&lt;div class=ph&gt;🔌&lt;/div&gt;'">
     <img src="quadro_qe1_alimentato.jpg" alt="QE1 alimentato" onerror="this.outerHTML='&lt;div class=ph&gt;⚡&lt;/div&gt;'">
-    <img src="camera_qe2_alimentato.jpg" alt="QE2 alimentato" onerror="this.outerHTML='&lt;div class=ph&gt;🔌&lt;/div&gt;'">
+    <img src="Camera_qe2_alimentato.jpg" alt="QE2 alimentato" onerror="this.outerHTML='&lt;div class=ph&gt;🔌&lt;/div&gt;'">
   </div>
   <table>
     <tr><th>Relè</th><th>Funzione</th><th>LED normale</th></tr>
@@ -216,6 +234,9 @@
     <tr><td>EM · c45bbee1c642</td><td>misura potenza</td><td>verde stabile</td></tr>
   </table>
   <div class="warn"><strong>R2 spento con PDC accesa = problema critico.</strong> <strong>R6 rosso = PDC bloccata</strong> → levetta R6 su OFF in QE1.</div>
+  <div class="docs">
+    <a href="Shelly%20Plus%20Add-on%20-%20Manuale%20utente%20e%20di%20sicurezza%20multilingue%20in%20formato%20cartaceo.pdf">📖 Manuale Shelly Plus Add-on</a>
+  </div>
   <a class="back" href="#">↑ torna all'indice</a>
 </section>
 
@@ -347,6 +368,7 @@
   <p class="role">Quando qualcosa non funziona: dal sintomo alla causa all'azione.</p>
   <div class="photos">
     <img src="manometro_pressione.jpg" alt="Manometro" onerror="this.outerHTML='&lt;div class=ph&gt;📊&lt;/div&gt;'">
+    <img src="test_internet.jpg" alt="Test internet" onerror="this.outerHTML='&lt;div class=ph&gt;🌐&lt;/div&gt;'">
   </div>
   <table>
     <tr><th>Sintomo</th><th>Verifica</th><th>Azione</th></tr>

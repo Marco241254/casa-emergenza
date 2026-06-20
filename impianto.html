@@ -64,6 +64,8 @@
     <li><a href="#parametri">19 · Parametri</a></li>
     <li><a href="#flussi">20 · Flussi operativi</a></li>
     <li><a href="#diagnostica">21 · Diagnostica</a></li>
+    <li><a href="#irrigazione">22 · Irrigazione prati</a></li>
+    <li><a href="#failover">23 · Failover fibra/LTE</a></li>
   </ul>
 </nav>
 
@@ -383,6 +385,43 @@
     <tr><td>Reg.1090 = 11</td><td>codice sul display</td><td>annotare → Elvis</td></tr>
   </table>
   <div class="warn"><strong>Pompa non parte:</strong> prima verifica sempre R6 (LED in QE2). Se rosso → levetta R6 su OFF in QE1.</div>
+  <a class="back" href="#">↑ torna all'indice</a>
+</section>
+
+<section class="comp" id="irrigazione">
+  <h2>22 · Irrigazione prati (da surplus fotovoltaico)</h2>
+  <p class="role">Irriga i prati solo con produzione solare in eccesso, mai da rete o batterie.</p>
+  <div class="photos">
+    <img src="casetta_pompe_elettrovalvole.png" alt="Casetta pompe ed elettrovalvole" onerror="this.outerHTML='&lt;div class=ph&gt;💧&lt;/div&gt;'">
+    <img src="quadro_interfaccia_irrigazione_wi_fi_potenza.png" alt="Quadro interfaccia irrigazione" onerror="this.outerHTML='&lt;div class=ph&gt;⚡&lt;/div&gt;'">
+    <img src="prato_sopra.png" alt="Prato sopra" onerror="this.outerHTML='&lt;div class=ph&gt;🌱&lt;/div&gt;'">
+    <img src="prato_sotto.png" alt="Prato sotto" onerror="this.outerHTML='&lt;div class=ph&gt;🌱&lt;/div&gt;'">
+    <img src="prato_piccolo.png" alt="Prato piccolo" onerror="this.outerHTML='&lt;div class=ph&gt;🌱&lt;/div&gt;'">
+  </div>
+  <p>Acqua dalla roggia "Bealera di Rocca Pertusa" → vasca di sedimentazione → pompa centrifuga 2 CV → tre zone (Sopra, Sotto, Piccolo) con elettrovalvole 24V. Comando: Sonoff 4CH PRO R3 (IP 192.168.1.71) via SonoffLAN locale — CH1 pompa (tramite teleruttore), CH2-4 zone. Logica event-driven su timer.finished, nessun polling.</p>
+  <table>
+    <tr><th>Parametro</th><th>Valore</th></tr>
+    <tr><td>Soglia surplus avvio</td><td>1500 W</td></tr>
+    <tr><td>Soglia surplus stop</td><td>800 W (isteresi)</td></tr>
+    <tr><td>Finestra di grazia</td><td>5 min</td></tr>
+    <tr><td>Lockout post-ciclo</td><td>300 s</td></tr>
+    <tr><td>Sfasamento pompa→valvola</td><td>30 s (messa in pressione)</td></tr>
+  </table>
+  <div class="warn"><strong>Sicurezza idraulica:</strong> in stop la valvola chiude PRIMA dello spegnimento pompa (2 s dopo), per evitare colpi d'ariete. La valvola manuale presso gli scalini va tenuta sempre aperta.</div>
+  <div class="docs">
+    <a href="irr_prati.md">📄 Documento completo irrigazione</a>
+  </div>
+  <a class="back" href="#">↑ torna all'indice</a>
+</section>
+
+<section class="comp" id="failover">
+  <h2>23 · Failover rete: fibra → LTE</h2>
+  <p class="role">Se cade la fibra, la connessione passa automaticamente alla rete mobile LTE.</p>
+  <p>Router principale Ubiquiti Dream Router 7 (UDR7) sulla fibra. In caso di interruzione, il traffico viene dirottato su modem LTE TP-Link MR600 come linea di riserva, mantenendo attivo l'accesso remoto e le notifiche.</p>
+  <div class="warn"><strong>Nota:</strong> l'impianto funziona comunque in locale anche senza internet. Il failover serve solo al controllo da remoto e alle notifiche Telegram.</div>
+  <div class="docs">
+    <a href="failover_fibra_lte.md">📄 Documento completo failover</a>
+  </div>
   <a class="back" href="#">↑ torna all'indice</a>
 </section>
 

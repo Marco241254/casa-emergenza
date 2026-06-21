@@ -1,22 +1,20 @@
 # Sistema Irrigazione Prati — TERMO_OPTIMA
 
-**Documento:** `irrigazione_prati.md`
-**Versione:** 1.0
+**Documento:** `400_irrigazione_prati.md`
+**Versione doc:** 1.1
 **Data:** 2026-06-20
 **Autore:** Marco / TERMO_OPTIMA
-**Package di riferimento:** `/config/packages/400_irrigazione_prati.yaml` v1.0.2
+**Package di riferimento:** `/config/packages/400_irrigazione_prati.yaml` **v1.0.4**
 **Dashboard:** `views.yaml` → vista "Irrigazione" (`/30-interuttori-rele/irrigazione`)
 
 ---
 
 ## 1. Scopo
 
-Sistema di irrigazione dei prati alimentato **esclusivamente da surplus
-fotovoltaico**. La pompa è l'ultima priorità di carico: irriga solo quando
-c'è produzione FV eccedente, mai prelevando da rete o da batterie.
-
-Controllo manuale, una zona per volta, da dashboard Home Assistant o da
-app eWeLink.
+Irrigazione dei prati alimentata **esclusivamente da surplus fotovoltaico**.
+La pompa è l'ultima priorità di carico: parte solo con produzione FV
+eccedente, mai da rete né da batterie. Controllo manuale, una zona per volta,
+da dashboard Home Assistant o da app eWeLink.
 
 ---
 
@@ -39,11 +37,9 @@ app eWeLink.
         └──► Elettrovalvola 24V  ZONA PICCOLO (Prato Piccolo)
 ```
 
-### Componenti idraulici
-
 | # | Componente | Descrizione | Note operative |
 |---|------------|-------------|----------------|
-| 1 | Presa roggia | Prelievo da "Bealera di Rocca Pertusa", angolo ovest cancellata, presso confine casa Ribet | — |
+| 1 | Presa roggia | "Bealera di Rocca Pertusa", angolo ovest cancellata, presso confine casa Ribet | — |
 | 2 | Valvola manuale intercettazione | Semi-interrata, presso scalini Prato Sopra | **Deve restare tutta aperta** |
 | 3 | Vasca di sedimentazione | Presso casetta pompa | Decantazione detriti |
 | 4 | Pompa di rilancio | Centrifuga monofase **2 CV** | Carico induttivo |
@@ -53,10 +49,9 @@ app eWeLink.
 
 ## 3. Architettura elettrica / di comando (catena del segnale)
 
-La logica di comando è disaccoppiata dalla potenza tramite teleruttore:
-il modulo Sonoff commuta solo la **bobina** del teleruttore (pochi VA),
-mentre il carico induttivo della pompa è gestito dai contatti di potenza
-del teleruttore stesso.
+Logica di comando disaccoppiata dalla potenza tramite teleruttore: il modulo
+Sonoff commuta solo la **bobina** del teleruttore (pochi VA); il carico
+induttivo della pompa è gestito dai contatti di potenza del teleruttore.
 
 ```
  Home Assistant  ──┐
@@ -87,60 +82,81 @@ del teleruttore stesso.
 
 | Canale | Entità Home Assistant | Friendly name | Carico comandato |
 |--------|----------------------|---------------|------------------|
-| CH1 | `switch.irrigatori_sonoff_100114bc35_1` | Pompa | Bobina teleruttore → pompa 2CV (~1200 W) |
+| CH1 | `switch.irrigatori_sonoff_100114bc35_1` | Pompa | Bobina teleruttore → pompa 2CV (~1200 W elettrici) |
 | CH2 | `switch.irrigatori_sonoff_100114bc35_2` | Sopra | Elettrovalvola 24V zona SOPRA |
 | CH3 | `switch.irrigatori_sonoff_100114bc35_3` | Sotto | Elettrovalvola 24V zona SOTTO |
 | CH4 | `switch.irrigatori_sonoff_100114bc35_4` | Piccolo | Elettrovalvola 24V zona PICCOLO |
 
 ### Note tecniche elettriche
 
-- Il Sonoff commuta la **bobina** del teleruttore, non la pompa direttamente.
-  Carico sul relè Sonoff = pochi VA → nessun problema di portata.
-- **Miglioria consigliata (non urgente):** diodo volano (freewheeling) o
-  snubber RC sulla bobina del teleruttore, per smorzare il transitorio
-  induttivo all'apertura e allungare la vita dei contatti.
+- Il Sonoff commuta la **bobina** del teleruttore, non la pompa: carico sul
+  relè Sonoff = pochi VA, nessun problema di portata.
+- **Miglioria consigliata (non urgente):** diodo volano o snubber RC sulla
+  bobina del teleruttore, per smorzare il transitorio induttivo all'apertura
+  e allungare la vita dei contatti.
 - Integrazione HA via **SonoffLAN** (HACS): comunicazione **locale**, nessuna
-  dipendenza dal cloud eWeLink. IP fisso 192.168.1.71 assegnato dal UDR7.
+  dipendenza dal cloud eWeLink. IP fisso 192.168.1.71 (UDR7).
 
 ---
 
 ## 4. Logica di comando (firmware HA)
 
-Tutta la logica è **event-driven** su `timer.finished`: nessun ciclo `while`,
-nessun polling, nessuna ricorsione. Tre timer dedicati fanno da orologi; le
-automazioni reagiscono solo quando un timer finisce.
+Architettura **event-driven** su `timer.finished`: nessun `while`, nessun
+polling, nessuna ricorsione. Tre timer fanno da orologi; le automazioni
+reagiscono solo quando un timer termina.
 
-### 4.1 Sequenza di AVVIO
+### 4.0 Invariante di sicurezza idraulica ⚠️ (vincolo di progetto, v1.0.4)
 
-Riferimento: `script.irr_sequenza_avvio`
+> **La pompa non deve MAI commutare contro un circuito di mandata chiuso.**
+
+Una pompa centrifuga che parte o si arresta a valvole chiuse lavora a portata
+nulla: la prevalenza sale al valore di shut-off e si genera sovrappressione /
+colpo d'ariete sul tratto pompa→valvola. Da qui il vincolo sull'ordine delle
+commutazioni:
 
 ```
- t+0   Guardie:  se LOCKOUT attivo        → stop
-                 se surplus FV < soglia   → stop
+ AVVIO :  VALVOLA apre  →  (+2 s)  →  POMPA parte     (mandata già aperta)
+ STOP  :  POMPA spegne  →  (+2 s)  →  VALVOLA chiude  (mandata ancora aperta)
+```
+
+In entrambi i transitori la sezione di mandata è aperta nell'istante in cui
+la pompa cambia stato. La sovrapposizione di 2 s è la guardia temporale che
+garantisce l'invariante a fronte della latenza di attuazione di
+valvola/teleruttore.
+
+> **Nota storica:** fino alla v1.0.3 la sequenza era invertita (pompa→valvola
+> in avvio, con 6 s a vuoto + 30 s di "pressurizzazione" a valvole chiuse).
+> Quella logica violava l'invariante e creava la sovrappressione. Corretta in
+> v1.0.4 e rimossi i tempi di adescamento.
+
+### 4.1 Sequenza di AVVIO — `script.irr_sequenza_avvio`
+
+```
+ t+0   Guardie:  se LOCKOUT attivo        → notifica + stop
+                 se surplus FV < soglia   → notifica + stop
  t+0   Tutti i canali OFF (stato pulito)
  t+0   Flag "ciclo attivo" → ON
- t+6   CH1 ON   → pompa gira a vuoto (valvole chiuse, acqua ferma)
- t+36  CH_zona ON → si apre la zona scelta → l'acqua fluisce
- t+36  Avvio timer durata zona (valore dallo slug "Durata minuti")
+ t+0   CH_zona ON  → APRE la valvola della zona scelta (mandata aperta)
+ t+2   CH1 ON      → AVVIA la pompa su circuito già aperto
+ t+2   Avvio timer durata zona (valore dallo slider "Durata minuti")
+ t+2   Notifica Telegram di avvio
 ```
 
-Lo sfasamento di 30 s tra pompa e valvola serve a mandare in pressione il
-circuito con tutte le valvole chiuse prima di aprire la zona.
+Durante i 2 s di sovrapposizione la valvola è aperta ma la pompa è ferma:
+nessun flusso, nessun problema.
 
-### 4.2 Sequenza di STOP
-
-Riferimento: `script.irr_sequenza_stop`
+### 4.2 Sequenza di STOP — `script.irr_sequenza_stop`
 
 ```
- t+0   CH_zona OFF (tutte le valvole di zona chiuse)
- t+2   CH1 OFF (pompa spenta 2 s dopo la chiusura valvola)
+ t+0   CH1 OFF      → SPEGNE la pompa (valvola ancora aperta)
+ t+2   CH_zona OFF  → CHIUDE tutte le valvole di zona
  t+2   Ferma timer residui (durata zona, grazia FV)
  t+2   Flag "ciclo attivo" → OFF
  t+2   Flag "lockout" → ON  +  avvio timer lockout 300 s
 ```
 
-La chiusura della valvola **prima** dello spegnimento pompa evita colpi
-d'ariete: la pompa non si ferma mai contro una mandata aperta in pressione.
+I 2 s con pompa ferma e valvola ancora aperta scaricano l'eventuale
+sovrapressione residua prima della chiusura.
 
 ### 4.3 Guardia fotovoltaica (con isteresi)
 
@@ -148,22 +164,23 @@ d'ariete: la pompa non si ferma mai contro una mandata aperta in pressione.
  surplus = sensor.pv_total_power_w  −  sensor.pot_tot_l1l2l3_abc
 ```
 
-| Parametro | Default | Slider dashboard |
-|-----------|---------|------------------|
+| Parametro | Default | Entità |
+|-----------|---------|--------|
 | Soglia surplus AVVIO | 1500 W | `input_number.irr_soglia_avvio_w` |
 | Soglia surplus STOP | 800 W | `input_number.irr_soglia_stop_w` |
 | Finestra di grazia | 5 min | `timer.irr_fv_grazia` |
 | Lockout post-ciclo | 300 s | `timer.irr_lockout` |
-| Anti-glitch misura | 10 s | (nelle automazioni) |
+| Anti-glitch misura | 10 s | (condizione `for:` nelle automazioni) |
 
 **Comportamento:**
-- Avvio consentito **solo** se surplus > soglia AVVIO (1200 W pompa + margine).
-- Durante l'irrigazione, se il surplus scende sotto la soglia STOP in modo
-  **continuo per 5 minuti**, parte lo spegnimento automatico.
-- Se entro i 5 minuti il surplus risale sopra la soglia AVVIO, il timer di
-  grazia si **azzera** e l'irrigazione prosegue.
-- L'isteresi a doppia soglia (1500 avvio / 800 stop) evita oscillazioni
-  on/off attorno a un valore unico.
+- Avvio consentito **solo** se surplus > soglia AVVIO (≈1200 W pompa + margine).
+- Se durante l'irrigazione il surplus resta sotto la soglia STOP in modo
+  **continuo per 5 min**, parte lo spegnimento automatico.
+- Se entro i 5 min il surplus risale sopra la soglia AVVIO, il timer di grazia
+  si **azzera** e l'irrigazione prosegue.
+- Doppia soglia (1500 / 800 W) = isteresi che evita pendolamento on/off
+  attorno a un valore unico. Architettura a banda morta tipica di un
+  controllo bang-bang con isteresi.
 
 ---
 
@@ -208,15 +225,31 @@ d'ariete: la pompa non si ferma mai contro una mandata aperta in pressione.
 
 ## 6. Automazioni (orchestrazione)
 
-Riferimento: sezione `automation:` del package.
-
 | ID | Trigger | Azione |
 |----|---------|--------|
-| `irr_auto_fine_durata` | `timer.irr_zona` finito | Esegue sequenza STOP |
-| `irr_auto_fv_sotto_soglia` | surplus < stop per 10 s | Avvia timer grazia 5 min |
-| `irr_auto_fv_recupero` | surplus > avvio per 10 s | Annulla timer grazia |
-| `irr_auto_fv_grazia_scaduta` | `timer.irr_fv_grazia` finito | Esegue sequenza STOP |
+| `irr_auto_fine_durata` | `timer.irr_zona` finito | Sequenza STOP + notifica |
+| `irr_auto_fv_sotto_soglia` | surplus < stop per 10 s | Avvia timer grazia + notifica |
+| `irr_auto_fv_recupero` | surplus > avvio per 10 s | Annulla timer grazia + notifica |
+| `irr_auto_fv_grazia_scaduta` | `timer.irr_fv_grazia` finito | Sequenza STOP + notifica |
 | `irr_auto_fine_lockout` | `timer.irr_lockout` finito | Sblocca (lockout → OFF) |
+
+### Macchina a stati (sintesi)
+
+```
+   ┌─────────┐  AVVIA (guardie OK)   ┌────────────────┐
+   │ PRONTO  │──────────────────────►│ IN IRRIGAZIONE │
+   └─────────┘                       └────────────────┘
+        ▲                               │   │   │
+        │ fine lockout (300s)           │   │   │ durata raggiunta
+        │                               │   │   │ / grazia FV scaduta
+        │                               │   │   │ / STOP manuale
+   ┌─────────┐◄──────────────────────────┘   │   │
+   │ LOCKOUT │                                ▼   ▼
+   └─────────┘                          (sequenza STOP → LOCKOUT)
+```
+
+Guardia FV interna a IN IRRIGAZIONE: sotto-soglia per 5 min continui →
+transizione forzata a STOP; recupero entro i 5 min → permanenza.
 
 ---
 
@@ -227,6 +260,7 @@ Riferimento: sezione `automation:` del package.
 | Package logico | `/config/packages/400_irrigazione_prati.yaml` | Helper, timer, template, script, automation |
 | Dashboard | `views.yaml` (raw config Lovelace) | Vista "Irrigazione" |
 | Inclusione | `configuration.yaml` | `irrigazione_prati: !include packages/400_irrigazione_prati.yaml` |
+| Documentazione | `400_irrigazione_prati.md` | Questo documento |
 
 ---
 
@@ -236,18 +270,17 @@ Riferimento: sezione `automation:` del package.
 1. Dashboard → vista **Irrigazione**
 2. Seleziona **Zona da irrigare**
 3. Regola **Durata (minuti)** con lo slider
-4. Verifica che **Surplus FV** sia sopra la soglia di avvio (gauge verde)
+4. Verifica **Surplus FV** sopra la soglia di avvio (gauge in verde)
 5. Premi **AVVIA**
 
 ### Stop manuale
-- Premi **STOP** in qualsiasi momento → chiusura valvola, pompa OFF dopo 2 s,
-  lockout 300 s.
+Premi **STOP** in qualsiasi momento → pompa OFF, valvola chiusa dopo 2 s,
+lockout 300 s.
 
 ### Reset stato "appeso"
-Se "Ciclo attivo" risulta ON ma i canali sono tutti OFF e i timer inattivi
-(stato disallineato dopo un reload o interruzione anomala):
-- premi **STOP** una volta per forzare lo stato pulito, attendi il lockout,
-  poi riavvia.
+Se "Ciclo attivo" = ON ma canali tutti OFF e timer inattivi (disallineamento
+dopo reload o interruzione anomala): premi **STOP** una volta per forzare lo
+stato pulito, attendi il lockout, poi riavvia.
 
 ---
 
@@ -255,11 +288,35 @@ Se "Ciclo attivo" risulta ON ma i canali sono tutti OFF e i timer inattivi
 
 - [ ] **Confermare** che il 24V delle elettrovalvole provenga dal
       trasformatore TMD 15/24 del quadro.
-- [ ] Notifiche Telegram (rimosse nella v1.0.2): reintegrare con
-      `telegram_bot.send_message`, chat_id `920319768`.
-- [ ] Valutare diodo volano / snubber RC sulla bobina del teleruttore.
-- [ ] Eventuale scheduler orario (al momento solo avvio manuale).
+- [x] ~~Notifiche Telegram~~ → reintegrate in v1.0.3, mantenute in v1.0.4
+      (`telegram_bot.send_message`, chat_id `920319768`).
+- [ ] Diodo volano / snubber RC sulla bobina del teleruttore.
+- [ ] Scheduler orario (al momento solo avvio manuale).
+- [ ] **Verificare in campo** la guardia temporale di 2 s sull'invariante
+      idraulico: confrontarla con il tempo di attuazione reale
+      dell'elettrovalvola (apertura) e del teleruttore (chiusura contatti).
+      Se la valvola impiega >2 s ad aprire completamente, aumentare il delay
+      di avvio per non far partire la pompa contro una sezione ancora parziale.
 
 ---
 
-*Fine documento — irrigazione_prati.md v1.0*
+*Fine documento — 400_irrigazione_prati.md v1.1 (allineato a package v1.0.4)*
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

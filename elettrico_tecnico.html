@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elettrico Locale Tecnico — TERMO_OPTIMA</title>
+<style>
+  :root { --bg:#f5f5f5; --card:#fff; --text:#333; --text-dim:#666; --accent:#c0392b; --ok:#27ae60; --warn:#f39c12; --info:#2980b9; --border:#e0e0e0; }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; margin: 0; padding: 0; }
+  .container { max-width: 960px; margin: 0 auto; padding: 20px; }
+  h1 { font-size: 1.8em; border-bottom: 3px solid var(--accent); padding-bottom: 10px; margin-top: 0; }
+  h2 { font-size: 1.35em; color: var(--accent); margin-top: 35px; border-left: 5px solid var(--accent); padding-left: 15px; }
+  h3 { font-size: 1.1em; margin-top: 25px; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+  .subtitle { color: var(--text-dim); font-size: 0.95em; margin-bottom: 25px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 18px; margin-bottom: 18px; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.92em; }
+  th, td { border: 1px solid var(--border); padding: 7px 9px; text-align: left; vertical-align: top; }
+  th { background: #f0f0f0; font-weight: 600; }
+  tr:nth-child(even) { background: #fafafa; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; font-weight: 600; color: white; }
+  .badge-ok { background: var(--ok); } .badge-warn { background: var(--warn); } .badge-danger { background: var(--accent); }
+  .alert { background: #fff3cd; border-left: 4px solid var(--warn); padding: 12px 14px; margin: 12px 0; border-radius: 0 4px 4px 0; }
+  .alert-danger { background: #f8d7da; border-left: 4px solid var(--accent); }
+  .back { display: inline-block; margin-top: 15px; font-size: 0.85em; }
+  .back a { color: var(--info); text-decoration: none; }
+  .emoji { font-size: 1.2em; margin-right: 4px; }
+  @media (max-width: 600px) { table { font-size: 0.85em; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1><span class="emoji">⚙️</span> Elettrico Locale Tecnico — TERMO_OPTIMA</h1>
+<p class="subtitle">Pomaretto (TO) · Quadri QE1/QE2 · Shelly · Aggiornato 2026-06-23</p>
+
+<div class="card">
+  <h2>⚡ Quadri elettrici QE1 e QE2</h2>
+  <p>QE1 = potenza e contattori. QE2 = Shelly e LED di stato.</p>
+  <table>
+  <tr><th>Relè</th><th>MAC / ID</th><th>Funzione</th><th>LED normale</th><th>Emergenza</th></tr>
+  <tr><td>R1</td><td>90150687a670</td><td>Abilita PDC</td><td>spento</td><td>rosso = richiesta</td></tr>
+  <tr><td>R2</td><td>1c692008dea0</td><td>Pompa P1</td><td>spento</td><td><strong>spento con PDC accesa = CRITICO</strong></td></tr>
+  <tr><td>R6</td><td>8813bfcdbda0</td><td>Smart Grid blocco</td><td><span class="badge badge-ok">SPENTO</span></td><td><span class="badge badge-danger">ROSSO = BLOCCO</span> → levetta OFF</td></tr>
+  <tr><td>R7</td><td>1c692044c2ac</td><td>Modula Plus backup</td><td>spento</td><td>antibloccaggio</td></tr>
+  <tr><td>EM</td><td>c45bbee1c642</td><td>Misura potenza PDC</td><td>verde stabile</td><td>—</td></tr>
+  </table>
+  <div class="alert-danger">
+    <strong>R2 spento con PDC accesa = problema critico.</strong><br>
+    <strong>R6 rosso = PDC bloccata</strong> → levetta R6 su OFF in QE1 immediatamente.
+  </div>
+</div>
+
+<div class="card">
+  <h2>📊 Monitoraggio energetico locale</h2>
+  <table>
+  <tr><th>Package</th><th>Zona</th><th>Input</th><th>Stato</th></tr>
+  <tr><td>836</td><td><strong>Lavanderia</strong></td><td>Shelly EM lavanderia</td><td>✅ Operativo</td></tr>
+  <tr><td>837</td><td><strong>Climatizzatori</strong></td><td>Shelly EM clima</td><td>✅ Operativo</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h2>🔧 Reset pompa P1</h2>
+  <p>Se la pompa P1 non parte (LED R2 spento con PDC accesa):</p>
+  <ol>
+    <li>Portare la <strong>levetta R2 su BASSA</strong> per 30 secondi</li>
+    <li>Riportare la levetta su <strong>CENTRALE</strong></li>
+    <li>Attendere 1÷2 minuti e ascoltare la pompa</li>
+    <li>Se non parte → contattare <strong>Elvis 347-4958076</strong></li>
+  </ol>
+</div>
+
+<div class="card">
+  <h2>📞 Contatti tecnici</h2>
+  <p><strong>Claudio Massello</strong> — Impianto elettrico<br>📱 <strong>348-6977962</strong></p>
+  <p><strong>Elvis Martinat</strong> — Idraulica / PDC<br>📱 <strong>347-4958076</strong></p>
+</div>
+
+<div class="card" style="text-align:center; color:var(--text-dim); font-size:0.85em;">
+  <p>TERMO_OPTIMA · Pomaretto (TO) · Aggiornato 2026-06-23</p>
+  <p class="back"><a href="index.html">← Torna alla home</a></p>
+</div>
+
+</div>
+</body>
+</html>

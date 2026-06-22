@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blackout Totale — TERMO_OPTIMA</title>
+<style>
+  :root { --bg:#f5f5f5; --card:#fff; --text:#333; --text-dim:#666; --accent:#c0392b; --ok:#27ae60; --warn:#f39c12; --info:#2980b9; --border:#e0e0e0; }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; margin: 0; padding: 0; }
+  .container { max-width: 960px; margin: 0 auto; padding: 20px; }
+  h1 { font-size: 1.8em; border-bottom: 3px solid var(--accent); padding-bottom: 10px; margin-top: 0; }
+  h2 { font-size: 1.35em; color: var(--accent); margin-top: 35px; border-left: 5px solid var(--accent); padding-left: 15px; }
+  h3 { font-size: 1.1em; margin-top: 25px; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+  .subtitle { color: var(--text-dim); font-size: 0.95em; margin-bottom: 25px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 18px; margin-bottom: 18px; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.92em; }
+  th, td { border: 1px solid var(--border); padding: 7px 9px; text-align: left; vertical-align: top; }
+  th { background: #f0f0f0; font-weight: 600; }
+  tr:nth-child(even) { background: #fafafa; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; font-weight: 600; color: white; }
+  .badge-ok { background: var(--ok); } .badge-warn { background: var(--warn); } .badge-danger { background: var(--accent); }
+  .alert { background: #fff3cd; border-left: 4px solid var(--warn); padding: 12px 14px; margin: 12px 0; border-radius: 0 4px 4px 0; }
+  .alert-danger { background: #f8d7da; border-left: 4px solid var(--accent); }
+  .alert-info { background: #d1ecf1; border-left: 4px solid var(--info); }
+  .step { background: #f8f9fa; border-left: 3px solid var(--info); padding: 10px 14px; margin: 8px 0; border-radius: 0 4px 4px 0; }
+  .back { display: inline-block; margin-top: 15px; font-size: 0.85em; }
+  .back a { color: var(--info); text-decoration: none; }
+  .emoji { font-size: 1.2em; margin-right: 4px; }
+  @media (max-width: 600px) { table { font-size: 0.85em; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1><span class="emoji">⚡</span> Blackout Totale — TERMO_OPTIMA</h1>
+<p class="subtitle">Mancanza totale energia elettrica · Procedura emergenza · Pomaretto (TO) · Aggiornato 2026-06-23</p>
+
+<div class="card">
+  <h2>🔴 Procedura passo-passo</h2>
+
+  <div class="step">
+    <strong>1. Verificare se è un blackout locale o generale</strong><br>
+    Controllare se i vicini hanno luce. Se è generale → attendere ripristino ENEL.<br>
+    Se solo casa → procedere al punto 2.
+  </div>
+
+  <div class="step">
+    <strong>2. Verificare i differenziali</strong><br>
+    Controllare il <strong>quadro generale</strong> (solitamente in ingresso o locale tecnico).<br>
+    Se un differenziale è <strong>sceso</strong> → risalirlo. Se non resta su → individuare il carico difettoso.
+  </div>
+
+  <div class="step">
+    <strong>3. Verificare fusibili / magnetotermici</strong><br>
+    Controllare che tutti i magnetotermici siano in posizione <strong>ON</strong> (su).<br>
+    Se uno è sceso → risalirlo. Se scende di nuovo → NON forzare, chiamare elettricista.
+  </div>
+
+  <div class="step">
+    <strong>4. Verificare PDC e circolazione</strong><br>
+    Dopo il ripristino della corrente, la PDC potrebbe non ripartire automaticamente.<br>
+    Verificare: <strong>addr1088 = 2</strong> (CentralMode) e <strong>addr1050 = 1</strong> (System Run).<br>
+    Se il display Yutaki è spento → verificare fusibile <strong>M2 REG TERM</strong> / trasformatore 24V.
+  </div>
+
+  <div class="step">
+    <strong>5. Verificare R6 (Smart Grid)</strong><br>
+    Dopo un blackout, verificare che il LED <strong>R6 sia SPENTO</strong> in QE2.<br>
+    Se <strong>rosso</strong> → levetta R6 su <strong>OFF</strong> in QE1, altrimenti la PDC resta bloccata.
+  </div>
+
+  <div class="step">
+    <strong>6. Verificare pompa P1</strong><br>
+    Se R2 LED è <strong>spento</strong> ma la PDC è accesa → reset P1: levetta BASSA 30s, poi CENTRALE.<br>
+    Attendere 1÷2 min e ascoltare la pompa.
+  </div>
+</div>
+
+<div class="card">
+  <h2>⚡ Stato relè dopo blackout</h2>
+  <table>
+  <tr><th>Relè</th><th>Dopo blackout</th><th>Azione</th></tr>
+  <tr><td>R1 (PDC)</td><td>potrebbe essere spento</td><td>verificare richiesta HA / termostato</td></tr>
+  <tr><td>R2 (P1)</td><td>potrebbe non ripartire</td><td>reset manuale se necessario</td></tr>
+  <tr><td>R6 (Smart Grid)</td><td><span class="badge badge-danger">ATTENZIONE</span></td><td>verificare SPENTO, altrimenti OFF</td></tr>
+  <tr><td>R7 (Backup)</td><td>spento</td><td>normale — gas sigillato</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h2>🔋 Impianto FV durante blackout</h2>
+  <div class="alert">
+    <strong>Attenzione:</strong> durante un blackout totale ENEL, l'impianto fotovoltaico <strong>si disconnette automaticamente</strong> per sicurezza (anti-islanding).<br>
+    Le batterie potrebbero alimentare i carichi essenziali se configurato in <strong>backup</strong>, ma non tutta la casa.
+  </div>
+</div>
+
+<div class="card">
+  <h2>📞 Contatti emergenza</h2>
+  <table>
+  <tr><th>Nome</th><th>Telefono</th><th>Quando chiamare</th></tr>
+  <tr><td><strong>Claudio Massello</strong></td><td>348-6977962</td><td>Blackout, elettrico, differenziali, fusibili</td></tr>
+  <tr><td><strong>Elvis Martinat</strong></td><td>347-4958076</td><td>PDC non riparte, pompa P1, pressione</td></tr>
+  <tr><td><strong>ENEL emergenza</strong></td><td>803</td><td>Blackout generale zona</td></tr>
+  </table>
+</div>
+
+<div class="card" style="text-align:center; color:var(--text-dim); font-size:0.85em;">
+  <p>TERMO_OPTIMA · Pomaretto (TO) · Aggiornato 2026-06-23</p>
+  <p class="back"><a href="index.html">← Torna alla home</a></p>
+</div>
+
+</div>
+</body>
+</html>

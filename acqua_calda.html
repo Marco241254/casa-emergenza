@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Acqua Calda Sanitaria — TERMO_OPTIMA</title>
+<style>
+  :root { --bg:#f5f5f5; --card:#fff; --text:#333; --text-dim:#666; --accent:#c0392b; --ok:#27ae60; --warn:#f39c12; --info:#2980b9; --code-bg:#f4f4f4; --border:#e0e0e0; }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; margin: 0; padding: 0; }
+  .container { max-width: 960px; margin: 0 auto; padding: 20px; }
+  h1 { font-size: 1.8em; border-bottom: 3px solid var(--accent); padding-bottom: 10px; margin-top: 0; }
+  h2 { font-size: 1.35em; color: var(--accent); margin-top: 35px; border-left: 5px solid var(--accent); padding-left: 15px; }
+  h3 { font-size: 1.1em; margin-top: 25px; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+  .subtitle { color: var(--text-dim); font-size: 0.95em; margin-bottom: 25px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 18px; margin-bottom: 18px; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.92em; }
+  th, td { border: 1px solid var(--border); padding: 7px 9px; text-align: left; vertical-align: top; }
+  th { background: #f0f0f0; font-weight: 600; }
+  tr:nth-child(even) { background: #fafafa; }
+  code { font-family: "SFMono-Regular", Consolas, monospace; background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; font-weight: 600; color: white; }
+  .badge-ok { background: var(--ok); } .badge-info { background: var(--info); } .badge-warn { background: var(--warn); }
+  .alert { background: #fff3cd; border-left: 4px solid var(--warn); padding: 12px 14px; margin: 12px 0; border-radius: 0 4px 4px 0; }
+  .alert-info { background: #d1ecf1; border-left: 4px solid var(--info); }
+  .back { display: inline-block; margin-top: 15px; font-size: 0.85em; }
+  .back a { color: var(--info); text-decoration: none; }
+  .emoji { font-size: 1.2em; margin-right: 4px; }
+  .step { background: #f8f9fa; border-left: 3px solid var(--info); padding: 10px 14px; margin: 8px 0; border-radius: 0 4px 4px 0; }
+  @media (max-width: 600px) { table { font-size: 0.85em; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1><span class="emoji">🚿</span> Acqua Calda Sanitaria — TERMO_OPTIMA</h1>
+<p class="subtitle">Pomaretto (TO) · ACS via PDC Hitachi RASM-4VNE · Aggiornato 2026-06-23</p>
+
+<div class="card">
+  <h3>🔥 Come funziona l'ACS</h3>
+  <p>L'acqua calda sanitaria è prodotta dalla <strong>pompa di calore</strong> attraverso lo scambiatore immerso nel puffer RLH (zona alta).</p>
+  <div class="step">
+    <strong>Ciclo ACS:</strong> sonda TWO sotto soglia → PDC entra in modalità ACS (<strong>Reg.1090 = 8</strong>) → la serpentina nella zona alta del puffer scalda l'acqua dei rubinetti → <strong>20÷40 min</strong> → termina automaticamente.
+  </div>
+  <div class="alert-info">
+    <strong>Nota:</strong> durante il ciclo ACS i termosifoni sono fermi. Questo è <strong>normale</strong>.
+  </div>
+</div>
+
+<div class="card">
+  <h3>🌡️ Puffer RLH — Zone di temperatura</h3>
+  <table>
+  <tr><th>Zona</th><th>Temperatura</th><th>Sonda</th><th>Funzione</th></tr>
+  <tr><td>Alta</td><td>45÷55°C</td><td>TWO</td><td>Scambiatore ACS</td></tr>
+  <tr><td>Media</td><td>40÷50°C</td><td>TPO</td><td>—</td></tr>
+  <tr><td>Bassa</td><td>30÷45°C</td><td>TK</td><td>Ritorno C1 riscaldamento</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>🔌 Registri Modbus ACS</h3>
+  <p>Notazione <strong>addr</strong> = Register − 1.</p>
+  <table>
+  <tr><th>addr</th><th>Registro</th><th>Funzione</th><th>Valore</th><th>Note</th></tr>
+  <tr><td><code>1024</code></td><td>1025</td><td>ACS Run</td><td>0=Stop; 1=Run</td><td></td></tr>
+  <tr><td><code>1025</code></td><td>1026</td><td>ACS Setpoint</td><td>0–80 °C</td><td>Default 50°C</td></tr>
+  <tr><td><code>1026</code></td><td>1027</td><td>ACS Boost</td><td>0=nessuna; 1=richiesta</td><td>Forza ciclo immediato</td></tr>
+  <tr><td><code>1027</code></td><td>1028</td><td>Modalità richiesta</td><td>0=standard; 1=alta</td><td></td></tr>
+  <tr><td><code>1076</code></td><td>1077</td><td>R-ACS Run</td><td>0 o 1</td><td>Stato lettura</td></tr>
+  <tr><td><code>1077</code></td><td>1078</td><td>R-ACS Setpoint</td><td>= addr1025</td><td>Conferma</td></tr>
+  <tr><td class="badge-info">1081</td><td class="badge-info">1082</td><td class="badge-info">Temperatura ACS</td><td class="badge-info">reale °C</td><td class="badge-info">Sonda TWO</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>🚀 Forzare il ciclo ACS (Boost)</h3>
+  <p>Se l'acqua dai rubinetti è fredda e la PDC non è in ciclo ACS:</p>
+  <ol>
+    <li>Verificare che <strong>addr1024 = 1</strong> (ACS Run attivo)</li>
+    <li>Scrivere <strong>addr1026 = 1</strong> (richiesta boost)</li>
+    <li>Attendere 20÷40 minuti</li>
+    <li>Verificare <strong>addr1081</strong> (temperatura ACS reale) in salita</li>
+  </ol>
+  <div class="alert">
+    <strong>Attenzione:</strong> il boost forza un ciclo ACS anche se la temperatura non è sotto soglia. Usare solo se necessario.
+  </div>
+</div>
+
+<div class="card">
+  <h3>🔧 Diagnostica Acqua Calda</h3>
+  <table>
+  <tr><th>Sintomo</th><th>Verifica</th><th>Azione</th></tr>
+  <tr><td>Acqua fredda ai rubinetti</td><td>Reg.1090 = 8?</td><td>Se ≠8 → forzare boost ACS (addr1026=1)</td></tr>
+  <tr><td>Acqua tiepida</td><td>addr1081 (T ACS)</td><td>Se < 40°C → ciclo in corso, attendere</td></tr>
+  <tr><td>ACS troppo lunga (>40 min)</td><td>Reg.1090</td><td>verificare allarme → Elvis</td></tr>
+  <tr><td>Pressione < 1,0 bar</td><td>manometro puffer</td><td>cercare perdite → Elvis</td></tr>
+  <tr><td>Display Yutaki spento</td><td>fusibile M2 REG TERM</td><td>verificare trasformatore 24V</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>⚠️ Caldaia backup — FUORI SERVIZIO</h3>
+  <div class="alert">
+    <strong>Stato attuale:</strong> contatore gas <strong>sigillato</strong>, contratto disdetto inverno 2025/2026. La caldaia Modula Plus 35DS <strong>non scalda</strong>. R7 la alimenta ~2 ore/settimana solo per antibloccaggio. L'unica fonte di calore è la <strong>pompa di calore</strong>.
+  </div>
+</div>
+
+<div class="card" style="text-align:center; color:var(--text-dim); font-size:0.85em;">
+  <p>TERMO_OPTIMA · Pomaretto (TO) · Aggiornato 2026-06-23<br>
+  Responsabile: Elvis Martinat 347-4958076 · Sistema: Marco 335-1354309</p>
+  <p class="back"><a href="index.html">← Torna alla home</a></p>
+</div>
+
+</div>
+</body>
+</html>

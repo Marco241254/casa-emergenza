@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contatti Completi — TERMO_OPTIMA</title>
+<style>
+  :root { --bg:#f5f5f5; --card:#fff; --text:#333; --text-dim:#666; --accent:#c0392b; --info:#2980b9; --border:#e0e0e0; }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; margin: 0; padding: 0; }
+  .container { max-width: 960px; margin: 0 auto; padding: 20px; }
+  h1 { font-size: 1.8em; border-bottom: 3px solid var(--accent); padding-bottom: 10px; margin-top: 0; }
+  h2 { font-size: 1.35em; color: var(--accent); margin-top: 35px; border-left: 5px solid var(--accent); padding-left: 15px; }
+  h3 { font-size: 1.1em; margin-top: 25px; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+  .subtitle { color: var(--text-dim); font-size: 0.95em; margin-bottom: 25px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 18px; margin-bottom: 18px; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.92em; }
+  th, td { border: 1px solid var(--border); padding: 7px 9px; text-align: left; vertical-align: top; }
+  th { background: #f0f0f0; font-weight: 600; }
+  tr:nth-child(even) { background: #fafafa; }
+  .contact-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+  .contact-card { background: #f8f9fa; border: 1px solid var(--border); border-radius: 6px; padding: 14px; }
+  .contact-card strong { color: var(--accent); display: block; margin-bottom: 6px; font-size: 1.05em; }
+  .contact-card span { font-size: 0.9em; color: var(--text-dim); line-height: 1.5; }
+  .back { display: inline-block; margin-top: 15px; font-size: 0.85em; }
+  .back a { color: var(--info); text-decoration: none; }
+  .emoji { font-size: 1.2em; margin-right: 4px; }
+  @media (max-width: 600px) { table { font-size: 0.85em; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1><span class="emoji">📞</span> Contatti Completi — TERMO_OPTIMA</h1>
+<p class="subtitle">Pomaretto (TO) · Numeri utili · Riferimenti tecnici · Aggiornato 2026-06-23</p>
+
+<div class="card">
+  <h2>👷 Contatti tecnici</h2>
+  <div class="contact-grid">
+    <div class="contact-card">
+      <strong>Marco Mourglia</strong>
+      <span>📱 335-1354309<br>🌐 Internet, sistema generale, Home Assistant, Proxmox, rete</span>
+    </div>
+    <div class="contact-card">
+      <strong>Elvis Martinat (BLUMAR)</strong>
+      <span>📱 347-4958076<br>🔧 Idraulica, gas, pompa di calore, ACS, caldaie</span>
+    </div>
+    <div class="contact-card">
+      <strong>Alessandro Reale (IS ENERGY)</strong>
+      <span>📱 370-3068232<br>☀️ Fotovoltaico, PDC, VMC, batterie</span>
+    </div>
+    <div class="contact-card">
+      <strong>Claudio Massello</strong>
+      <span>📱 348-6977962<br>⚡ Impianto elettrico, blackout, quadri</span>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>🗺️ Mappa IP dispositivi</h2>
+  <table>
+  <tr><th>IP</th><th>Dispositivo</th><th>Porta</th><th>Protocollo</th></tr>
+  <tr><td>192.168.1.5</td><td>ATW-MBS-02 Gateway Modbus</td><td>502</td><td>Modbus TCP</td></tr>
+  <tr><td>192.168.1.53</td><td>Home Assistant OS</td><td>8123</td><td>HTTP</td></tr>
+  <tr><td>192.168.1.100</td><td>Proxmox GEEKOM</td><td>8006</td><td>HTTPS</td></tr>
+  <tr><td>192.168.1.48</td><td>InfluxDB (LXC 110)</td><td>8086</td><td>HTTP</td></tr>
+  <tr><td>192.168.1.57</td><td>Grafana (LXC 120)</td><td>—</td><td>HTTP</td></tr>
+  <tr><td>192.168.1.68</td><td>meteo-corrector (LXC 130)</td><td>—</td><td>—</td></tr>
+  <tr><td>192.168.1.165</td><td>MariaDB (LXC 200)</td><td>3306</td><td>MySQL</td></tr>
+  <tr><td>192.168.1.175</td><td>ESP32 Tesla Garage</td><td>6053</td><td>ESPHome API</td></tr>
+  <tr><td>192.168.1.176</td><td>ESP32 Tesla Cancello</td><td>6053</td><td>ESPHome API</td></tr>
+  <tr><td>192.168.1.178</td><td>NAS WD MyCloud EX2 Ultra</td><td>—</td><td>NFS/CIFS</td></tr>
+  <tr><td>192.168.1.71</td><td>Sonoff 4CH PRO R3</td><td>—</td><td>HTTP</td></tr>
+  <tr><td>192.168.1.181</td><td>BEELINK (warm standby)</td><td>—</td><td>—</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h2>🔧 Hardware — Modelli e Seriali</h2>
+  <table>
+  <tr><th>Componente</th><th>Modello / Codice</th></tr>
+  <tr><td>PDC</td><td>Hitachi RASM-4VNE · S/N 4QE99993</td></tr>
+  <tr><td>Controller PDC</td><td>PC-ARFH1E</td></tr>
+  <tr><td>Gateway Modbus</td><td>ATW-MBS-02 · S/N 7E549924</td></tr>
+  <tr><td>Contatore termico</td><td>Caleffi CONTECA EASY 1¼"</td></tr>
+  <tr><td>Caldaia backup</td><td>Modula Plus 35DS (fuori servizio)</td></tr>
+  <tr><td>Tesla</td><td>Model Y Long Range · VIN XP7YGCES1RB482601</td></tr>
+  <tr><td>Wall Connector</td><td>Gen 3 · TSN: PGT24118019155</td></tr>
+  <tr><td>Router</td><td>Ubiquiti Dream Router 7 (UDR7)</td></tr>
+  <tr><td>Failover LTE</td><td>TP-Link MR600</td></tr>
+  <tr><td>NAS</td><td>WD MyCloud EX2 Ultra</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h2>🌐 Riferimenti esterni</h2>
+  <table>
+  <tr><th>Risorsa</th><th>Link</th></tr>
+  <tr><td>yoziru/esphome-tesla-ble</td><td>github.com/yoziru/esphome-tesla-ble</td></tr>
+  <tr><td>simple-pid (Python)</td><td>github.com/m-lundberg/simple-pid</td></tr>
+  <tr><td>AppDaemon</td><td>github.com/hassio-addons/addon-appdaemon</td></tr>
+  <tr><td>pvlib-python</td><td>pvlib-python.readthedocs.io</td></tr>
+  <tr><td>Open-Meteo API</td><td>open-meteo.com</td></tr>
+  <tr><td>Home Assistant</td><td>home-assistant.io</td></tr>
+  <tr><td>Proxmox VE</td><td>proxmox.com</td></tr>
+  </table>
+</div>
+
+<div class="card" style="text-align:center; color:var(--text-dim); font-size:0.85em;">
+  <p>TERMO_OPTIMA · Pomaretto (TO) · Aggiornato 2026-06-23</p>
+  <p class="back"><a href="index.html">← Torna alla home</a></p>
+</div>
+
+</div>
+</body>
+</html>

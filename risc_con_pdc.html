@@ -1,919 +1,212 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schema Completo Riscaldamento con PDC</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            min-height: 100vh;
-            color: white;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: linear-gradient(145deg, #2d3748 0%, #1a202c 100%);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            border: 1px solid #4a5568;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            background: linear-gradient(90deg, #e74c3c 0%, #c0392b 100%);
-            padding: 20px;
-            border-radius: 15px;
-        }
-
-        .schema-container {
-            background: rgba(255,255,255,0.05);
-            border-radius: 15px;
-            padding: 30px;
-            margin: 20px 0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .step-box {
-            background: linear-gradient(145deg, #34495e, #2c3e50);
-            border-radius: 12px;
-            padding: 15px;
-            margin: 10px 0;
-            border-left: 5px solid #3498db;
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .step-box:hover {
-            transform: translateX(5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-            border-left-color: #e74c3c;
-        }
-
-        .step-number {
-            background: #3498db;
-            color: white;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            position: absolute;
-            left: -20px;
-            top: 50%;
-            transform: translateY(-50%);
-            border: 3px solid #2c3e50;
-        }
-
-        .step-content {
-            margin-left: 30px;
-        }
-
-        .step-title {
-            color: #3498db;
-            font-size: 1.1em;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-
-        .step-description {
-            color: white;
-            line-height: 1.4;
-        }
-
-        .entity-code {
-            background: rgba(52, 152, 219, 0.2);
-            color: #3498db;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9em;
-        }
-
-        .condition-box {
-            background: rgba(39, 174, 96, 0.1);
-            border: 2px solid #27ae60;
-            border-radius: 8px;
-            padding: 10px;
-            margin: 10px 0;
-        }
-
-        .condition-title {
-            color: #27ae60;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .condition-list {
-            color: white;
-            margin: 0;
-            padding-left: 20px;
-        }
-
-        .warning-box {
-            background: rgba(231, 76, 60, 0.1);
-            border: 2px solid #e74c3c;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 15px 0;
-        }
-
-        .warning-title {
-            color: #e74c3c;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-
-        .flow-arrow {
-            text-align: center;
-            font-size: 2em;
-            color: #3498db;
-            margin: 10px 0;
-        }
-
-        .component-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
-        }
-
-        .component {
-            background: linear-gradient(145deg, #9b59b6, #8e44ad);
-            border-radius: 10px;
-            padding: 15px;
-            text-align: center;
-            border: 2px solid #9b59b6;
-            transition: all 0.3s ease;
-        }
-
-        .component:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-        }
-
-        .photo-btn {
-            background: #3498db;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-bottom: 15px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-
-        .photo-btn:hover {
-            background: #2980b9;
-            transform: scale(1.05);
-        }
-
-        .location-info {
-            background: rgba(241, 196, 15, 0.2);
-            color: #f1c40f;
-            padding: 8px;
-            border-radius: 6px;
-            font-size: 0.9em;
-            text-align: center;
-            margin-top: 10px;
-            border: 1px solid rgba(241, 196, 15, 0.3);
-        }
-
-        .manual-section {
-            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
-            padding: 25px;
-            border-radius: 15px;
-            margin: 30px 0;
-            border: 2px solid #1976d2;
-        }
-
-        .manual-link {
-            display: inline-block;
-            background: rgba(255,255,255,0.15);
-            color: white;
-            text-decoration: none;
-            padding: 12px 18px;
-            margin: 8px;
-            border-radius: 8px;
-            border: 2px solid rgba(255,255,255,0.3);
-            transition: all 0.3s ease;
-            font-weight: bold;
-        }
-
-        .manual-link:hover {
-            background: rgba(255,255,255,0.25);
-            border-color: #e74c3c;
-            transform: translateY(-2px);
-            color: #e74c3c;
-        }
-
-        /* Popup foto */
-        .photo-popup {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 1000;
-            cursor: pointer;
-        }
-
-        .photo-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            max-width: 90%;
-            max-height: 90%;
-        }
-
-        .photo-content img {
-            max-width: 100%;
-            max-height: 100%;
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-        }
-
-        .photo-title {
-            color: white;
-            text-align: center;
-            margin-top: 15px;
-            background: rgba(0,0,0,0.7);
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 1.2em;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: -15px;
-            right: -15px;
-            background: #e74c3c;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-weight: bold;
-            z-index: 1001;
-            font-size: 16px;
-        }
-
-        .filename-display {
-            background: rgba(52, 152, 219, 0.2);
-            color: #3498db;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.8em;
-            margin-top: 5px;
-            display: inline-block;
-        }
-
-        @media (max-width: 768px) {
-            .component-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .step-number {
-                left: -15px;
-                width: 30px;
-                height: 30px;
-            }
-            
-            .step-content {
-                margin-left: 25px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Riscaldamento con PDC — TERMO_OPTIMA</title>
+<style>
+  :root {
+    --bg: #f5f5f5; --card: #fff; --text: #333; --text-dim: #666;
+    --accent: #c0392b; --accent-light: #e74c3c; --ok: #27ae60;
+    --warn: #f39c12; --info: #2980b9; --code-bg: #f4f4f4; --border: #e0e0e0;
+  }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; margin: 0; padding: 0; }
+  .container { max-width: 960px; margin: 0 auto; padding: 20px; }
+  h1 { font-size: 1.8em; border-bottom: 3px solid var(--accent); padding-bottom: 10px; margin-top: 0; }
+  h2 { font-size: 1.35em; color: var(--accent); margin-top: 35px; border-left: 5px solid var(--accent); padding-left: 15px; }
+  h3 { font-size: 1.1em; margin-top: 25px; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+  .subtitle { color: var(--text-dim); font-size: 0.95em; margin-bottom: 25px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 18px; margin-bottom: 18px; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.92em; }
+  th, td { border: 1px solid var(--border); padding: 7px 9px; text-align: left; vertical-align: top; }
+  th { background: #f0f0f0; font-weight: 600; }
+  tr:nth-child(even) { background: #fafafa; }
+  code { font-family: "SFMono-Regular", Consolas, monospace; background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+  pre { font-family: "SFMono-Regular", Consolas, monospace; background: #1e1e1e; color: #d4d4d4; padding: 14px; border-radius: 6px; overflow-x: auto; font-size: 0.85em; line-height: 1.5; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; font-weight: 600; color: white; }
+  .badge-ok { background: var(--ok); } .badge-warn { background: var(--warn); } .badge-danger { background: var(--accent); } .badge-info { background: var(--info); }
+  .alert { background: #fff3cd; border-left: 4px solid var(--warn); padding: 12px 14px; margin: 12px 0; border-radius: 0 4px 4px 0; }
+  .alert-danger { background: #f8d7da; border-left: 4px solid var(--accent); }
+  .alert-info { background: #d1ecf1; border-left: 4px solid var(--info); }
+  .back { display: inline-block; margin-top: 15px; font-size: 0.85em; }
+  .back a { color: var(--info); text-decoration: none; }
+  .emoji { font-size: 1.2em; margin-right: 4px; }
+  .step { background: #f8f9fa; border-left: 3px solid var(--info); padding: 10px 14px; margin: 8px 0; border-radius: 0 4px 4px 0; }
+  @media (max-width: 600px) { table { font-size: 0.85em; } }
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🏠 SCHEMA COMPLETO RISCALDAMENTO CON PDC</h1>
-            <p>Controllo Home Assistant + Logica Funzionamento + Quadro Elettrico</p>
-            <div style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; margin-top: 15px;">
-                <strong>Seriale: 4QE99993 | Anno: 2022 | Potenza: 11.0kW | COP: 5.00</strong>
-            </div>
-        </div>
+<div class="container">
 
-        <!-- CONTROLLI PRELIMINARI SISTEMA IDRAULICO -->
-        <div class="schema-container">
-            <h2 style="text-align: center; color: #e67e22; margin-bottom: 30px;">💧 CONTROLLI PRELIMINARI SISTEMA IDRAULICO</h2>
-            
-            <div class="step-box">
-                <div class="step-number">A</div>
-                <div class="step-content">
-                    <div class="step-title">🌡️ VALVOLE TERMOSTATICHE TADO SUI TERMOSIFONI</div>
-                    <div class="step-description">
-                        Regolazione temperatura valvole termostatiche:
-                        <br>• Valvole Tado regolate per temperatura voluta
-                        <br>• Controllo locale o tramite APP
-                        <br>• Verifica apertura/chiusura corretta
-                        <br>• Comunicazione wireless operativa
-                        <br><button class="photo-btn" onclick="showPhoto('valvole_tado_termosifoni', 'Valvole Tado Termosifoni')">📷 MOSTRA VALVOLE TADO</button>
-                        <div class="filename-display">valvole_tado_termosifoni.jpg</div>
-                    </div>
-                </div>
-            </div>
+<h1><span class="emoji">🔥</span> Riscaldamento con PDC — TERMO_OPTIMA</h1>
+<p class="subtitle">Pomaretto (TO) · Hitachi RASM-4VNE · Modbus ATW-MBS-02 · Aggiornato 2026-06-23</p>
 
-            <div class="step-box">
-                <div class="step-number">B</div>
-                <div class="step-content">
-                    <div class="step-title">🔄 POMPA P1 CIRCOLATORE IMPIANTO GRUNDFOS ALPHA</div>
-                    <div class="step-description">
-                        Pompa circolazione sistema riscaldamento:
-                        <br>• Grundfos ALPHA 1 L 25-60 130 operativa
-                        <br>• LED di stato verdi accesi
-                        <br>• Modalità di funzionamento corretta
-                        <br>• Nessun rumore anomalo durante circolazione
-                        <br><button class="photo-btn" onclick="showPhoto('pompa_grundfos_alpha', 'Pompa Grundfos ALPHA P1')">📷 MOSTRA POMPA P1</button>
-                        <div class="filename-display">pompa_grundfos_alpha.jpg</div>
-                    </div>
-                </div>
-            </div>
+<div class="card">
+  <h3>⚡ Dati Tecnici PDC</h3>
+  <table>
+  <tr><th>Parametro</th><th>Valore</th></tr>
+  <tr><td>Modello / Seriale</td><td>RASM-4VNE · S/N 4QE99993 · 2022</td></tr>
+  <tr><td>Refrigerante</td><td>R410A</td></tr>
+  <tr><td>Potenza termica</td><td>3,3 ÷ 11,0 kW (inverter 30÷100%)</td></tr>
+  <tr><td>COP nominale / reale</td><td>5,00 / 3,0÷5,5</td></tr>
+  <tr><td>Gateway Modbus</td><td>ATW-MBS-02 (192.168.1.5:502)</td></tr>
+  <tr><td>Contatore termico</td><td>Caleffi CONTECA EASY 1¼" (RS485)</td></tr>
+  <tr><td>Controller locale</td><td>PC-ARFH1E (deve restare acceso, tasto verde)</td></tr>
+  </table>
+</div>
 
-            <div class="step-box">
-                <div class="step-number">C</div>
-                <div class="step-content">
-                    <div class="step-title">💧 PRESSIONE ACQUA CIRCUITO TERMOSIFONI</div>
-                    <div class="step-description">
-                        Controllo pressione sistema riscaldamento:
-                        <br>• Pressione acqua circuito termosifoni: 1,0-1,5 bar
-                        <br>• Manometro con lettura nel range corretto
-                        <br>• Nessuna perdita visibile nel sistema
-                        <br>• Vaso espansione funzionante
-                        <br><button class="photo-btn" onclick="showPhoto('manometro_pressione_termosifoni', 'Manometro Pressione Termosifoni')">📷 MOSTRA MANOMETRO</button>
-                        <div class="filename-display">manometro_pressione_termosifoni.jpg</div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="card">
+  <h3>🎛️ Configurazione obbligatoria PC-ARFH1E</h3>
+  <div class="alert-danger">
+    <strong>Impostazione critica:</strong> Central Mode = <strong>Water (2)</strong>, C1 = <strong>Temperatura fissa / Fix</strong>.<br>
+    Se non è su Water, Home Assistant non può comandare la PDC.
+  </div>
+  <p><strong>Accesso menu installatore:</strong></p>
+  <ol>
+    <li>Premere <strong>contemporaneamente</strong>: OK + Indietro (Back), poi rilasciare</li>
+    <li>Premere: → (destra) → ↓ (giù) → ← (sinistra)</li>
+    <li>Confermare: <strong>OK</strong> (centrale)</li>
+  </ol>
+  <table>
+  <tr><th>Voce</th><th>Valore</th><th>Note</th></tr>
+  <tr><td>Central Mode</td><td><strong>Water (2)</strong></td><td>NON Full (3) né Local (0)</td></tr>
+  <tr><td>Regolazione C1</td><td><strong>Temperatura fissa / Fix</strong></td><td>Disattivare curva climatica OTC</td></tr>
+  <tr><td>BMS / Central Control</td><td><strong>Abilitato / On</strong></td><td>Necessario per comandi remoti</td></tr>
+  </table>
+</div>
 
-        <!-- ALIMENTAZIONI INFRASTRUTTURA -->
-        <div class="schema-container">
-            <h2 style="text-align: center; color: #9b59b6; margin-bottom: 30px;">🔌 ALIMENTAZIONI INFRASTRUTTURA</h2>
-            
-            <div class="step-box">
-                <div class="step-number">1</div>
-                <div class="step-content">
-                    <div class="step-title">🏠 ROUTER ACCESO (LOCALE TECNICO)</div>
-                    <div class="step-description">
-                        Router principale sistema domotico:
-                        <br>• Router alimentato e funzionante
-                        <br>• LED di stato accesi
-                        <br>• Connettività di rete attiva
-                        <br><button class="photo-btn" onclick="showPhoto('router_locale_tecnico', 'Router Locale Tecnico')">📷 MOSTRA ROUTER</button>
-                        <div class="filename-display">router_locale_tecnico.jpg</div>
-                    </div>
-                </div>
-            </div>
+<div class="card">
+  <h3>🔌 Registri Modbus — Verifiche di Emergenza</h3>
+  <p>Notazione <strong>addr</strong> = Register − 1 (Home Assistant).</p>
+  <table>
+  <tr><th>addr</th><th>Funzione</th><th>Valore OK</th><th>Se diverso</th></tr>
+  <tr><td><code>1003</code></td><td>W-OTC Heat C1</td><td><span class="badge badge-ok">3 (Fix)</span></td><td>Scrivere = 3</td></tr>
+  <tr><td><code>1005</code></td><td>Setpoint acqua C1</td><td>34÷50°C</td><td>Verificare addr1003</td></tr>
+  <tr><td><code>1050</code></td><td>R-System Run</td><td><span class="badge badge-ok">1</span></td><td>Verificare R1 / QE1</td></tr>
+  <tr><td><code>1053</code></td><td>R-OTC C1</td><td><span class="badge badge-ok">3</span></td><td>Scrivere addr1003 = 3</td></tr>
+  <tr><td><code>1055</code></td><td>R-Setpoint C1</td><td>= addr1005</td><td>Verificare addr1003</td></tr>
+  <tr><td><code>1088</code></td><td>R-CentralMode</td><td><span class="badge badge-ok">2 (Water)</span></td><td>Menu installatore</td></tr>
+  <tr><td><code>1090</code></td><td>R-OpState</td><td><span class="badge badge-ok">5, 6 o 8</span></td><td>11 = ALLARME</td></tr>
+  <tr><td><code>1094</code></td><td>R-H-LINK</td><td><span class="badge badge-ok">0 (OK)</span></td><td>Controllare cablaggio</td></tr>
+  <tr><td><code>1224</code></td><td>Numero allarme</td><td><span class="badge badge-ok">0</span></td><td>Annotare → Elvis</td></tr>
+  </table>
+  <div class="alert">
+    <strong>Correzione addr1003:</strong> il valore <strong>0 NON è "temperatura fissa"</strong> — la macchina torna alla curva interna e ignora il setpoint. Deve essere sempre <strong>3 (Fix)</strong>.
+  </div>
+</div>
 
-            <div class="step-box">
-                <div class="step-number">2</div>
-                <div class="step-content">
-                    <div class="step-title">🏠 HOME ASSISTANT ONLINE E FUNZIONANTE</div>
-                    <div class="step-description">
-                        Sistema di controllo domotico:
-                        <br>• Home Assistant avviato e raggiungibile
-                        <br>• Dashboard accessibile via web
-                        <br>• Tutti i dispositivi connessi
-                        <br><button class="photo-btn" onclick="showPhoto('home_assistant_online', 'Home Assistant Online')">📷 MOSTRA HA</button>
-                        <div class="filename-display">home_assistant_online.jpg</div>
-                    </div>
-                </div>
-            </div>
+<div class="card">
+  <h3>🔄 Stato funzionamento (addr 1090 / R-OpState)</h3>
+  <table>
+  <tr><th>Valore</th><th>Stato</th><th>Significato</th></tr>
+  <tr><td>0</td><td>OFF</td><td>sistema spento</td></tr>
+  <tr><td>5</td><td>ThermoOFF</td><td>T raggiunta, pausa compressore</td></tr>
+  <tr><td class="badge-ok">6</td><td class="badge-ok">ThermoON</td><td>riscaldamento attivo</td></tr>
+  <tr><td class="badge-info">8</td><td class="badge-info">ACS</td><td>ciclo sanitario (20÷40 min)</td></tr>
+  <tr><td class="badge-danger">11</td><td class="badge-danger">ALLARME</td><td>annotare codice → Elvis 347-4958076</td></tr>
+  </table>
+</div>
 
-            <div class="step-box">
-                <div class="step-number">3</div>
-                <div class="step-content">
-                    <div class="step-title">🌐 INTERNET ATTIVO</div>
-                    <div class="step-description">
-                        Connessione internet stabile:
-                        <br>• Connessione WAN attiva
-                        <br>• Accesso remoto funzionante
-                        <br>• DNS e gateway raggiungibili
-                        <br><button class="photo-btn" onclick="showPhoto('test_internet', 'Test Connessione Internet')">📷 MOSTRA TEST</button>
-                        <div class="filename-display">test_internet.jpg</div>
-                    </div>
-                </div>
-            </div>
+<div class="card">
+  <h3>⚡ Quadro QE1/QE2 — Relè e LED</h3>
+  <table>
+  <tr><th>Relè</th><th>Funzione</th><th>LED normale</th><th>Azione emergenza</th></tr>
+  <tr><td>R1 · 90150687a670</td><td>Abilita PDC</td><td>spento</td><td>rosso = richiesta attiva</td></tr>
+  <tr><td>R2 · 1c692008dea0</td><td>Pompa P1</td><td>spento</td><td><strong>spento con PDC accesa = CRITICO</strong> → reset P1</td></tr>
+  <tr><td>R6 · 8813bfcdbda0</td><td>Smart Grid blocco</td><td><span class="badge badge-ok">SPENTO</span></td><td><strong>ROSSO = PDC BLOCCATA</strong> → levetta OFF in QE1</td></tr>
+  <tr><td>R7 · 1c692044c2ac</td><td>Modula Plus backup</td><td>spento</td><td>antibloccaggio settimanale</td></tr>
+  <tr><td>EM · c45bbee1c642</td><td>Misura potenza PDC</td><td>verde stabile</td><td>—</td></tr>
+  </table>
+</div>
 
-            <div class="step-box">
-                <div class="step-number">4</div>
-                <div class="step-content">
-                    <div class="step-title">🎛️ CONTROLLER YUTAKY ACCESO (VICINO PDC, LOCALE TECNICO)</div>
-                    <div class="step-description">
-                        Controllo pompa di calore:
-                        <br>• Controller alimentato e operativo
-                        <br>• Display acceso con parametri
-                        <br>• Comunicazione con unità esterna
-                        <br><button class="photo-btn" onclick="showPhoto('controller_yutaky_acceso', 'Controller YUTAKY Acceso')">📷 MOSTRA CONTROLLER</button>
-                        <div class="filename-display">controller_yutaky_acceso.jpg</div>
-                    </div>
-                </div>
-            </div>
+<div class="card">
+  <h3>🔗 La catena di controllo — 5 strati</h3>
+  <table>
+  <tr><th>Strato</th><th>Compito</th><th>Package YAML</th></tr>
+  <tr><td>S1 · Sensori</td><td>raccoglie e media le temperature</td><td>925, 926, 927</td></tr>
+  <tr><td>S2 · Termostato</td><td>decide la temperatura voluta (Comfort/ECO)</td><td>930</td></tr>
+  <tr><td>S3 · Logica e guardie</td><td>decide se accendere, 4 controlli di sicurezza</td><td>928, 900</td></tr>
+  <tr><td>S4 · Setpoint PI</td><td>decide a che temperatura mandare l'acqua</td><td>902</td></tr>
+  <tr><td>S5 · Duty cycle</td><td>pianifica i cicli delle 24 ore</td><td>970, 971, 950</td></tr>
+  </table>
 
-            <div class="step-box">
-                <div class="step-number">5</div>
-                <div class="step-content">
-                    <div class="step-title">⚡ QUADRO QE1 ALIMENTATO</div>
-                    <div class="step-description">
-                        Quadro elettrico principale:
-                        <br>• Alimentazione 230V presente
-                        <br>• LED di stato operativi
-                        <br>• Protezioni attive
-                        <br><button class="photo-btn" onclick="showPhoto('quadro_qe1_alimentato', 'Quadro QE1 Alimentato')">📷 MOSTRA QE1</button>
-                        <div class="filename-display">quadro_qe1_alimentato.jpg</div>
-                    </div>
-                </div>
-            </div>
+  <h3>Le quattro guardie (Strato 3)</h3>
+  <table>
+  <tr><th>Guardia</th><th>Cosa fa</th></tr>
+  <tr><td>1 · Kill switch</td><td>blocca Comfort se T ambiente > 23,5°C</td></tr>
+  <tr><td>2 · Lockout</td><td>pausa ~30 min dopo ogni spegnimento</td></tr>
+  <tr><td>3 · Smart Grid R6</td><td>blocco hardware se R6 eccitato</td></tr>
+  <tr><td>4 · Surplus FV</td><td>abilita Accumulo se surplus > 500 W</td></tr>
+  </table>
+  <div class="alert-danger">
+    Se la pompa non parte pur essendo richiesta, è quasi sempre una guardia. <strong>Verifica per prima R6.</strong>
+  </div>
+</div>
 
-            <div class="step-box">
-                <div class="step-number">6</div>
-                <div class="step-content">
-                    <div class="step-title">📦 ARMADIO QE2 SHELLY ALIMENTATO</div>
-                    <div class="step-description">
-                        Armadio dispositivi Shelly:
-                        <br>• Alimentazione moduli Shelly
-                        <br>• LED di stato attivi
-                        <br>• Comunicazione Wi-Fi operativa
-                        <br><button class="photo-btn" onclick="showPhoto('armadio_qe2_alimentato', 'Armadio QE2 Shelly Alimentato')">📷 MOSTRA QE2</button>
-                        <div class="filename-display">armadio_qe2_alimentato.jpg</div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="card">
+  <h3>🔄 Flussi operativi</h3>
+  <div class="step">
+    <strong>Riscaldamento:</strong> Tado apre → termostato chiede calore → guardie OK → R1 (24V al controller) → R2 (parte P1) → soft-start compressore → <strong>Reg.1090 = 6</strong> → casa scalda → spegnimento e lockout.
+  </div>
+  <div class="step">
+    <strong>Acqua sanitaria:</strong> sonda TWO sotto soglia → modalità ACS (<strong>Reg.1090 = 8</strong>) → la serpentina nella zona alta scalda l'acqua dei rubinetti → 20÷40 min, termosifoni fermi (normale).
+  </div>
+  <div class="step">
+    <strong>Accumulo fotovoltaico:</strong> surplus solare → ramo Accumulo attiva la pompa anche senza richiesta comfort → puffer caricato con energia gratuita → calore ceduto nelle ore senza sole.
+  </div>
+</div>
 
-        <!-- RILEVAMENTO TEMPERATURA NETATMO -->
-        <div class="schema-container">
-            <h2 style="text-align: center; color: #f39c12; margin-bottom: 30px;">🌡️ RILEVAMENTO TEMPERATURA NETATMO</h2>
-            
-            <div class="step-box">
-                <div class="step-number">7</div>
-                <div class="step-content">
-                    <div class="step-title">🌡️ SENSORE NETATMO CUCINA</div>
-                    <div class="step-description">
-                        Rilevamento temperatura ambiente tramite <span class="entity-code">sensor.salone_cucina_temperatura</span>
-                        <br>• Lettura in tempo reale temperatura ambiente
-                        <br>• Comunicazione wireless con Home Assistant
-                        <br>• Trigger per logica di riscaldamento
-                        <br><button class="photo-btn" onclick="showPhoto('netatmo_sensore', 'Sensore Netatmo Cucina')">📷 MOSTRA SENSORE</button>
-                        <div class="filename-display">netatmo_sensore.jpg</div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="card">
+  <h3>🔧 Diagnostica Rapida</h3>
+  <table>
+  <tr><th>Sintomo</th><th>Causa probabile</th><th>Azione</th></tr>
+  <tr><td>Termosifoni freddi, tutti i piani</td><td>LED R2 rosso?</td><td>no → reset P1 (levetta BASSA 30s, poi CENTRALE); poi Elvis</td></tr>
+  <tr><td>Freddi un piano solo</td><td>valvole Tado aperte?</td><td>aprire da dashboard, verificare WiFi Tado</td></tr>
+  <tr><td>COP sotto 2,5</td><td>sbrinamento?</td><td>attendere 5÷10 min; poi Elvis</td></tr>
+  <tr><td>Acqua fredda rubinetti</td><td>Reg.1090 = 8?</td><td>forzare boost ACS (addr1026 = 1)</td></tr>
+  <tr><td>Pressione < 1,0 bar</td><td>manometro</td><td>cercare perdite → Elvis</td></tr>
+  <tr><td>Display Yutaki spento</td><td>fusibile M2 REG TERM</td><td>verificare trasformatore 24V</td></tr>
+  <tr><td>Reg.1090 = 11</td><td>codice sul display</td><td>annotare → Elvis 347-4958076</td></tr>
+  <tr><td>addr1088 ≠ 2</td><td>CentralMode errato</td><td>menu installatore PC-ARFH1E</td></tr>
+  <tr><td>addr1053 ≠ 3</td><td>OTC non su Fix</td><td>scrivere addr1003 = 3</td></tr>
+  <tr><td>addr1094 ≠ 0</td><td>Errore H-LINK</td><td>controllare cavi ATW-MBS-02 / riavviare gateway</td></tr>
+  </table>
+  <div class="alert-danger">
+    <strong>Pompa non parte:</strong> prima verifica <strong>sempre R6</strong> (LED in QE2). Se rosso → levetta R6 su OFF in QE1.
+  </div>
+</div>
 
-        <!-- SEQUENZA COMPLETA DI ATTIVAZIONE -->
-        <div class="schema-container">
-            <h2 style="text-align: center; color: #e67e22; margin-bottom: 30px;">🔄 SEQUENZA COMPLETA ATTIVAZIONE PDC</h2>
-            
-            <div class="step-box">
-                <div class="step-number">8</div>
-                <div class="step-content">
-                    <div class="step-title">🏠 RICHIESTA CALORE HOME ASSISTANT</div>
-                    <div class="step-description">
-                        Home Assistant rileva necessità riscaldamento tramite <span class="entity-code">climate.termostato_ambiente</span>
-                        <br>• Temperatura ambiente < set-point (21°C)
-                        <br>• Algoritmo di controllo attiva richiesta calore
-                        <br><button class="photo-btn" onclick="showPhoto('home_assistant_dashboard', 'Home Assistant Dashboard')">📷 MOSTRA DASHBOARD</button>
-                        <div class="filename-display">home_assistant_dashboard.jpg</div>
-                    </div>
-                </div>
-            </div>
+<div class="card">
+  <h3>🛁 Puffer RLH — Temperature Zone</h3>
+  <table>
+  <tr><th>Zona</th><th>Temperatura</th><th>Sonda</th></tr>
+  <tr><td>Alta</td><td>45÷55°C</td><td>TWO (scambiatore ACS)</td></tr>
+  <tr><td>Media</td><td>40÷50°C</td><td>TPO</td></tr>
+  <tr><td>Bassa</td><td>30÷45°C</td><td>TK (ritorno C1)</td></tr>
+  </table>
+</div>
 
-            <div class="flow-arrow">⬇️</div>
+<div class="card">
+  <h3>🔄 Pompa P1 Grundfos Alpha1 — Reset</h3>
+  <table>
+  <tr><th>Parametro</th><th>Valore</th></tr>
+  <tr><td>Modello</td><td>Grundfos Alpha1 L 25-60 130</td></tr>
+  <tr><td>Alimentazione</td><td>contattore QE1-R2 · Shelly 1c692008dea0</td></tr>
+  <tr><td>Pressione circuito</td><td>1,0÷1,5 bar</td></tr>
+  <tr><td>Levetta QE1-R2</td><td>CENTRALE = auto · ALTA = ON · BASSA = OFF</td></tr>
+  </table>
+  <div class="alert">
+    <strong>Reset:</strong> levetta R2 su BASSA 30 s, poi CENTRALE; attendere 1÷2 min e ascoltare la pompa.
+  </div>
+</div>
 
-            <div class="step-box">
-                <div class="step-number">9</div>
-                <div class="step-content">
-                    <div class="step-title">🌐 VERIFICA CONNETTIVITA'</div>
-                    <div class="step-description">
-                        Controllo prerequisiti sistema:
-                        <br>• Internet presente e stabile
-                        <br>• Wi-Fi MOMA connesso e operativo
-                        <br>• Comunicazione con dispositivi Shelly attiva
-                        <br><button class="photo-btn" onclick="showPhoto('wifi_connessione', 'Stato Connessione Wi-Fi')">📷 MOSTRA CONNESSIONE</button>
-                        <div class="filename-display">wifi_connessione.jpg</div>
-                    </div>
-                </div>
-            </div>
+<div class="card" style="text-align:center; color:var(--text-dim); font-size:0.85em;">
+  <p>TERMO_OPTIMA · Pomaretto (TO) · Aggiornato 2026-06-23<br>
+  Responsabile: Elvis Martinat 347-4958076 · Sistema: Marco 335-1354309</p>
+  <p class="back"><a href="index.html">← Torna alla home</a></p>
+</div>
 
-            <div class="flow-arrow">⬇️</div>
-
-            <div class="step-box">
-                <div class="step-number">10</div>
-                <div class="step-content">
-                    <div class="step-title">⚡ ATTIVAZIONE SWITCH SHELLY</div>
-                    <div class="step-description">
-                        Home Assistant comanda <span class="entity-code">switch.shellyplus1_90150687a670_switch_0</span>
-                        <br>• Shelly Plus 1 attiva uscita relè
-                        <br>• Tensione 230V applicata al circuito di controllo
-                        <br><button class="photo-btn" onclick="showPhoto('shelly_90150687a670', 'Shelly Plus 1 - 90150687A670')">📷 MOSTRA SHELLY</button>
-                        <div class="filename-display">shelly_90150687a670.jpg</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="flow-arrow">⬇️</div>
-
-            <div class="step-box">
-                <div class="step-number">11</div>
-                <div class="step-content">
-                    <div class="step-title">🔌 CHIUSURA CONTATTO QE2-R1</div>
-                    <div class="step-description">
-                        Comando Shelly chiude contatto pulito QE2-R1:
-                        <br>• Contatto normalmente aperto si chiude
-                        <br>• Permette eccitazione bobina QE1-R1
-                        <br>• Segnale di richiesta verso controller YUTAKI
-                        <br><button class="photo-btn" onclick="showPhoto('contatto_qe2_r1', 'Contatto QE2-R1')">📷 MOSTRA CONTATTO</button>
-                        <div class="filename-display">contatto_qe2_r1.jpg</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="flow-arrow">⬇️</div>
-
-            <div class="step-box">
-                <div class="step-number">12</div>
-                <div class="step-content">
-                    <div class="step-title">🧲 ECCITAZIONE BOBINA QE1-R1</div>
-                    <div class="step-description">
-                        Contattore QE1-R1 si eccita:
-                        <br>• Bobina alimentata a 230V
-                        <br>• Contatti ausiliari si chiudono
-                        <br>• LED di stato QE1 si accende (rosso)
-                        <br><button class="photo-btn" onclick="showPhoto('contattore_qe1_r1', 'Contattore QE1-R1')">📷 MOSTRA CONTATTORE</button>
-                        <div class="filename-display">contattore_qe1_r1.jpg</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="flow-arrow">⬇️</div>
-
-            <div class="step-box">
-                <div class="step-number">13</div>
-                <div class="step-content">
-                    <div class="step-title">📡 CHIUSURA CONTATTO PULITO QE-R1</div>
-                    <div class="step-description">
-                        Contatto pulito QE-R1 si chiude:
-                        <br>• Segnale verso controller YUTAKI
-                        <br>• Connessione diretta morsetti C1
-                        <br>• Richiesta calore confermata
-                        <br><button class="photo-btn" onclick="showPhoto('morsettiera_c1', 'Morsettiera C1 Controller')">📷 MOSTRA MORSETTIERA</button>
-                        <div class="filename-display">morsettiera_c1.jpg</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="flow-arrow">⬇️</div>
-
-            <div class="step-box">
-                <div class="step-number">14</div>
-                <div class="step-content">
-                    <div class="step-title">🎯 RICHIESTA CALORE SU CONTROLLER YUTAKI</div>
-                    <div class="step-description">
-                        Controller YUTAKI riceve segnale su circuito C1:
-                        <br>• Elaborazione richiesta calore
-                        <br>• Verifica parametri operativi
-                        <br>• Preparazione avvio PDC
-                        <br><button class="photo-btn" onclick="showPhoto('controller_yutaki_display', 'Controller YUTAKI Display')">📷 MOSTRA CONTROLLER</button>
-                        <div class="filename-display">controller_yutaki_display.jpg</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="flow-arrow">⬇️</div>
-
-            <div class="step-box">
-                <div class="step-number">15</div>
-                <div class="step-content">
-                    <div class="step-title">✅ VERIFICA CONDIZIONI AVVIO PDC</div>
-                    <div class="step-description">
-                        Controller verifica tutte le condizioni per l'avvio
-                        <br><button class="photo-btn" onclick="showPhoto('parametri_operativi', 'Parametri Operativi PDC')">📷 MOSTRA PARAMETRI</button>
-                        <div class="filename-display">parametri_operativi.jpg</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- CONDIZIONI AVVIO PDC -->
-        <div class="schema-container">
-            <h2 style="text-align: center; color: #27ae60; margin-bottom: 30px;">🔍 CONDIZIONI AVVIO PDC</h2>
-            
-            <div class="condition-box">
-                <div class="condition-title">🌡️ TEMPERATURA ACQUA RITORNO PDC (Pompa di Calore)</div>
-                <ul class="condition-list">
-                    <li>Temperatura acqua ritorno < set-point impostato</li>
-                    <li>Delta temperatura (ΔT) sufficiente per avvio</li>
-                    <li>Sensore temperatura funzionante e calibrato</li>
-                </ul>
-                <button class="photo-btn" onclick="showPhoto('sensore_temperatura', 'Sensore Temperatura Acqua')">📷 MOSTRA SENSORE</button>
-                <div class="filename-display">sensore_temperatura.jpg</div>
-            </div>
-
-            <div class="condition-box">
-                <div class="condition-title">⏰ DUTY CYCLE PDC (Ciclo di Lavoro)</div>
-                <ul class="condition-list">
-                    <li>PDC in fase ON del ciclo di lavoro</li>
-                    <li>Tempo minimo tra avvii rispettato (3-5 min)</li>
-                    <li>Non in modalità standby o manutenzione</li>
-                </ul>
-                <button class="photo-btn" onclick="showPhoto('display_duty_cycle', 'Display Duty Cycle')">📷 MOSTRA DUTY CYCLE</button>
-                <div class="filename-display">display_duty_cycle.jpg</div>
-            </div>
-
-            <div class="condition-box">
-                <div class="condition-title">🛡️ SMART GRID (Sistema Protezioni Sicurezza)</div>
-                <ul class="condition-list">
-                    <li><span class="entity-code">switch.shellyplus1_8813bfcdbda0_switch_0</span> in stato OFF</li>
-                    <li>Contatto QE2-R6 aperto (protezione generale)</li>
-                    <li>LED QE2-R6 spento (nessun allarme attivo)</li>
-                    <li>Contattore QE1-R1 NON energizzato (levetta in posizione bassa)</li>
-                </ul>
-                <button class="photo-btn" onclick="showPhoto('shelly_8813bfcdbda0', 'Shelly Plus 1 - 8813BFCDBDA0 Protezioni')">📷 MOSTRA PROTEZIONI</button>
-                <div class="filename-display">shelly_8813bfcdbda0.jpg</div>
-                <button class="photo-btn" onclick="showPhoto('contatto_qe2_r6', 'Contatto QE2-R6 Sicurezza')">📷 MOSTRA QE2-R6</button>
-            </div>
-
-            <div class="condition-box">
-                <div class="condition-title">⚡ ALIMENTAZIONI E PRESSIONE CIRCUITO IDRAULICO</div>
-                <ul class="condition-list">
-                    <li>Alimentazione 230V monofase stabile</li>
-                    <li>Pressione circuito idraulico: 0.10-0.30 MPa (come da targhetta)</li>
-                    <li>Circolazione acqua sistema funzionante</li>
-                    <li>Temperature ambiente operative (-20°C / +35°C)</li>
-                    <li><strong>Valvole Tado termosifoni</strong> - verificare apertura corretta</li>
-                </ul>
-                <button class="photo-btn" onclick="showPhoto('manometro_pressione', 'Manometro Pressione Sistema')">📷 MOSTRA PRESSIONE</button>
-                <div class="filename-display">manometro_pressione.jpg</div>
-                <button class="photo-btn" onclick="showPhoto('valvole_tado', 'Valvole Tado Termosifoni')">📷 MOSTRA VALVOLE TADO</button>
-                <div class="filename-display">valvole_tado.jpg</div>
-            </div>
-        </div>
-
-        <!-- AVVIO EFFETTIVO PDC -->
-        <div class="schema-container">
-            <h2 style="text-align: center; color: #e74c3c; margin-bottom: 30px;">🚀 AVVIO EFFETTIVO PDC RASM-4VNE</h2>
-            
-            <div class="step-box">
-                <div class="step-number">16</div>
-                <div class="step-content">
-                    <div class="step-title">💧 ATTIVAZIONE POMPA ACQUA</div>
-                    <div class="step-description">
-                        • Pompa circolazione acqua si avvia
-                        <br>• Verifica pressione sistema (0.10-0.30 MPa)
-                        <br>• Controllo flusso minimo
-                        <br>• Preparazione circuito idraulico
-                        <br><button class="photo-btn" onclick="showPhoto('pompa_circolazione', 'Pompa Circolazione Acqua')">📷 MOSTRA POMPA</button>
-                        <div class="filename-display">pompa_circolazione.jpg</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="flow-arrow">⬇️</div>
-
-            <div class="step-box">
-                <div class="step-number">17</div>
-                <div class="step-content">
-                    <div class="step-title">🔥 AVVIO COMPRESSORE INVERTER</div>
-                    <div class="step-description">
-                        • Soft-start compressore (60-90 secondi)
-                        <br>• Incremento graduale velocità inverter
-                        <br>• Monitoraggio assorbimento elettrico
-                        <br>• Controllo pressioni refrigerante R410A
-                        <br><button class="photo-btn" onclick="showPhoto('compressore_inverter', 'Compressore Inverter')">📷 MOSTRA COMPRESSORE</button>
-                        <div class="filename-display">compressore_inverter.jpg</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="flow-arrow">⬇️</div>
-
-            <div class="step-box">
-                <div class="step-number">18</div>
-                <div class="step-content">
-                    <div class="step-title">🎛️ REGIME OPERATIVO</div>
-                    <div class="step-description">
-                        • Raggiungimento potenza nominale
-                        <br>• Modulazione automatica 30-100% (3.3-11.0kW)
-                        <br>• Ottimizzazione COP in tempo reale
-                        <br>• Controllo temperature mandata/ritorno
-                        <br><button class="photo-btn" onclick="showPhoto('display_potenza', 'Display Potenza e COP')">📷 MOSTRA POTENZA</button>
-                        <div class="filename-display">display_potenza.jpg</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="flow-arrow">⬇️</div>
-
-            <div class="step-box">
-                <div class="step-number">19</div>
-                <div class="step-content">
-                    <div class="step-title">📊 MONITORAGGIO HOME ASSISTANT</div>
-                    <div class="step-description">
-                        • Lettura parametri in tempo reale
-                        <br>• Calcolo COP istantaneo e giornaliero
-                        <br>• Monitoraggio consumi elettrici
-                        <br>• Grafici prestazioni e storico
-                        <br><button class="photo-btn" onclick="showPhoto('grafici_monitoraggio', 'Grafici Monitoraggio HA')">📷 MOSTRA GRAFICI</button>
-                        <div class="filename-display">grafici_monitoraggio.jpg</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- COMPONENTI QUADRO ELETTRICO -->
-        <div class="schema-container">
-            <h2 style="text-align: center; color: #9b59b6; margin-bottom: 30px;">⚡ COMPONENTI PRINCIPALI</h2>
-            
-            <div class="component-grid">
-                <div class="component">
-                    <button class="photo-btn" onclick="showPhoto('server_homeassistant', 'Server HomeAssistant')">📷 MOSTRA HA</button>
-                    <h4>💻 SERVER HOMEASSISTANT</h4>
-                    <p><strong>Sistema Controllo Domotico</strong></p>
-                    <p>Dashboard e automazioni<br>Gestione completa sistema</p>
-                    <div class="location-info">📍 <em>LOCALE TECNICO</em></div>
-                    <div class="filename-display">server_homeassistant.jpg</div>
-                </div>
-
-                <div class="component">
-                    <button class="photo-btn" onclick="showPhoto('quadri_qe1_qe2', 'Quadri Elettrici QE1 e QE2')">📷 MOSTRA QUADRI</button>
-                    <h4>⚡ QUADRI ELETTRICI QE1 e QE2</h4>
-                    <p><strong>Contenitore Generale</strong></p>
-                    <p>Shelly + Relè + Alimentazioni<br>Controllo completo sistema</p>
-                    <div class="location-info">📍 <em>LOCALE TECNICO</em></div>
-                    <div class="filename-display">quadri_qe1_qe2.jpg</div>
-                </div>
-                
-                <div class="component">
-                    <button class="photo-btn" onclick="showPhoto('pdc_unita_esterna', 'PDC Unità Esterna')">📷 MOSTRA PDC</button>
-                    <h4>🏠 PDC UNITÀ ESTERNA</h4>
-                    <p><strong>RASM-4VNE</strong></p>
-                    <p>Lato ovest casa<br>Seriale: 4QE99993</p>
-                    <div class="location-info">📍 <em>Esterno casa - lato ovest</em></div>
-                    <div class="filename-display">pdc_unita_esterna.jpg</div>
-                </div>
-                
-                <div class="component">
-                    <button class="photo-btn" onclick="showPhoto('targhetta_pdc', 'Targhetta PDC')">📷 MOSTRA TARGHETTA</button>
-                    <h4>🏷️ TARGHETTA PDC</h4>
-                    <p><strong>Dati Identificativi</strong></p>
-                    <p>Seriale: 4QE99993<br>Anno: 2022 - 11.0kW</p>
-                    <div class="location-info">📍 <em>Frontale PDC</em></div>
-                    <div class="filename-display">targhetta_pdc.jpg</div>
-                </div>
-
-                <div class="component">
-                    <button class="photo-btn" onclick="showPhoto('controller_yutaki', 'Controller YUTAKI')">📷 MOSTRA YUTAKI</button>
-                    <h4>🎛️ CONTROLLER YUTAKI</h4>
-                    <p><strong>Unità Controllo Interna</strong></p>
-                    <p>Display e comandi<br>Gestione parametri PDC</p>
-                    <div class="location-info">📍 <em>LOCALE TECNICO</em></div>
-                    <div class="filename-display">controller_yutaki.jpg</div>
-                </div>
-
-                <div class="component">
-                    <button class="photo-btn" onclick="showPhoto('pompa_p1', 'Pompa P1')">📷 MOSTRA POMPA</button>
-                    <h4>🔄 POMPA P1</h4>
-                    <p><strong>Grundfos ALPHA</strong></p>
-                    <p>Circolazione sistema<br>ALPHA 1 L 25-60 130</p>
-                    <div class="location-info">📍 <em>LOCALE TECNICO</em></div>
-                    <div class="filename-display">pompa_p1.jpg</div>
-                </div>
-
-                <div class="component">
-                    <button class="photo-btn" onclick="showPhoto('manometro_pressione_impianto', 'Manometro Pressione Impianto')">📷 MOSTRA MANOMETRO</button>
-                    <h4>📊 MANOMETRO PRESSIONE</h4>
-                    <p><strong>IMPIANTO Termosifoni</strong></p>
-                    <p>Controllo pressione<br>Range: 1,0-1,5 bar</p>
-                    <div class="location-info">📍 <em>LOCALE TECNICO</em></div>
-                    <div class="filename-display">manometro_pressione_impianto.jpg</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- TROUBLESHOOTING -->
-        <div class="schema-container">
-            <h2 style="text-align: center; color: #e74c3c; margin-bottom: 30px;">🆘 RISOLUZIONE PROBLEMI</h2>
-            
-            <div class="warning-box">
-                <div class="warning-title">🔴 PDC NON PARTE</div>
-                <p style="color: white;">
-                    <strong>Controlli sequenziali:</strong><br>
-                    1. Verificare Home Assistant ONLINE<br>
-                    2. Test Shelly 90150687A670 (deve passare a ON)<br>
-                    3. Controllo contattore QE1-R1 (LED rosso acceso)<br>
-                    4. Verifica circuito C1 chiuso<br>
-                    5. Controllo protezioni QE2-R6 (deve essere aperto)<br>
-                    6. Attesa 60-90 secondi per avvio compressore
-                </p>
-                <button class="photo-btn" onclick="showPhoto('troubleshooting_steps', 'Passi Troubleshooting')">📷 GUIDA VISIVA</button>
-                <div class="filename-display">troubleshooting_steps.jpg</div>
-            </div>
-
-            <div class="warning-box">
-                <div class="warning-title">⚡ PROBLEMI COMUNICAZIONE</div>
-                <p style="color: white;">
-                    <strong>Verifica connettività:</strong><br>
-                    1. Wi-Fi MOMA connesso<br>
-                    2. Internet stabile<br>
-                    3. Dispositivi Shelly raggiungibili<br>
-                    4. Home Assistant responsive<br>
-                    5. Log sistema per errori di comunicazione
-                </p>
-                <button class="photo-btn" onclick="showPhoto('diagnostica_rete', 'Diagnostica Connessione')">📷 MOSTRA DIAGNOSTICA</button>
-                <div class="filename-display">diagnostica_rete.jpg</div>
-            </div>
-
-            <div class="warning-box">
-                <div class="warning-title">🛡️ PROTEZIONI ATTIVE</div>
-                <p style="color: white;">
-                    <strong>Stato protezioni:</strong><br>
-                    1. Shelly 8813BFCDBDA0 deve essere OFF<br>
-                    2. Contatto QE2-R6 deve essere aperto<br>
-                    3. LED QE2-R6 deve essere spento<br>
-                    4. Contattore QE1-R1 NON energizzato (levetta bassa)<br>
-                    5. Temperature nei limiti operativi<br>
-                    6. Pressioni circuito idraulico normali
-                </p>
-                <button class="photo-btn" onclick="showPhoto('stato_protezioni', 'Stato Protezioni Sistema')">📷 MOSTRA PROTEZIONI</button>
-                <div class="filename-display">stato_protezioni.jpg</div>
-            </div>
-        </div>
-
-        <!-- MANUALI TECNICI -->
-        <div class="manual-section">
-            <h2 style="text-align: center; color: white; margin-bottom: 20px;">📚 DOCUMENTAZIONE TECNICA</h2>
-            
-            <div style="text-align: center;">
-                <a href="https://tyco.widen.net/content/oi8zbp9jky/pdf/PMIT0602_rev1_04-24.pdf?u=oknhak" class="manual-link" target="_blank">
-                    📖 MANUALE TYCO PMIT0602<br>
-                    <small>Componenti di controllo - Rev.1 04/24</small>
-                </a>
-                <a href="https://tyco.widen.net/content/2cndrf9iv5/pdf/PMIT0342B_rev6_01-21.pdf?u=oknhak" class="manual-link" target="_blank">
-                    🔧 MANUALE TYCO PMIT0342B<br>
-                    <small>Relè e contattori - Rev.6 01/21</small>
-                </a>
-                <a href="manuale_grundfos_alpha.pdf" class="manual-link" target="_blank">
-                    🔄 MANUALE GRUNDFOS ALPHA<br>
-                    <small>Pompa circolazione P1 - Installazione e uso</small>
-                </a>
-            </div>
-        </div>
-
-        <!-- POPUP FOTO -->
-        <div id="photoPopup" class="photo-popup" onclick="closePhoto()">
-            <div class="photo-content">
-                <button class="close-btn" onclick="closePhoto()">✕</button>
-                <img id="photoImg" src="" alt="">
-                <div id="photoTitle" class="photo-title"></div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        function showPhoto(filename, title) {
-            const popup = document.getElementById('photoPopup');
-            const img = document.getElementById('photoImg');
-            const titleDiv = document.getElementById('photoTitle');
-            
-            img.src = filename + '.jpg';
-            titleDiv.textContent = title + ' (' + filename + '.jpg)';
-            popup.style.display = 'block';
-            
-            // Prevenire lo scroll del body
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closePhoto() {
-            const popup = document.getElementById('photoPopup');
-            popup.style.display = 'none';
-            
-            // Ripristinare lo scroll del body
-            document.body.style.overflow = 'auto';
-        }
-
-        // Chiudere con tasto ESC
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                closePhoto();
-            }
-        });
-    </script>
+</div>
 </body>
 </html>

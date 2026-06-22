@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Internet / WiFi — TERMO_OPTIMA</title>
+<style>
+  :root {
+    --bg: #f5f5f5; --card: #fff; --text: #333; --text-dim: #666;
+    --accent: #c0392b; --accent-light: #e74c3c; --ok: #27ae60;
+    --warn: #f39c12; --info: #2980b9; --code-bg: #f4f4f4; --border: #e0e0e0;
+  }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; margin: 0; padding: 0; }
+  .container { max-width: 960px; margin: 0 auto; padding: 20px; }
+  h1 { font-size: 1.8em; border-bottom: 3px solid var(--accent); padding-bottom: 10px; margin-top: 0; }
+  h2 { font-size: 1.35em; color: var(--accent); margin-top: 35px; border-left: 5px solid var(--accent); padding-left: 15px; }
+  h3 { font-size: 1.1em; margin-top: 25px; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+  .subtitle { color: var(--text-dim); font-size: 0.95em; margin-bottom: 25px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 18px; margin-bottom: 18px; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.92em; }
+  th, td { border: 1px solid var(--border); padding: 7px 9px; text-align: left; vertical-align: top; }
+  th { background: #f0f0f0; font-weight: 600; }
+  tr:nth-child(even) { background: #fafafa; }
+  code { font-family: "SFMono-Regular", Consolas, monospace; background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+  pre { font-family: "SFMono-Regular", Consolas, monospace; background: #1e1e1e; color: #d4d4d4; padding: 14px; border-radius: 6px; overflow-x: auto; font-size: 0.85em; line-height: 1.5; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; font-weight: 600; color: white; }
+  .badge-ok { background: var(--ok); } .badge-info { background: var(--info); }
+  .alert { background: #fff3cd; border-left: 4px solid var(--warn); padding: 12px 14px; margin: 12px 0; border-radius: 0 4px 4px 0; }
+  .alert-info { background: #d1ecf1; border-left: 4px solid var(--info); }
+  .back { display: inline-block; margin-top: 15px; font-size: 0.85em; }
+  .back a { color: var(--info); text-decoration: none; }
+  .emoji { font-size: 1.2em; margin-right: 4px; }
+  @media (max-width: 600px) { table { font-size: 0.85em; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1><span class="emoji">📶</span> Internet / WiFi — TERMO_OPTIMA</h1>
+<p class="subtitle">Rete domestica · Failover fibra/LTE · Mappa dispositivi · Pomaretto (TO) · Aggiornato 2026-06-23</p>
+
+<div class="card">
+  <h3>🌐 Architettura Rete</h3>
+  <pre>
+<span style="color:#6a9955"># Router principale</span>
+Ubiquiti Dream Router 7 (UDR7) — Fibra principale
+  │
+  ├─ WiFi casa (2,4 GHz + 5 GHz)
+  ├─ LAN cablata → switch TP-Link managed
+  │
+  ├─ <span style="color:#4fc1ff">192.168.1.100</span> Proxmox GEEKOM (host virtualizzazione)
+  │   ├─ VM 100  HAOS           <span style="color:#4fc1ff">192.168.1.53</span>
+  │   ├─ LXC 110 InfluxDB       <span style="color:#4fc1ff">192.168.1.48</span>
+  │   ├─ LXC 120 Grafana        <span style="color:#4fc1ff">192.168.1.57</span>
+  │   ├─ LXC 130 meteo-corrector <span style="color:#4fc1ff">192.168.1.68</span>
+  │   ├─ LXC 131 energy-allocator
+  │   └─ LXC 200 MariaDB        <span style="color:#4fc1ff">192.168.1.165</span>
+  │
+  ├─ <span style="color:#4fc1ff">192.168.1.5</span>   ATW-MBS-02    Gateway Modbus PDC
+  ├─ <span style="color:#4fc1ff">192.168.1.175</span> ESP32 Garage  Tesla BLE
+  ├─ <span style="color:#4fc1ff">192.168.1.176</span> ESP32 Cancello Tesla BLE
+  ├─ <span style="color:#4fc1ff">192.168.1.178</span> NAS WD MyCloud  Backup
+  ├─ <span style="color:#4fc1ff">192.168.1.71</span>  Sonoff 4CH PRO  Irrigazione
+  └─ <span style="color:#4fc1ff">192.168.1.181</span> BEELINK         Warm standby (spento)
+
+<span style="color:#6a9955"># Failover LTE</span>
+Se cade la fibra → traffico dirottato su modem LTE TP-Link MR600
+  </pre>
+</div>
+
+<div class="card">
+  <h3>🗺️ Mappa IP Completa</h3>
+  <table>
+  <tr><th>IP</th><th>Dispositivo</th><th>Porta</th><th>Protocollo</th><th>Ruolo</th></tr>
+  <tr><td><strong>192.168.1.5</strong></td><td>ATW-MBS-02</td><td>502</td><td>Modbus TCP</td><td>Gateway PDC</td></tr>
+  <tr><td>192.168.1.53</td><td>Home Assistant OS (VM 100)</td><td>8123</td><td>HTTP</td><td>Cervello sistema</td></tr>
+  <tr><td>192.168.1.100</td><td>Proxmox GEEKOM</td><td>8006</td><td>HTTPS</td><td>Virtualizzazione</td></tr>
+  <tr><td>192.168.1.48</td><td>InfluxDB (LXC 110)</td><td>8086</td><td>HTTP</td><td>Storico dati</td></tr>
+  <tr><td>192.168.1.57</td><td>Grafana (LXC 120)</td><td>—</td><td>HTTP</td><td>Dashboard</td></tr>
+  <tr><td>192.168.1.68</td><td>meteo-corrector (LXC 130)</td><td>—</td><td>—</td><td>Previsioni FV</td></tr>
+  <tr><td>192.168.1.165</td><td>MariaDB (LXC 200)</td><td>3306</td><td>MySQL</td><td>Recorder HA</td></tr>
+  <tr><td>192.168.1.175</td><td>ESP32 Tesla Garage</td><td>6053</td><td>ESPHome API</td><td>BLE Tesla</td></tr>
+  <tr><td>192.168.1.176</td><td>ESP32 Tesla Cancello</td><td>6053</td><td>ESPHome API</td><td>BLE Tesla</td></tr>
+  <tr><td>192.168.1.178</td><td>NAS WD MyCloud EX2 Ultra</td><td>—</td><td>NFS/CIFS</td><td>Backup</td></tr>
+  <tr><td>192.168.1.71</td><td>Sonoff 4CH PRO R3</td><td>—</td><td>HTTP</td><td>Irrigazione prati</td></tr>
+  <tr><td>192.168.1.181</td><td>BEELINK</td><td>—</td><td>—</td><td>Warm standby (spento)</td></tr>
+  </table>
+</div>
+
+<div class="card">
+  <h3>🔄 Failover Fibra → LTE</h3>
+  <p>Se cade la fibra, la connessione passa automaticamente alla rete mobile LTE.</p>
+  <table>
+  <tr><th>Componente</th><th>Modello</th><th>Funzione</th></tr>
+  <tr><td>Router principale</td><td>Ubiquiti Dream Router 7 (UDR7)</td><td>Fibra principale</td></tr>
+  <tr><td>Router riserva</td><td>TP-Link MR600</td><td>LTE failover automatico</td></tr>
+  </table>
+  <div class="alert-info">
+    <strong>Nota:</strong> l'impianto funziona comunque in <strong>locale</strong> anche senza internet. Il failover serve solo al controllo da remoto e alle notifiche Telegram.
+  </div>
+</div>
+
+<div class="card">
+  <h3>📋 Diagnostica Rapida Rete</h3>
+  <table>
+  <tr><th>Sintomo</th><th>Verifica</th><th>Azione</th></tr>
+  <tr><td>Home Assistant non raggiungibile</td><td>192.168.1.53:8123</td><td>verificare VM 100 su Proxmox (192.168.1.100:8006)</td></tr>
+  <tr><td>Proxmox non raggiungibile</td><td>192.168.1.100:8006</td><td>verificare alimentazione GEEKOM / router</td></tr>
+  <tr><td>Modbus PDC non risponde</td><td>192.168.1.5:502</td><td>verificare LED ATW-MBS-02 / cavo H-LINK</td></tr>
+  <tr><td>Internet assente</td><td>router UDR7</td><td>verificare failover LTE (TP-Link MR600)</td></tr>
+  <tr><td>Backup non accessibile</td><td>192.168.1.178</td><td>verificare NAS WD MyCloud / alimentazione</td></tr>
+  </table>
+</div>
+
+<div class="card" style="text-align:center; color:var(--text-dim); font-size:0.85em;">
+  <p>TERMO_OPTIMA · Pomaretto (TO) · Aggiornato 2026-06-23<br>
+  Responsabile: Marco 335-1354309</p>
+  <p class="back"><a href="index.html">← Torna alla home</a></p>
+</div>
+
+</div>
+</body>
+</html>

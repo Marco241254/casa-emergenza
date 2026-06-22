@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema Domotico — Casa GEEKOM</title>
+<style>
+  :root {
+    --bg:        #ffffff;
+    --surface:   #f8f9fa;
+    --border:    #dee2e6;
+    --accent:    #1a6eb5;
+    --accent-dk: #0f4a80;
+    --warn:      #856404;
+    --warn-bg:   #fff8e6;
+    --ok:        #155724;
+    --ok-bg:     #d4edda;
+    --text:      #212529;
+    --muted:     #6c757d;
+    --code-bg:   #f1f3f5;
+    --th-bg:     #e9ecef;
+    --pill-infra:#d0e8ff;
+    --pill-ha:   #d4f5e9;
+    --pill-fv:   #fff3cd;
+    --pill-tesla:#fde8ff;
+    --pill-ops:  #ffe8e8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--text);
+    background: var(--bg);
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 24px 20px 60px;
+  }
+
+  /* ── HEADER ─────────────────────────────────────── */
+  header {
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 16px;
+    margin-bottom: 32px;
+  }
+  header h1 { font-size: 1.6rem; font-weight: 700; color: var(--accent-dk); }
+  header p  { color: var(--muted); font-size: 0.9rem; margin-top: 4px; }
+
+  /* ── NAVIGATION INDEX ────────────────────────────── */
+  nav.toc {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 20px 24px;
+    margin-bottom: 40px;
+  }
+  nav.toc h2 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: .06em;
+    color: var(--muted); margin-bottom: 12px; }
+  nav.toc ul { list-style: none; columns: 2; column-gap: 32px; }
+  nav.toc li { margin-bottom: 5px; break-inside: avoid; }
+  nav.toc a  { color: var(--accent); text-decoration: none; font-size: 0.9rem; }
+  nav.toc a:hover { text-decoration: underline; }
+  @media(max-width:520px){ nav.toc ul { columns: 1; } }
+
+  /* ── SECTION HEADERS ─────────────────────────────── */
+  section { margin-bottom: 56px; }
+
+  h2.sec {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--accent-dk);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+    margin-bottom: 20px;
+    scroll-margin-top: 16px;
+  }
+  h2.sec .num {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 3px;
+    padding: 1px 7px;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  h3.sub {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin: 24px 0 10px;
+    border-left: 3px solid var(--accent);
+    padding-left: 10px;
+  }
+
+  p { margin-bottom: 12px; }
+
+  /* ── TABLES ──────────────────────────────────────── */
+  .tbl-wrap { overflow-x: auto; margin-bottom: 16px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+  th {
+    background: var(--th-bg);
+    font-weight: 600;
+    text-align: left;
+    padding: 7px 10px;
+    border: 1px solid var(--border);
+  }
+  td {
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tr:nth-child(even) td { background: var(--surface); }
+
+  /* ── CODE / PRE ──────────────────────────────────── */
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    font-size: 0.82rem;
+    line-height: 1.55;
+    margin-bottom: 16px;
+    font-family: "Cascadia Code", "Fira Code", "Courier New", monospace;
+    white-space: pre;
+  }
+  code {
+    background: var(--code-bg);
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-size: 0.85em;
+    font-family: "Cascadia Code", "Fira Code", "Courier New", monospace;
+  }
+
+  /* ── CALLOUTS ────────────────────────────────────── */
+  .warn {
+    background: var(--warn-bg);
+    border-left: 4px solid #f0ad00;
+    border-radius: 0 4px 4px 0;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+    font-size: 0.9rem;
+    color: var(--warn);
+  }
+  .ok {
+    background: var(--ok-bg);
+    border-left: 4px solid #28a745;
+    border-radius: 0 4px 4px 0;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+    font-size: 0.9rem;
+    color: var(--ok);
+  }
+  .info {
+    background: #e8f4ff;
+    border-left: 4px solid var(--accent);
+    border-radius: 0 4px 4px 0;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+    font-size: 0.9rem;
+  }
+
+  /* ── PILL BADGES ─────────────────────────────────── */
+  .pill {
+    display: inline-block;
+    border-radius: 12px;
+    padding: 2px 10px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    margin-right: 6px;
+  }
+  .pill-infra { background: var(--pill-infra); color: #0f4a80; }
+  .pill-ha    { background: var(--pill-ha);   color: #0a5c3a; }
+  .pill-fv    { background: var(--pill-fv);   color: #7d5a00; }
+  .pill-tesla { background: var(--pill-tesla);color: #6a0d8f; }
+  .pill-ops   { background: var(--pill-ops);  color: #7a0000; }
+
+  /* ── BACK LINK ───────────────────────────────────── */
+  .back { display: inline-block; margin-top: 20px; font-size: 0.85rem;
+    color: var(--muted); text-decoration: none; }
+  .back:hover { color: var(--accent); }
+
+  /* ── FOOTER ──────────────────────────────────────── */
+  footer {
+    margin-top: 48px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🏠 Sistema Domotico — Casa GEEKOM</h1>
+  <p>TERMO_OPTIMA · Pomaretto (TO) 620 m s.l.m. · documentazione tecnica completa · aggiornata 2026-06-23</p>
+</header>
+
+<!-- ═══════════════════════ INDICE ═══════════════════════ -->
+<nav class="toc">
+  <h2>Indice</h2>
+  <ul>
+    <li><a href="#infrastruttura">0 · Infrastruttura IT (Proxmox)</a></li>
+    <li><a href="#ha">1 · Home Assistant — packages</a></li>
+    <li><a href="#pdc">2 · PDC Hitachi YUTAKI — controllo</a></li>
+    <li><a href="#fv">3 · Sistema Fotovoltaico</a></li>
+    <li><a href="#tesla">4 · Tesla Model Y — ricarica solare</a></li>
+    <li><a href="#energia">5 · Monitoraggio energetico</a></li>
+    <li><a href="#clima">6 · Clima, temperature e forecast</a></li>
+    <li><a href="#operazioni">7 · Backup e operazioni</a></li>
+    <li><a href="#riferimenti">8 · Riferimenti e contatti</a></li>
+  </ul>
+</nav>
+
+<!-- ═══════════════════════ 0 · INFRASTRUTTURA ═══════════════════════ -->
+<section id="infrastruttura">
+<h2 class="sec"><span class="num">0</span> Infrastruttura IT — Proxmox / GEEKOM</h2>
+<span class="pill pill-infra">INFRA</span>
+
+<p>Tutto il sistema domotico gira su un mini-PC <strong>GEEKOM</strong> (Proxmox VE 9.1.1) come nodo primario. Un secondo nodo <strong>BEELINK</strong> è in standby caldo (spento), con disco Samsung 990 PRO 2 TB, obiettivo warm-standby con LXC replicati.</p>
+
+<h3 class="sub">Cluster Proxmox</h3>
+<div class="tbl-wrap"><table>
+<tr><th>Nodo</th><th>Ruolo</th><th>Note</th></tr>
+<tr><td><strong>GEEKOM</strong></td><td>Primario — tutti i workload produzione</td><td>Proxmox VE 9.1.1</td></tr>
+<tr><td><strong>BEELINK</strong></td><td>Standby caldo (spento)</td><td>Samsung 990 PRO 2 TB — non ancora attivo</td></tr>
+</table></div>
+
+<p>Accesso Proxmox: <code>https://192.168.1.100:8006</code> · Login: <code>root@pam</code></p>
+
+<h3 class="sub">VM e LXC — inventario completo</h3>
+<div class="tbl-wrap"><table>
+<tr><th>ID</th><th>Nome</th><th>Tipo</th><th>IP</th><th>Scopo</th></tr>
+<tr><td>100</td><td><code>haos</code></td><td>VM QEMU</td><td>192.168.1.53</td><td><strong>Home Assistant OS</strong> — sistema principale</td></tr>
+<tr><td>101</td><td><code>haos-test</code></td><td>VM QEMU</td><td>—</td><td>HA di test — NON toccare in produzione</td></tr>
+<tr><td>110</td><td><code>influxdb</code></td><td>LXC</td><td>192.168.1.48</td><td>Database time-series InfluxDB</td></tr>
+<tr><td>120</td><td><code>grafana</code></td><td>LXC</td><td>192.168.1.57</td><td>Dashboard Grafana</td></tr>
+<tr><td>130</td><td><code>meteo-corrector</code></td><td>LXC</td><td>192.168.1.68</td><td>Previsioni FV pvlib + correttore k</td></tr>
+<tr><td>131</td><td><code>energy-allocator</code></td><td>LXC</td><td>—</td><td>Allocatore energia PDC (AppDaemon-like)</td></tr>
+<tr><td>200</td><td><code>deb12-backup</code></td><td>LXC</td><td>192.168.1.165</td><td>MariaDB per Recorder HA + backup</td></tr>
+</table></div>
+
+<div class="info">Backup: tutte e 7 le macchine sono incluse nei job vzdump (Livello 2). Confermato 2026-05-28.</div>
+
+<h3 class="sub">Dispositivi di rete</h3>
+<div class="tbl-wrap"><table>
+<tr><th>IP</th><th>Dispositivo</th><th>Porta</th><th>Protocollo</th><th>Note</th></tr>
+<tr><td>192.168.1.53</td><td>Home Assistant (VM 100)</td><td>8123</td><td>HTTP</td><td>HAOS produzione</td></tr>
+<tr><td>192.168.1.100</td><td>Proxmox host GEEKOM</td><td>8006</td><td>HTTPS</td><td>Login: root@pam</td></tr>
+<tr><td>192.168.1.48</td><td>InfluxDB (LXC 110)</td><td>8086</td><td>HTTP</td><td>DB: home_assistant</td></tr>
+<tr><td>192.168.1.165</td><td>MariaDB (LXC 200)</td><td>3306</td><td>MySQL</td><td>DB: homeassistant, utente: ha</td></tr>
+<tr><td>192.168.1.5</td><td>Gateway Modbus Hitachi ATW-MBS-02</td><td>502</td><td>TCP Modbus</td><td>Bridge H-LINK↔Modbus</td></tr>
+<tr><td>192.168.1.175</td><td>ESP32 "Tesla BLE 770224"</td><td>6053</td><td>ESPHome API</td><td>Garage, BLE→Tesla</td></tr>
+<tr><td>192.168.1.176</td><td>ESP32 "Tesla BLE Cancello"</td><td>6053</td><td>ESPHome API</td><td>Cancello, BLE→Tesla</td></tr>
+<tr><td>192.168.1.178</td><td>NAS WD MyCloud EX2 Ultra</td><td>—</td><td>NFS/CIFS</td><td>Storage backup Proxmox</td></tr>
+</table></div>
+
+<h3 class="sub">LXC 130 — meteo-corrector (pvlib)</h3>
+<div class="tbl-wrap"><table>
+<tr><th>Voce</th><th>Valore</th></tr>
+<tr><td>Path base</td><td><code>/opt/meteo_corrector/</code></td></tr>
+<tr><td>Python venv</td><td><code>/opt/meteo_corrector/venv/bin/python</code></td></tr>
+<tr><td>Log</td><td><code>/var/log/pvlib.log</code>, <code>/var/log/correttore.log</code></td></tr>
+<tr><td>Cron</td><td>ogni ora alle :00</td></tr>
+<tr><td>Coordinate</td><td>LAT=44.88, LON=7.33, ALT=626</td></tr>
+</table></div>
+
+<h3 class="sub">Come trasferire file su LXC</h3>
+<p>Nessun SSH diretto con tastiera italiana. Procedura collaudata (2026-05-16):</p>
+<pre># 1. PowerShell Windows → copia su Proxmox host
+scp %USERPROFILE%\Downloads\nomefile.py root@192.168.1.100:/tmp/
+
+# 2. Shell Proxmox → backup + push nel container
+pct exec 130 -- cp /opt/meteo_corrector/nomefile.py /opt/meteo_corrector/nomefile.py.bak
+pct push 130 /tmp/nomefile.py /opt/meteo_corrector/nomefile.py
+
+# Per packages HA (VM 100)
+pct push 100 /tmp/900_hitachi_control.yaml /root/config/packages/900_hitachi_control.yaml</pre>
+
+<a href="#" class="back">↑ torna all'indice</a>
+</section>
+
+<!-- ═══════════════════════ 1 · HOME ASSISTANT ═══════════════════════ -->
+<section id="ha">
+<h2 class="sec"><span class="num">1</span> Home Assistant — configurazione e packages</h2>
+<span class="pill pill-ha">HA</span>
+
+<p>Home Assistant OS gira su VM 100 (IP <code>192.168.1.53:8123</code>). Recorder su MariaDB LXC 200, storico su InfluxDB LXC 110. La configurazione principale è <code>configuration.yaml</code> (v1900); i 40+ packages YAML sono in <code>/config/packages/</code>.</p>
+
+<div class="info">Coordinate GPS: lat 44.958349, lon 7.182826, alt 620 m. Se modificate in <code>configuration.yaml</code>, aggiornare anche <code>packages/972_gg_forecast_24h.yaml</code>.</div>
+
+<h3 class="sub">Mappa packages — indice funzionale</h3>
+<div class="tbl-wrap"><table>
+<tr><th>Package</th><th>Scopo</th><th>Stato</th></tr>
+<tr><td>2010</td><td>Monitoraggio hardware GEEKOM + VM Proxmox</td><td>✅</td></tr>
+<tr><td>210</td><td>Tesla Solar Optima v5 — carica BLE surplus FV</td><td>✅</td></tr>
+<tr><td>212</td><td>Tesla pre-controller energia — carica notturna</td><td>✅</td></tr>
+<tr><td>300</td><td>Pompa circolazione R2 in AND con stato PDC</td><td>✅</td></tr>
+<tr><td>310</td><td>Telecomandi Zigbee Ikea Rodret</td><td>⚠️</td></tr>
+<tr><td>400</td><td>Irrigazione prati (Sonoff 4CH)</td><td>✅</td></tr>
+<tr><td>710</td><td>Setting FV: blending Solcast/Forecast Solar</td><td>✅</td></tr>
+<tr><td>720</td><td>Previsioni FV da Open-Meteo</td><td>⚠️ friendly_name bug</td></tr>
+<tr><td>810</td><td>Potenze elettriche normalizzate (filtro mediano 5 camp.)</td><td>✅</td></tr>
+<tr><td>820–829</td><td>Energie, produzione FV, utility meter, batterie</td><td>✅/⚠️</td></tr>
+<tr><td>830–837</td><td>Energie per zona (wallbox, PDC, cucina, piani, mansarda…)</td><td>✅</td></tr>
+<tr><td>900</td><td>Controllo/diagnostica Modbus PDC + definizione hub (v16)</td><td>✅</td></tr>
+<tr><td>902</td><td>Curva climatica inversa — PI surplus FV → setpoint</td><td>✅</td></tr>
+<tr><td>905</td><td>Correzione portate Hitachi (fattore 1.159 vs CONTECA)</td><td>✅</td></tr>
+<tr><td>907</td><td>COP teorico (⚠️ formule R410A, revisione settembre 2026)</td><td>⚠️</td></tr>
+<tr><td>910</td><td>Sensori contatore termico CONTECA</td><td>✅</td></tr>
+<tr><td>920</td><td>Sensori Modbus PDC normalizzati (R/W/Status)</td><td>✅</td></tr>
+<tr><td>925</td><td>Temperature ambienti + media pesata zone attive</td><td>✅</td></tr>
+<tr><td>926</td><td>Temperatura esterna (media 3 fonti)</td><td>✅</td></tr>
+<tr><td>927</td><td>Gradi giorno riscaldamento</td><td>✅</td></tr>
+<tr><td>928</td><td>Lockout AND termostato + allungamento ciclo OFF</td><td>✅</td></tr>
+<tr><td>930</td><td>Termostato fasce orarie per zona</td><td>✅</td></tr>
+<tr><td>935</td><td>Energia termica/elettrica PDC + COP reale</td><td>✅</td></tr>
+<tr><td>940</td><td>Eccedenza FV irrecuperabile + analisi ROI batterie</td><td>✅</td></tr>
+<tr><td>950</td><td>Helper AI optimizer PDC (AppDaemon)</td><td>✅</td></tr>
+<tr><td>960</td><td>Costo riscaldamento vs prelievo ENEL</td><td>✅</td></tr>
+<tr><td>970</td><td>Duty cycle PDC da fabbisogno termico</td><td>✅</td></tr>
+<tr><td>971</td><td>Misura duty cycle reale (cmd vs potenza Shelly)</td><td>✅</td></tr>
+<tr><td>972</td><td>GG previsti 24h (Open-Meteo)</td><td>✅</td></tr>
+<tr><td>973</td><td>COP previsto 24h + fabbisogno elettrico</td><td>✅</td></tr>
+</table></div>
+
+<h3 class="sub">Catena di dipendenze critiche</h3>
+<pre>Modbus (192.168.1.5) ──► 920_pdc_core ──► 900_hitachi_control
+                                      ──► 902_pdc_ottimizzazione
+                                      ──► 928_pdc_lockout_and
+                                      ──► 935_energia_cop
+
+CONTECA ──────────────► 910_conteca_sensori ──► 935_energia_cop
+                                           ──► 973_cop_forecast_24h
+
+Shelly EM (PDC) ───────► 810_norm_pot_elettriche ──► 902_pdc_ottimizzazione
+                       ► 831_energie_pdc          ──► 935_energia_cop
+
+Netatmo/Tado ──────────► 925_temp_ambienti ──► 930_termostato_fasce
+                       ► 926_temp_esterna  ──► 927_gradi_giorno ──► 970/971/972
+
+SolarEdge + Enphase ───► 820/821 ──► 810 ──► 822/823/824/825/826
+                       ► 829_battery_integer
+
+Open-Meteo ────────────► 720_prev_FV_new
+                       ► 972_gg_forecast_24h ──► 973_cop_forecast_24h</pre>
+
+<h3 class="sub">Convenzioni</h3>
+<div class="tbl-wrap"><table>
+<tr><th>Regola</th><th>Dettaglio</th></tr>
+<tr><td>Indirizzi Modbus HA</td><td>sempre notazione <code>addr</code> = Register − 1 (es. registro 1004 → addr 1003)</td></tr>
+<tr><td>Utility meter</td><td>chiave = <code>unique_id</code>; nessun campo <code>name:</code></td></tr>
+<tr><td>Coordinate GPS</td><td>se cambiate in <code>configuration.yaml</code>, aggiornare ANCHE <code>972_gg_forecast_24h.yaml</code></td></tr>
+<tr><td>Vista Lovelace</td><td>file inizia sempre con <code>views:</code>, layout <code>custom:masonry-layout</code></td></tr>
+<tr><td>Deploy file</td><td>UN file alla volta, con backup .bak prima</td></tr>
+</table></div>
+
+<a href="#" class="back">↑ torna all'indice</a>
+</section>
+
+<!-- ═══════════════════════ 2 · PDC HITACHI ═══════════════════════ -->
+<section id="pdc">
+<h2 class="sec"><span class="num">2</span> PDC Hitachi YUTAKI — controllo e Modbus</h2>
+<span class="pill pill-ha">HA</span><span class="pill pill-infra">MODBUS</span>
+
+<p>La pompa di calore <strong>Hitachi RASM-4VNE</strong> è controllata in tempo reale da HA via Modbus TCP attraverso il gateway <strong>ATW-MBS-02</strong>. Gestisce riscaldamento circuito C1, ACS e ottimizzazione COP con curva climatica inversa su surplus FV.</p>
+
+<h3 class="sub">Specifiche PDC</h3>
+<div class="tbl-wrap"><table>
+<tr><th>Parametro</th><th>Valore</th></tr>
+<tr><td>Modello</td><td>Hitachi RASM-4VNE · S/N 4QE99993 · 2022</td></tr>
+<tr><td>Tipo</td><td>Pompa di calore aria-acqua, inverter</td></tr>
+<tr><td>Potenza termica</td><td>3,3 ÷ 11,0 kW (modulazione 30–100%)</td></tr>
+<tr><td>Refrigerante</td><td>R410A</td></tr>
+<tr><td>Controllo</td><td>Modbus TCP via ATW-MBS-02 (192.168.1.5:502) + HA</td></tr>
+</table></div>
+
+<h3 class="sub">Gateway ATW-MBS-02</h3>
+<div class="tbl-wrap"><table>
+<tr><th>Parametro</th><th>Valore</th></tr>
+<tr><td>IP</td><td>192.168.1.5</td></tr>
+<tr><td>Porta Modbus TCP</td><td>502</td></tr>
+<tr><td>Slave ID</td><td>1</td></tr>
+<tr><td>S/N</td><td>7E549924</td></tr>
+<tr><td>H-LINK</td><td>comunicazione con YUTAKI RASM-4VNE, 9600 baud</td></tr>
+</table></div>
+
+<h3 class="sub">Architettura controllo</h3>
+<pre>Home Assistant (192.168.1.53:8123)
+        │ Modbus TCP porta 502
+        ▼
+ATW-MBS-02 gateway (192.168.1.5:502)
+        │ Bus H-LINK interno Hitachi
+        ▼
+Scheda PCB-MBS della YUTAKI RASM-4VNE
+        ├─ Circuito C1 (riscaldamento)
+        └─ ACS (acqua calda sanitaria)
+                    ↕ sincronizzato
+            PC-ARFH1E (controller locale)</pre>
+
+<h3 class="sub">Registri Modbus critici (scrittura)</h3>
+<div class="tbl-wrap"><table>
+<tr><th>addr HA</th><th>Funzione</th><th>Valore corretto</th><th>Note</th></tr>
+<tr><td>1000</td><td>System Run</td><td>1 = avvio</td><td></td></tr>
+<tr><td>1001</td><td>System Mode</td><td>1 = Heat</td><td></td></tr>
+<tr><td>1002</td><td>C1 Run</td><td>1 = avvio</td><td></td></tr>
+<tr><td><strong>1003</strong></td><td><strong>W-OTC Heat C1</strong></td><td><strong>3 = Fix</strong></td><td>⚠️ CRITICO — valore 0 bypassa il setpoint</td></tr>
+<tr><td><strong>1005</strong></td><td><strong>Setpoint acqua C1</strong></td><td><strong>0–80°C</strong></td><td>es. 36°C — recepito solo se addr1003=3</td></tr>
+<tr><td>1024</td><td>ACS Run</td><td>1 = avvio</td><td></td></tr>
+<tr><td>1025</td><td>Setpoint ACS</td><td>50°C tipico</td><td></td></tr>
+</table></div>
+
+<h3 class="sub">Registri Modbus critici (lettura)</h3>
+<div class="tbl-wrap"><table>
+<tr><th>addr HA</th><th>Funzione</th><th>Valore corretto</th><th>Note</th></tr>
+<tr><td>1050</td><td>R-System Run</td><td>1</td><td>sistema acceso</td></tr>
+<tr><td>1053</td><td>R-OTC C1</td><td>3</td><td>Fix confermato</td></tr>
+<tr><td>1055</td><td>R-Setpoint C1</td><td>= addr1005</td><td>conferma ricezione</td></tr>
+<tr><td><strong>1088</strong></td><td><strong>R-CentralMode</strong></td><td><strong>2 = Water</strong></td><td>⚠️ deve essere 2, non 0</td></tr>
+<tr><td>1090</td><td>R-OpState</td><td>5 o 6 normale</td><td>vedi tabella sotto</td></tr>
+<tr><td>1094</td><td>R-H-LINK</td><td>0 = OK</td><td>⚠️ se ≠0 → cablaggio ATW-MBS-02</td></tr>
+</table></div>
+
+<h3 class="sub">Stato funzionamento (addr 1090)</h3>
+<div class="tbl-wrap"><table>
+<tr><th>Valore</th><th>Significato</th></tr>
+<tr><td>0</td><td>OFF</td></tr>
+<tr><td>5</td><td>Termo riscaldamento OFF (T raggiunta, pausa compressore)</td></tr>
+<tr><td><strong>6</strong></td><td><strong>Termo riscaldamento ON</strong></td></tr>
+<tr><td><strong>8</strong></td><td><strong>ACS ON</strong></td></tr>
+<tr><td>11</td><td>ALLARME — annotare codice → Elvis 347-4958076</td></tr>
+</table></div>
+
+<div class="warn">⚠️ CORREZIONE CRITICA addr1003: il valore 0 NON significa "temperatura fissa senza curva". Significa che la modalità OTC non è definita → la macchina torna alla logica interna del PC-ARFH1E bypassando il setpoint scritto su addr1005. Usare sempre 3 (Fix). Fix applicato in 900_hitachi_control.yaml v16 (2026-05-22).</div>
+
+<h3 class="sub">Configurazione obbligatoria PC-ARFH1E (una-tantum)</h3>
+<p>Accesso menu installatore: premere contemporaneamente <code>OK + Indietro</code>, poi freccia destra, freccia giù, freccia sinistra, OK.</p>
+<div class="tbl-wrap"><table>
+<tr><th>Voce nel menu</th><th>Impostazione richiesta</th><th>Note</th></tr>
+<tr><td>Central Mode</td><td><strong>Water (valore 2)</strong></td><td>NON usare Full (3), NON usare Local (0)</td></tr>
+<tr><td>Regolazione circuito C1</td><td><strong>Temperatura fissa / Fix</strong></td><td>Disattivare la curva climatica OTC</td></tr>
+<tr><td>BMS / Modbus</td><td><strong>Abilitato / On</strong></td><td>Necessario per ricevere comandi remoti</td></tr>
+</table></div>
+
+<h3 class="sub">Quadro QE1 — relè PDC</h3>
+<div class="tbl-wrap"><table>
+<tr><th>Relè</th><th>Shelly</th><th>Funzione</th></tr>
+<tr><td>R1</td><td>90150687a670</td><td>Abilita PDC (contattore bobina 220V)</td></tr>
+<tr><td>R2</td><td>1c692008dea0</td><td>Circolatore P1 (pompa Grundfos)</td></tr>
+<tr><td>R6</td><td>8813bfcdbda0</td><td>Smart Grid — blocco PDC (normalmente NON eccitato)</td></tr>
+<tr><td>R7</td><td>1c692044c2ac</td><td>Backup caldaia (normalmente SPENTO)</td></tr>
+<tr><td>EM</td><td>c45bbee1c642</td><td>Shelly EM — misura potenza PDC</td></tr>
+</table></div>
+
+<h3 class="sub">Curva climatica inversa (package 902)</h3>
+<p>Alza la temperatura di mandata acqua via Modbus in funzione del surplus FV. Controllore PI con integrale persistente (si azzera a mezzanotte o da dashboard).</p>
+<div class="tbl-wrap"><table>
+<tr><th>Input</th><th>Output</th></tr>
+<tr><td>sensor.pot_fv_totale_l1l2l3 (surplus FV)</td><td>sensor.pdc_setpoint_target</td></tr>
+<tr><td>sensor.pot_tot_l1l2l3_abc (consumo casa)</td><td>sensor.pdc_delta_pi</td></tr>
+<tr><td>sensor.temp_media_zone_attive</td><td>input_number.pdc_k1 (guadagno)</td></tr>
+<tr><td>sensor.pdc_r_tempext</td><td>input_number.pdc_integrale_i</td></tr>
+</table></div>
+
+<h3 class="sub">COP reale (package 935)</h3>
+<pre>COP_reale = Potenza_termica_CONTECA [kW] / Potenza_elettrica_PDC [kW]</pre>
+
+<h3 class="sub">Checklist post-modifica PDC</h3>
+<div class="ok">Dopo ogni modifica a 900_hitachi_control.yaml o packages correlati verificare: addr1003 = 3 · addr1088 = 2 · addr1094 = 0 · sensor.pdc_r_opstate ha valore numerico · nessun errore Modbus nel log HA.</div>
+
+<a href="#" class="back">↑ torna all'indice</a>
+</section>
+
+<!-- ═══════════════════════ 3 · FOTOVOLTAICO ═══════════════════════ -->
+<section id="fv">
+<h2 class="sec"><span class="num">3</span> Sistema Fotovoltaico — 16,28 kWp / 19,7 kWh</h2>
+<span class="pill pill-fv">FV</span>
+
+<h3 class="sub">Impianto — 41 pannelli</h3>
+<div class="tbl-wrap"><table>
+<tr><th>#</th><th>Sistema</th><th>Pannelli</th><th>Qtà</th><th>kWp</th><th>Inverter</th><th>Pot. inv.</th><th>Esposizione</th><th>Inclinazione</th><th>Fase</th></tr>
+<tr><td>1</td><td>SolarEdge SE6000H</td><td>SunPower SPR-MAX3-400</td><td>18</td><td>7,20</td><td>SE6000H</td><td>6,00 kW</td><td>Sud</td><td>60,5°</td><td>L3</td></tr>
+<tr><td>2</td><td>Enphase IQ7A</td><td>SunPower P3-AC 375W</td><td>7</td><td>2,63</td><td>IQ7A</td><td>2,03 kW</td><td>Est</td><td>25°</td><td>L1</td></tr>
+<tr><td>3</td><td>Enphase IQ8AC</td><td>SunPower P7-dc 450W</td><td>3</td><td>1,35</td><td>IQ8AC</td><td>1,08 kW</td><td>Est</td><td>25°</td><td>—</td></tr>
+<tr><td>4</td><td>Enphase IQ8AC</td><td>SunPower P7-dc 450W</td><td>3</td><td>1,35</td><td>IQ8AC</td><td>1,08 kW</td><td>Est</td><td>25°</td><td>—</td></tr>
+<tr><td>5</td><td>Enphase IQ7A</td><td>SunPower P3-AC 375W</td><td>10</td><td>3,75</td><td>IQ7A</td><td>2,90 kW</td><td>Ovest</td><td>25°</td><td>L2</td></tr>
+<tr><td><strong>TOT</strong></td><td></td><td></td><td><strong>41</strong></td><td><strong>16,28</strong></td><td></td><td><strong>13,09 kW</strong></td><td></td><td></td><td>3 fasi</td></tr>
+</table></div>
+
+<h3 class="sub">Sistema di accumulo — 19,70 kWh</h3>
+<div class="tbl-wrap"><table>
+<tr><th>Sistema</th><th>Tecnologia</th><th>Capacità</th><th>Fase</th></tr>
+<tr><td>SolarEdge (stringa Sud)</td><td>Li-Ion</td><td>9,70 kWh</td><td>L3</td></tr>
+<tr><td>Enphase IQ Battery 5P ×1 (stringa Est)</td><td>Li-Ion</td><td>5,00 kWh</td><td>L1</td></tr>
+<tr><td>Enphase IQ Battery 5P ×1 (stringa Ovest)</td><td>Li-Ion</td><td>5,00 kWh</td><td>L2</td></tr>
+<tr><td><strong>Totale</strong></td><td></td><td><strong>19,70 kWh</strong></td><td></td></tr>
+</table></div>
+
+<div class="info">Soglia riserva: 6,5 kWh (33% di 19,7 kWh). Sotto questa soglia il sistema Tesla Solar Optima sottrae 500 W dal surplus disponibile per preservare energia ai carichi domestici. Sensore: <code>sensor.battery_available_energy_total_kwh</code></div>
+
+<h3 class="sub">Previsioni FV — pvlib (LXC 130)</h3>
+<div class="tbl-wrap"><table>
+<tr><th>Script</th><th>Cron</th><th>Funzione</th></tr>
+<tr><td>pvlib_ha2.py</td><td>ogni ora :00</td><td>Calcola previsioni orarie 4 stringhe, pubblica ~100 sensori su HA via REST API</td></tr>
+<tr><td>correttore.py</td><td>ogni ora :00</td><td>Calcola fattore k reale/previsto, aggiorna media 14 giorni da InfluxDB</td></tr>
+</table></div>
+
+<p>Il calcolo per ogni array usa <code>pvlib.irradiance.get_total_irradiance()</code> con: profilo orizzonte (HOR_AZ/HOR_ALT), cap potenza inverter, coefficienti ombra manuali per SUD (staccionata pomeriggio) e OVEST (montagna).</p>
+
+<h3 class="sub">Correzioni ombreggiamento fisico</h3>
+<div class="tbl-wrap"><table>
+<tr><th>Array</th><th>Ora</th><th>Fattore</th></tr>
+<tr><td rowspan="6">SUD — staccionata pomeriggio</td><td>14:00</td><td>0,90</td></tr>
+<tr><td>15:00</td><td>0,75</td></tr>
+<tr><td>16:00</td><td>0,64</td></tr>
+<tr><td>17:00</td><td>0,33</td></tr>
+<tr><td>18:00</td><td>0,20</td></tr>
+<tr><td>19:00</td><td>0,05</td></tr>
+<tr><td rowspan="4">OVEST — montagna pomeriggio</td><td>16:00</td><td>0,80</td></tr>
+<tr><td>17:00</td><td>0,30</td></tr>
+<tr><td>18:00</td><td>0,10</td></tr>
+<tr><td>19:00</td><td>0,02</td></tr>
+</table></div>
+
+<div class="warn">⚠️ Bug noto: correttore.py manca state_class: measurement → warning HA, statistiche a lungo termine non generate. Bassa priorità. Bug separato: 720_prev_FV_new.yaml — friendly_name invalido riga 16.</div>
+
+<a href="#" class="back">↑ torna all'indice</a>
+</section>
+
+<!-- ═══════════════════════ 4 · TESLA ═══════════════════════ -->
+<section id="tesla">
+<h2 class="sec"><span class="num">4</span> Tesla Model Y — ricarica solare e PID</h2>
+<span class="pill pill-tesla">TESLA</span>
+
+<h3 class="sub">Hardware</h3>
+<div class="tbl-wrap"><table>
+<tr><th>Componente</th><th>Modello / Specifica</th></tr>
+<tr><td>Auto</td><td>Tesla Model Y Long Range</td></tr>
+<tr><td>Batteria</td><td>75 kWh nominali (60 kWh usabili nel calcolo)</td></tr>
+<tr><td>VIN</td><td>XP7YGCES1RB482601</td></tr>
+<tr><td>BLE MAC auto</td><td>40:79:12:8B:95:53</td></tr>
+<tr><td>Wall Connector</td><td>Tesla Wall Connector Gen 3 · TSN: PGT24118019155</td></tr>
+<tr><td>ESP32 Garage</td><td>IP 192.168.1.175 · MAC WiFi 88:57:21:77:02:24</td></tr>
+<tr><td>ESP32 Cancello</td><td>IP 192.168.1.176 · MAC WiFi 88:57:21:6D:AA:B0</td></tr>
+</table></div>
+
+<div class="info">Il prefisso entità del cancello include la parola "cancello": <code>tesla_ble_cancello_6daab0_*</code>, non <code>tesla_ble_6daab0_*</code>.</div>
+
+<h3 class="sub">Architettura controllo — PID su surplus FV</h3>
+<pre>FV - consumi casa + wallbox
+        ↓
+disponibilità solare Tesla
+        ↓
+ampere disponibili = disponibilità / 711 W/A
+        ↓
+AppDaemon: tesla_pid_garage.py (simple-pid)
+        ↓
+number.tesla_ble_770224_charging_amps
+        ↓
+ESP32 garage via BLE
+        ↓
+Tesla</pre>
+
+<p>Conversione: 1 A trifase ≈ 711 W (3 fasi × 237 V). L'integrale PID rigetta i disturbi (nuvole, carichi) e converge senza oscillare.</p>
+
+<h3 class="sub">Parametri PID v2.2</h3>
+<div class="tbl-wrap"><table>
+<tr><th>Parametro</th><th>Valore</th><th>Significato</th></tr>
+<tr><td>KP</td><td>0,35</td><td>Guadagno proporzionale</td></tr>
+<tr><td>KI</td><td>0,0025</td><td>Guadagno integrale (molto basso)</td></tr>
+<tr><td>KD</td><td>0,0</td><td>Derivata azzerata</td></tr>
+<tr><td>LOOP_SEC</td><td>10</td><td>Ciclo PID ogni 10 secondi</td></tr>
+<tr><td>MIN_WRITE_INTERVAL_SEC</td><td>60</td><td>Max 1 comando/minuto alla Tesla</td></tr>
+<tr><td>MAX_STEP_PER_WRITE_A</td><td>1</td><td>Max ±1 A per comando</td></tr>
+<tr><td>ERROR_DEADBAND_A</td><td>0,45</td><td>Sotto questo errore non scrive</td></tr>
+<tr><td>AMP_MIN / AMP_MAX</td><td>2 / 14</td><td>Limiti uscita + anti-windup</td></tr>
+</table></div>
+
+<div class="info">Anti-windup: output_limits = (2, 14) blocca anche l'accumulo dell'integrale. Avvio bumpless: all'accensione il PID riparte dalla corrente reale assorbita (charger_current).</div>
+
+<h3 class="sub">Automazioni HA (3)</h3>
+<div class="tbl-wrap"><table>
+<tr><th>Automazione</th><th>Trigger</th><th>Azione</th></tr>
+<tr><td>Accensione</td><td>tesla_ampere_disponibili &gt; 1A per 60s + master/cavo/BLE OK</td><td>wake → delay 5s → switch ON</td></tr>
+<tr><td>Spegnimento</td><td>cavo → off (istantaneo) OPPURE &lt; 2A per 60s</td><td>switch OFF</td></tr>
+<tr><td>Allarme tracking</td><td>tesla_err_diff_avg5min &gt; 2A per 5 min, carica attiva</td><td>notifica Telegram</td></tr>
+</table></div>
+
+<h3 class="sub">Mutua esclusione Garage/Cancello</h3>
+<p>L'auto è in una sola posizione alla volta. In garage: <code>input_boolean.tesla_solar_optima_abilitato</code> ON, cancello OFF. Al cancello: viceversa. Entrambi spenti = Tesla manuale.</p>
+
+<h3 class="sub">Problemi aperti</h3>
+<div class="tbl-wrap"><table>
+<tr><th>Problema</th><th>Priorità</th></tr>
+<tr><td>Allineare package 211 (cancello) all'architettura PID — serve tesla_pid_cancello.py gemello</td><td>Media</td></tr>
+<tr><td>Uniformare capacità Tesla: 55 vs 60 kWh (package vs allocator)</td><td>Bassa</td></tr>
+<tr><td>Valutare termine feed-forward per migliorare reattività PID</td><td>Bassa</td></tr>
+</table></div>
+
+<a href="#" class="back">↑ torna all'indice</a>
+</section>
+
+<!-- ═══════════════════════ 5 · ENERGIA ═══════════════════════ -->
+<section id="energia">
+<h2 class="sec"><span class="num">5</span> Monitoraggio energetico e costi</h2>
+<span class="pill pill-fv">FV</span><span class="pill pill-ha">HA</span>
+
+<h3 class="sub">Package 810 — Normalizzazione potenze</h3>
+<p>Normalizza e aggrega le potenze da tutti gli Shelly EM. Applica filtro mediano (5 campioni ~2,5 min) per eliminare picchi. Input: Shelly EM3 contatore generale (MAC 485519dc8109), Shelly EM PDC e wallbox, SolarEdge, Enphase.</p>
+<div class="tbl-wrap"><table>
+<tr><th>Sensore output</th><th>Descrizione</th></tr>
+<tr><td>sensor.pot_tot_l1l2l3_abc</td><td>Consumo casa totale trifase</td></tr>
+<tr><td>sensor.pot_fv_totale_mediano</td><td>Produzione FV totale filtrata</td></tr>
+<tr><td>sensor.pot_fv_delta_surplus_netto</td><td>Surplus FV netto disponibile</td></tr>
+</table></div>
+
+<h3 class="sub">Energie per zona (packages 830–837)</h3>
+<div class="tbl-wrap"><table>
+<tr><th>Package</th><th>Zona</th><th>Input</th></tr>
+<tr><td>830</td><td>Wallbox (2 colonnine trifase)</td><td>Integrazioni wallbox</td></tr>
+<tr><td>831</td><td>PDC</td><td>Shelly EM c45bbee1c642 ch1</td></tr>
+<tr><td>832</td><td>Cucina</td><td>Shelly EM cucina</td></tr>
+<tr><td>833</td><td>Primo piano</td><td>Shelly EM primo piano</td></tr>
+<tr><td>834</td><td>Mansarda</td><td>Shelly EM mansarda</td></tr>
+<tr><td>835</td><td>Luci esterne</td><td>Shelly EM luci esterne</td></tr>
+<tr><td>836</td><td>Lavanderia</td><td>Shelly EM lavanderia</td></tr>
+<tr><td>837</td><td>Climatizzatori</td><td>Shelly EM clima</td></tr>
+</table></div>
+<p>Ogni zona ha 5 utility meter: giornaliero / settimanale / mensile / bimestrale / annuale. Convenzione: <code>sensor.energia_{zona}_{periodo}</code></p>
+
+<h3 class="sub">COP reale — package 935</h3>
+<pre>COP_reale = sensor.conteca_potenza [kW] / sensor.shellyem_c45bbee1c642_ch1_potenza [kW]</pre>
+<p>Dipende da 910 (CONTECA), 920 (Modbus PDC), 831 (energia PDC). Output: utility meter COP giornalieri/mensili/annuali.</p>
+
+<h3 class="sub">Eccedenza FV e ROI batterie — package 940</h3>
+<p>Calcola quanta energia FV viene ceduta inutilmente alla rete e quanta potrebbe essere recuperata con batterie aggiuntive. Analisi ROI batterie DIY tramite slider <code>ea_costo_kwh_rete</code>, <code>ea_costo_kwh_batterie_diy</code>, <code>ea_capacita_target_kwh</code>.</p>
+
+<h3 class="sub">Shelly EM monitorati</h3>
+<div class="tbl-wrap"><table>
+<tr><th>MAC / Nome</th><th>Funzione</th></tr>
+<tr><td>485519dc8109</td><td>Shelly EM3 — scambio rete ENEL trifase (contatore generale)</td></tr>
+<tr><td>c8c9a33e5ca7</td><td>Shelly EM3 — a monte wallbox (feedback PID Tesla)</td></tr>
+<tr><td>c45bbee1c642</td><td>Shelly EM — PDC (canale 1)</td></tr>
+<tr><td>90150687a670</td><td>Shelly Plus 1 — R1 abilita PDC</td></tr>
+<tr><td>1c692008dea0</td><td>Shelly Plus 1 — R2 circolatore</td></tr>
+</table></div>
+
+<a href="#" class="back">↑ torna all'indice</a>
+</section>
+
+<!-- ═══════════════════════ 6 · CLIMA ═══════════════════════ -->
+<section id="clima">
+<h2 class="sec"><span class="num">6</span> Clima, temperature e forecast 24h</h2>
+<span class="pill pill-ha">HA</span>
+
+<h3 class="sub">Sorgenti temperatura esterna (package 926)</h3>
+<div class="tbl-wrap"><table>
+<tr><th>Fonte</th><th>Entità</th></tr>
+<tr><td>Netatmo lato PDC</td><td>sensor.netatmo_*_temperature</td></tr>
+<tr><td>Netatmo Pomaretto ufficiale</td><td>sensor.temp_esterna_pomaretto</td></tr>
+<tr><td>Sensore PDC Modbus</td><td>sensor.pdc_r_tempext</td></tr>
+<tr><td><strong>Media fusione (output)</strong></td><td>sensor.temp_media_esterna</td></tr>
+</table></div>
+
+<h3 class="sub">Temperatura interna (package 925)</h3>
+<p>Media pesata delle sole zone con valvola Tado aperta, aggiornata ogni 30 s. Output principale: <code>sensor.temp_media_zone_attive</code> (input per PDC e curva PI).</p>
+
+<h3 class="sub">Termostato fasce orarie (package 930)</h3>
+<div class="tbl-wrap"><table>
+<tr><th>Modalità</th><th>Temperatura</th><th>Quando</th></tr>
+<tr><td>Comfort</td><td>22,5°C</td><td>nelle fasce attive</td></tr>
+<tr><td>ECO</td><td>20,0°C</td><td>fuori dalle fasce</td></tr>
+</table></div>
+<p>Banda di isteresi: ±0,3°C. Accende a −0,3°C sotto il setpoint, spegne a +0,3°C sopra.</p>
+
+<h3 class="sub">Gradi giorno forecast 24h (package 972)</h3>
+<p>Scarica temperature orarie da Open-Meteo (48h), simula curva T interna (campana asimmetrica), calcola GG previsti prossime 24h. Snapshot giornaliero alle 00:05.</p>
+<div class="warn">⚠️ Le coordinate in 972_gg_forecast_24h.yaml (44.958373, 7.182863) devono corrispondere a quelle in configuration.yaml. Se modifichi le coordinate, aggiorna ENTRAMBI i file.</div>
+
+<h3 class="sub">COP forecast 24h (package 973)</h3>
+<p>Previsione COP sulle prossime 24h: COP medio/minimo/massimo, ora migliore e peggiore. Calcola fabbisogno elettrico previsto. Input: sensor.t972_* + sensor.conteca_temperatura_mandata.</p>
+
+<h3 class="sub">Duty cycle PDC (packages 970/971)</h3>
+<div class="tbl-wrap"><table>
+<tr><th>Package</th><th>Metodo</th><th>Output</th></tr>
+<tr><td>970</td><td>Fabbisogno termico da gradi giorno</td><td>sensor.pdc_duty_cycle_target, timer duty cycle</td></tr>
+<tr><td>971</td><td>Misura reale: (1) comando timer ON/OFF, (2) rilievo potenza compressore &gt; soglia</td><td>sensor.pdc_duty_cmd, sensor.pdc_duty_power, sensor.pdc_duty_delta</td></tr>
+</table></div>
+
+<a href="#" class="back">↑ torna all'indice</a>
+</section>
+
+<!-- ═══════════════════════ 7 · OPERAZIONI ═══════════════════════ -->
+<section id="operazioni">
+<h2 class="sec"><span class="num">7</span> Backup e operazioni</h2>
+<span class="pill pill-ops">OPS</span>
+
+<h3 class="sub">Architettura backup — 3 livelli indipendenti</h3>
+<div class="tbl-wrap"><table>
+<tr><th>Livello</th><th>Cosa</th><th>Dove</th><th>Frequenza</th><th>Protegge da</th></tr>
+<tr><td>L1</td><td>Backup nativo HA (granulare)</td><td>Locale + Google Drive (marco.mourglia@gmail.com)</td><td>Ogni giorno 04:00 · conserva 7</td><td>Errore config, automation rotta</td></tr>
+<tr><td>L2</td><td>vzdump Proxmox tutte le 7 macchine (VM + LXC)</td><td>NAS WD 192.168.1.178 (04:00) + disco 4TB locale (04:30)</td><td>Giornaliero · retention 7d/4w/3m/2y</td><td>VM corrotta, disco sistema morto</td></tr>
+<tr><td>L3</td><td>rclone off-site su Google Drive</td><td>gdrive:proxmox-backups · ultimi 2 giri ~92 GB</td><td>Ogni notte 06:00</td><td>Incendio / furto / perdita totale casa</td></tr>
+</table></div>
+
+<h3 class="sub">Quando usare quale livello</h3>
+<div class="tbl-wrap"><table>
+<tr><th>Cosa è successo</th><th>Livello</th></tr>
+<tr><td>Automation rotta / dashboard / config HA</td><td><strong>L1</strong> — più veloce, granulare</td></tr>
+<tr><td>HAOS non parte / corrotta</td><td><strong>L2</strong> — ripristino VM intera</td></tr>
+<tr><td>Perso un LXC (influxdb, grafana…)</td><td><strong>L2</strong></td></tr>
+<tr><td>Morto il disco sistema Proxmox</td><td><strong>L2</strong> da backup_wd_4tb o nas_wd</td></tr>
+<tr><td>Morto tutto in casa (incendio/furto)</td><td><strong>L3</strong> (Proxmox) + <strong>L1</strong> (HA granulare)</td></tr>
+</table></div>
+
+<div class="warn">⚠️ CHIAVE CRITTOGRAFIA: i backup HA (L1) sono crittografati. Senza la chiave il file .tar non è ripristinabile. Trovare in Gmail: cerca "chiave crittografia back-up home assistant HA". I backup Proxmox vzdump non usano questa chiave.</div>
+
+<h3 class="sub">Scenario A — recupero singola entità/automation</h3>
+<p>HA gira ancora: Impostazioni → Backups → backup antecedente al guasto → Ripristina parziale → seleziona solo Configurazione HA → chiave crittografia → conferma.</p>
+
+<h3 class="sub">Scenario B — ripristino completo HAOS</h3>
+<p>Proxmox: Datacenter → backup_wd_4tb → file vzdump-qemu-100-… → Ripristino → Storage local-lvm → VM ID 100 → attendere 5–10 min → avvia VM 100 → verifica su 192.168.1.53:8123.</p>
+
+<h3 class="sub">Scenario D — disaster recovery da dischi</h3>
+<p>Reinstalla Proxmox VE 9.x sul nuovo disco → IP 192.168.1.100 → rimonta disco 4TB come backup_wd_4tb → rimonta NAS come nas_wd → ripristina in ordine: VM 100 → LXC 110, 200 → LXC 120, 130, 131 → VM 101 → ricrea job backup + script rclone.</p>
+
+<h3 class="sub">Comandi rclone (off-site)</h3>
+<pre># Stato ultimo backup
+tail -n 40 /var/log/rclone-backup.log
+
+# Avvio manuale immediato
+systemd-run --unit=backup-drive-now --collect /usr/local/bin/backup-to-drive.sh
+
+# Lista backup su Google Drive
+rclone lsf gdrive:proxmox-backups</pre>
+
+<h3 class="sub">Checklist manutenzione mensile</h3>
+<pre>[ ] HA: backup automatico ultimo OK
+[ ] HA: Google Drive add-on online — token non scaduto
+[ ] Proxmox: entrambi i job vzdump (04:00 + 04:30) OK ultima settimana
+[ ] Proxmox: spazio backup_wd_4tb > 20%
+[ ] NAS WD: raggiungibile su 192.168.1.178
+[ ] OFF-SITE rclone: log con "FINE" recente
+[ ] OFF-SITE rclone: ~14 file vzdump su gdrive:proxmox-backups
+[ ] Chiave crittografia HA: ancora presente in Gmail
+[ ] Copia rclone.conf su chiavetta fuori casa: presente</pre>
+
+<h3 class="sub">Verifiche post-riavvio HA</h3>
+<div class="ok">Dopo ogni riavvio verificare: nessun errore nei log · sensor.pdc_r_opstate ha valore numerico · addr1003 = 3 · addr1088 = 2 · addr1094 = 0 · binary_sensor.tesla_ble_pronta = ON (se auto in garage) · sensori pvlib_oggi_* popolati (ore 6–20) · InfluxDB connesso · Recorder MariaDB: storia carica.</div>
+
+<h3 class="sub">Note di manutenzione aperte</h3>
+<div class="tbl-wrap"><table>
+<tr><th>Problema</th><th>Scadenza</th><th>Stato</th></tr>
+<tr><td>907 formule COP per R410A (non R32)</td><td>Settembre 2026</td><td>⚠️ Da rivedere con dati invernali</td></tr>
+<tr><td>720 previsioni FV — friendly_name invalido riga 16</td><td>Giugno 2026</td><td>⚠️ Da verificare</td></tr>
+<tr><td>ACS setpoint reale 30°C (sotto soglia anomalia 38°C)</td><td>Da verificare</td><td>⚠️ Intenzionale o residuo?</td></tr>
+<tr><td>ECO mode = 0 — setpoint −2°C al riaccendimento</td><td>Settembre 2026</td><td>⚠️ Da verificare prima inverno</td></tr>
+<tr><td>Backup GEEKOM → BEELINK (warm standby)</td><td>Appena possibile</td><td>⏳ In attesa</td></tr>
+<tr><td>Modbus PDC riabilitare</td><td>Maggio</td><td>✅ Risolto 2026-05-22</td></tr>
+<tr><td>addr1003 W-OTC commento errato</td><td>Maggio</td><td>✅ Risolto 2026-05-22</td></tr>
+</table></div>
+
+<a href="#" class="back">↑ torna all'indice</a>
+</section>
+
+<!-- ═══════════════════════ 8 · RIFERIMENTI ═══════════════════════ -->
+<section id="riferimenti">
+<h2 class="sec"><span class="num">8</span> Riferimenti e contatti</h2>
+
+<h3 class="sub">Contatti tecnici</h3>
+<div class="tbl-wrap"><table>
+<tr><th>Nome</th><th>Telefono</th><th>Specializzazione</th></tr>
+<tr><td>Marco Mourglia</td><td><strong>335-1354309</strong></td><td>Internet, sistema generale, Home Assistant</td></tr>
+<tr><td>Elvis Martinat (BLUMAR — San Germano)</td><td><strong>347-4958076</strong></td><td>Idraulica, gas, PDC</td></tr>
+<tr><td>Alessandro Reale (IS ENERGY — Abbadia Alpina)</td><td><strong>370-3068232</strong></td><td>Fotovoltaico, PDC, VMC</td></tr>
+<tr><td>Claudio Massello</td><td><strong>348-6977962</strong></td><td>Impianto elettrico</td></tr>
+</table></div>
+
+<h3 class="sub">Hardware — modelli e seriali</h3>
+<div class="tbl-wrap"><table>
+<tr><th>Componente</th><th>Modello</th><th>Codice/SN</th></tr>
+<tr><td>PDC</td><td>Hitachi RASM-4VNE</td><td>S/N 4QE99993</td></tr>
+<tr><td>Controller</td><td>PC-ARFH1E</td><td>—</td></tr>
+<tr><td>Gateway Modbus</td><td>Hitachi ATW-MBS-02</td><td>S/N 7E549924</td></tr>
+<tr><td>Contatore termico</td><td>Caleffi CONTECA EASY 1"1/4 RS485</td><td>7504/7507</td></tr>
+<tr><td>Inverter stringa Sud</td><td>SolarEdge SE6000H</td><td>—</td></tr>
+<tr><td>Inverter stringa Est</td><td>Enphase IQ7A / IQ8AC</td><td>—</td></tr>
+<tr><td>Inverter stringa Ovest</td><td>Enphase IQ7A</td><td>—</td></tr>
+<tr><td>Auto</td><td>Tesla Model Y Long Range</td><td>VIN: XP7YGCES1RB482601</td></tr>
+<tr><td>Wall Connector</td><td>Tesla Wall Connector Gen 3</td><td>TSN: PGT24118019155</td></tr>
+<tr><td>ESP32 Garage</td><td>esp32dev 4MB flash</td><td>MAC WiFi: 88:57:21:77:02:24</td></tr>
+</table></div>
+
+<h3 class="sub">Storage Proxmox</h3>
+<div class="tbl-wrap"><table>
+<tr><th>Nome</th><th>Tipo</th><th>Contenuto</th><th>Posizione fisica</th></tr>
+<tr><td>local</td><td>Directory</td><td>ISO, template</td><td>Disco sistema Proxmox</td></tr>
+<tr><td>local-lvm</td><td>LVM-Thin</td><td>Dischi VM/LXC live</td><td>Disco sistema Proxmox</td></tr>
+<tr><td>backup_wd_4tb</td><td>Directory</td><td>Backup vzdump</td><td>Disco 4TB locale (/mnt/pve/backup_wd/dump)</td></tr>
+<tr><td>nas_wd</td><td>NFS/CIFS</td><td>Backup vzdump</td><td>NAS WD MyCloud 192.168.1.178</td></tr>
+</table></div>
+
+<h3 class="sub">Riferimenti esterni</h3>
+<div class="tbl-wrap"><table>
+<tr><th>Risorsa</th><th>Link</th></tr>
+<tr><td>yoziru/esphome-tesla-ble</td><td><a href="https://github.com/yoziru/esphome-tesla-ble">github.com/yoziru/esphome-tesla-ble</a></td></tr>
+<tr><td>simple-pid (Python)</td><td><a href="https://github.com/m-lundberg/simple-pid">github.com/m-lundberg/simple-pid</a></td></tr>
+<tr><td>AppDaemon (add-on frenck)</td><td><a href="https://github.com/hassio-addons/addon-appdaemon">github.com/hassio-addons/addon-appdaemon</a></td></tr>
+<tr><td>pvlib-python</td><td><a href="https://pvlib-python.readthedocs.io/">pvlib-python.readthedocs.io</a></td></tr>
+<tr><td>Open-Meteo API</td><td><a href="https://open-meteo.com/">open-meteo.com</a></td></tr>
+<tr><td>Manuale Hitachi RASM-4VNE</td><td><a href="https://marco241254.github.io/casa-emergenza/PMIT0342B_rev6_01-21.pdf">PMIT0342B_rev6</a></td></tr>
+<tr><td>Manuale gateway ATW-MBS-02</td><td><a href="https://marco241254.github.io/casa-emergenza/PMML0419A_rev3.pdf">PMML0419A_rev3</a></td></tr>
+<tr><td>Registri Modbus CONTECA</td><td><a href="https://marco241254.github.io/casa-emergenza/Registri%20MODBUS%20per%20CONTECA.pdf">Registri MODBUS CONTECA</a></td></tr>
+<tr><td>Impianto TERMO_OPTIMA (riscaldamento)</td><td><a href="https://marco241254.github.io/casa-emergenza/impianto.html">impianto.html</a></td></tr>
+<tr><td>Pannello emergenza</td><td><a href="https://marco241254.github.io/casa-emergenza/indexnew.html">indexnew.html</a></td></tr>
+</table></div>
+
+<a href="#" class="back">↑ torna all'indice</a>
+</section>
+
+<footer>
+  TERMO_OPTIMA · Documentazione tecnica sistema domotico · Pomaretto (TO) 620 m s.l.m.<br>
+  Generata 2026-06-23 · Marco 335-1354309 · Elvis 347-4958076 · Alessandro 370-3068232 · Claudio 348-6977962
+</footer>
+
+</body>
+</html>

@@ -1,426 +1,432 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Casa Emergenza - Indice Generale</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
-            min-height: 100vh;
-            color: white;
-        }
-        
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: linear-gradient(145deg, #2d3748 0%, #1a202c 100%);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
-            border: 1px solid #4a5568;
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 50px;
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-            padding: 30px;
-            border-radius: 20px;
-            border: 3px solid #805ad5;
-        }
-        
-        .header h1 {
-            color: white;
-            font-size: 3em;
-            margin: 0;
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
-        }
-        
-        .subtitle {
-            font-size: 1.3em;
-            margin-top: 15px;
-            opacity: 0.9;
-        }
-        
-        .components-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 25px;
-            margin: 40px 0;
-        }
-        
-        .component-card {
-            background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
-            border-radius: 20px;
-            padding: 25px;
-            border: 2px solid rgba(255,255,255,0.2);
-            transition: all 0.4s ease;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .component-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-            border-color: #3498db;
-        }
-        
-        .component-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            background: linear-gradient(90deg, #3498db, #9b59b6, #e74c3c, #f39c12);
-        }
-        
-        .card-r1 { border-color: #3498db; }
-        .card-r1:hover { border-color: #2980b9; background: linear-gradient(145deg, rgba(52,152,219,0.1), rgba(52,152,219,0.05)); }
-        
-        .card-r2 { border-color: #f39c12; }
-        .card-r2:hover { border-color: #e67e22; background: linear-gradient(145deg, rgba(243,156,18,0.1), rgba(243,156,18,0.05)); }
-        
-        .card-r6 { border-color: #e74c3c; }
-        .card-r6:hover { border-color: #c0392b; background: linear-gradient(145deg, rgba(231,76,60,0.1), rgba(231,76,60,0.05)); }
-        
-        .card-r7 { border-color: #9b59b6; }
-        .card-r7:hover { border-color: #8e44ad; background: linear-gradient(145deg, rgba(155,89,182,0.1), rgba(155,89,182,0.05)); }
-        
-        .card-general { border-color: #27ae60; }
-        .card-general:hover { border-color: #229954; background: linear-gradient(145deg, rgba(39,174,96,0.1), rgba(39,174,96,0.05)); }
-        
-        .component-icon {
-            font-size: 3em;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        
-        .component-title {
-            font-size: 1.5em;
-            font-weight: bold;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-        
-        .component-description {
-            font-size: 1em;
-            line-height: 1.5;
-            opacity: 0.9;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        
-        .component-details {
-            background: rgba(0,0,0,0.2);
-            padding: 15px;
-            border-radius: 10px;
-            margin: 15px 0;
-            font-size: 0.9em;
-        }
-        
-        .link-button {
-            display: block;
-            width: 100%;
-            padding: 12px;
-            background: linear-gradient(90deg, #3498db, #2980b9);
-            color: white;
-            text-decoration: none;
-            border-radius: 10px;
-            text-align: center;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            margin-top: 15px;
-        }
-        
-        .link-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(52,152,219,0.3);
-        }
-        
-        .link-r1 { background: linear-gradient(90deg, #3498db, #2980b9); }
-        .link-r2 { background: linear-gradient(90deg, #f39c12, #e67e22); }
-        .link-r6 { background: linear-gradient(90deg, #e74c3c, #c0392b); }
-        .link-r7 { background: linear-gradient(90deg, #9b59b6, #8e44ad); }
-        .link-general { background: linear-gradient(90deg, #27ae60, #229954); }
-        
-        .emergency-section {
-            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-            padding: 30px;
-            border-radius: 20px;
-            margin: 40px 0;
-            border: 3px solid #e74c3c;
-            text-align: center;
-        }
-        
-        .emergency-contacts {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-top: 25px;
-        }
-        
-        .contact-card {
-            background: rgba(255,255,255,0.1);
-            padding: 20px;
-            border-radius: 15px;
-            border: 2px solid rgba(255,255,255,0.3);
-        }
-        
-        .stats-section {
-            background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
-            padding: 25px;
-            border-radius: 15px;
-            margin: 30px 0;
-            border: 2px solid #34495e;
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-        
-        .stat-item {
-            background: rgba(255,255,255,0.1);
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-        }
-        
-        .stat-number {
-            font-size: 2em;
-            font-weight: bold;
-            color: #3498db;
-        }
-        
-        .footer {
-            text-align: center;
-            margin-top: 40px;
-            padding: 20px;
-            border-top: 2px solid #4a5568;
-            color: #bdc3c7;
-            font-style: italic;
-        }
-        
-        @media (max-width: 768px) {
-            .container {
-                padding: 20px;
-            }
-            
-            .header h1 {
-                font-size: 2.2em;
-            }
-            
-            .components-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .emergency-contacts {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Casa Emergenza — TERMO_OPTIMA · Pomaretto</title>
+<style>
+  :root {
+    --bg: #f5f5f5;
+    --card: #ffffff;
+    --text: #333333;
+    --text-dim: #666666;
+    --accent: #c0392b;
+    --accent-light: #e74c3c;
+    --ok: #27ae60;
+    --warn: #f39c12;
+    --info: #2980b9;
+    --code-bg: #f4f4f4;
+    --border: #e0e0e0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+  }
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  h1 {
+    font-size: 1.9em;
+    border-bottom: 3px solid var(--accent);
+    padding-bottom: 10px;
+    margin-top: 0;
+  }
+  h2 {
+    font-size: 1.35em;
+    color: var(--accent);
+    margin-top: 35px;
+    border-left: 5px solid var(--accent);
+    padding-left: 15px;
+  }
+  h3 {
+    font-size: 1.1em;
+    color: var(--text);
+    margin-top: 25px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 5px;
+  }
+  .subtitle {
+    color: var(--text-dim);
+    font-size: 0.95em;
+    margin-bottom: 25px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px;
+    margin-bottom: 18px;
+  }
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 15px;
+  }
+  .module-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 15px;
+    transition: transform 0.1s;
+  }
+  .module-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  .module-card h4 {
+    margin: 0 0 8px 0;
+    font-size: 1.05em;
+    color: var(--accent);
+  }
+  .module-card p {
+    margin: 0;
+    font-size: 0.9em;
+    color: var(--text-dim);
+  }
+  .module-card a {
+    display: inline-block;
+    margin-top: 10px;
+    text-decoration: none;
+    color: white;
+    background: var(--accent);
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-weight: 600;
+  }
+  .module-card a:hover {
+    background: var(--accent-light);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 0.92em;
+  }
+  th, td {
+    border: 1px solid var(--border);
+    padding: 7px 9px;
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    background: #f0f0f0;
+    font-weight: 600;
+  }
+  tr:nth-child(even) { background: #fafafa; }
+  code {
+    font-family: "SFMono-Regular", Consolas, monospace;
+    background: var(--code-bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+  pre {
+    font-family: "SFMono-Regular", Consolas, monospace;
+    background: #1e1e1e;
+    color: #d4d4d4;
+    padding: 14px;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-size: 0.85em;
+    line-height: 1.5;
+  }
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: 600;
+    color: white;
+  }
+  .badge-ok { background: var(--ok); }
+  .badge-warn { background: var(--warn); }
+  .badge-danger { background: var(--danger); }
+  .badge-info { background: var(--info); }
+  .alert {
+    background: #fff3cd;
+    border-left: 4px solid var(--warn);
+    padding: 12px 14px;
+    margin: 12px 0;
+    border-radius: 0 4px 4px 0;
+  }
+  .alert-danger {
+    background: #f8d7da;
+    border-left: 4px solid var(--accent);
+  }
+  .alert-info {
+    background: #d1ecf1;
+    border-left: 4px solid var(--info);
+  }
+  .contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+  }
+  .contact-card {
+    background: #f8f9fa;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px;
+  }
+  .contact-card strong {
+    color: var(--accent);
+    display: block;
+    margin-bottom: 4px;
+  }
+  .contact-card span {
+    font-size: 0.9em;
+    color: var(--text-dim);
+  }
+  .emoji { font-size: 1.2em; margin-right: 4px; }
+  .section-link {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 0.85em;
+    color: var(--info);
+    text-decoration: none;
+  }
+  .section-link:hover { text-decoration: underline; }
+  @media (max-width: 600px) {
+    .card-grid { grid-template-columns: 1fr; }
+    table { font-size: 0.85em; }
+  }
+</style>
+<base target="_blank">
 </head>
 <body>
-    <div class="container">
-        <!-- HEADER -->
-        <div class="header">
-            <h1>🏠 CASA EMERGENZA</h1>
-            <p class="subtitle">Sistema di Gestione Tecnica e Procedure di Emergenza</p>
-            <p style="margin: 10px 0; font-size: 1.1em;">Guida Completa Componenti QE1 - Riscaldamento e PDC</p>
-        </div>
-        
-        <!-- EMERGENCY CONTACTS -->
-        <div class="emergency-section">
-            <h2 style="margin-top: 0;">🚨 CONTATTI EMERGENZA</h2>
-            <p><strong>In caso di problemi urgenti, chiamare in questo ordine:</strong></p>
-            <div class="emergency-contacts">
-                <div class="contact-card">
-                    <h3>1. MARCO</h3>
-                    <p style="font-size: 1.2em;">📱 <strong>335-1354309</strong></p>
-                    <p><em>Primo contatto</em></p>
-                </div>
-                <div class="contact-card">
-                    <h3>2. ELVIS MARTINAT</h3>
-                    <p style="font-size: 1.2em;">📱 <strong>347-4958076</strong></p>
-                    <p><em>BLUMAR - San Germano<br>Idraulica e Gas / PDC</em></p>
-                </div>
-                <div class="contact-card">
-                    <h3>3. ALESSANDRO REALE</h3>
-                    <p style="font-size: 1.2em;">📱 <strong>370-3068232</strong></p>
-                    <p><em>IS ENERGY - Abbadia Alpina<br>PDC Fotovoltaico VMC</em></p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- COMPONENTS GRID -->
-        <div class="components-grid">
-            <!-- R1 Component -->
-            <div class="component-card card-r1" onclick="window.location.href='r1.html'">
-                <div class="component-icon">🔴</div>
-                <h3 class="component-title">COMPONENTE R1 - QE1</h3>
-                <p class="component-description">Contattore bobina 220V - Abilita PDC</p>
-                <div class="component-details">
-                    <strong>Funzione:</strong> Abilita la Pompa di Calore quando richiesto dal termostato<br>
-                    <strong>Input:</strong> shellyplus1_90150687a670<br>
-                    <strong>Posizione:</strong> Quadro QE1, locale tecnico dietro caldaia
-                </div>
-                <a href="r1.html" class="link-button link-r1">🔴 VAI A R1 - ABILITAZIONE PDC</a>
-            </div>
-            
-            <!-- R2 Component -->
-            <div class="component-card card-r2" onclick="window.location.href='r2.html'">
-                <div class="component-icon">🔄</div>
-                <h3 class="component-title">COMPONENTE R2 - QE1</h3>
-                <p class="component-description">Contattore bobina 220V - Circolatore</p>
-                <div class="component-details">
-                    <strong>Funzione:</strong> Controlla la pompa di ricircolo (P1) dei termosifoni<br>
-                    <strong>Input:</strong> shellyplus1_1c692008dea0<br>
-                    <strong>Output:</strong> P1 Pompa Danfoss dietro boiler
-                </div>
-                <a href="r2.html" class="link-button link-r2">🔄 VAI A R2 - CIRCOLATORE</a>
-            </div>
-            
-            <!-- R6 Component (placeholder) -->
-            <div class="component-card card-r6">
-                <div class="component-icon">⛔</div>
-                <h3 class="component-title">COMPONENTE R6 - QE1</h3>
-                <p class="component-description">Contattore Smart Grid - Blocco PDC</p>
-                <div class="component-details">
-                    <strong>Funzione:</strong> Può bloccare la PDC tramite Smart Grid<br>
-                    <strong>Stato Normale:</strong> R6 NON ECCITATO (PDC libera)<br>
-                    <strong>LED:</strong> SPENTO quando tutto OK
-                </div>
-                <a href="r6.html" class="link-button link-r6">⛔ VAI A R6 - SMART GRID (Presto)</a>
-            </div>
-            
-            <!-- R7 Component (placeholder) -->
-            <div class="component-card card-r7">
-                <div class="component-icon">🔥</div>
-                <h3 class="component-title">COMPONENTE R7 - QE1</h3>
-                <p class="component-description">Sistema backup caldaia</p>
-                <div class="component-details">
-                    <strong>Funzione:</strong> Gestisce il sistema di backup con caldaia<br>
-                    <strong>Stato Normale:</strong> R7 SPENTO (PDC prioritaria)<br>
-                    <strong>Backup:</strong> Attivazione caldaia in emergenza
-                </div>
-                <a href="r7.html" class="link-button link-r7">🔥 VAI A R7 - BACKUP CALDAIA (Presto)</a>
-            </div>
-            
-            <!-- General Checklists -->
-            <div class="component-card card-general" onclick="window.location.href='checklrisc.html'">
-                <div class="component-icon">🛩️</div>
-                <h3 class="component-title">CHECKLIST RISCALDAMENTO</h3>
-                <p class="component-description">Checklist completa sistema riscaldamento</p>
-                <div class="component-details">
-                    <strong>Include:</strong> Verifica completa PDC + Circolazione<br>
-                    <strong>Controlli:</strong> Infrastruttura, idraulico, elettrico<br>
-                    <strong>Risultato:</strong> Diagnostica rapida problemi
-                </div>
-                <a href="checklrisc.html" class="link-button link-general">🛩️ VAI A CHECKLIST GENERALE</a>
-            </div>
-            
-            <!-- QE2 Info -->
-            <div class="component-card card-general" onclick="window.location.href='qe2_final.html'">
-                <div class="component-icon">⚡</div>
-                <h3 class="component-title">QUADRO QE2 - SHELLY</h3>
-                <p class="component-description">Armadio controllo automatico</p>
-                <div class="component-details">
-                    <strong>Contenuto:</strong> LED di stato R1, R2, R6, R7<br>
-                    <strong>Controllo:</strong> Shelly + Home Assistant<br>
-                    <strong>Posizione:</strong> Armadio dedicato
-                </div>
-                <a href="qe2_final.html" class="link-button link-general">⚡ VAI A QE2 - CONTROLLO</a>
-            </div>
-        </div>
-        
-        <!-- STATS SECTION -->
-        <div class="stats-section">
-            <h3 style="color: #ecf0f1; text-align: center; margin-top: 0;">📊 STATISTICHE SISTEMA</h3>
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <div class="stat-number">6</div>
-                    <p>Pagine HTML</p>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">4</div>
-                    <p>Componenti R</p>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">51</div>
-                    <p>Immagini</p>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">3</div>
-                    <p>Contatti Emergenza</p>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">2</div>
-                    <p>Quadri Elettrici</p>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">100%</div>
-                    <p>Copertura Tecnica</p>
-                </div>
-            </div>
-        </div>
-        
-        <!-- QUICK ACCESS -->
-        <div style="background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); padding: 25px; border-radius: 15px; margin: 30px 0; border: 2px solid #34495e;">
-            <h3 style="color: #ecf0f1; text-align: center; margin-top: 0;">🚀 ACCESSO RAPIDO</h3>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px;">
-                <a href="r1.html" style="color: white; text-decoration: none; background: #3498db; padding: 15px; border-radius: 10px; text-align: center; font-weight: bold; transition: all 0.3s ease;">
-                    🔴 PDC Non Parte
-                </a>
-                <a href="r2.html" style="color: white; text-decoration: none; background: #f39c12; padding: 15px; border-radius: 10px; text-align: center; font-weight: bold; transition: all 0.3s ease;">
-                    🔄 Termosifoni Freddi
-                </a>
-                <a href="checklrisc.html" style="color: white; text-decoration: none; background: #27ae60; padding: 15px; border-radius: 10px; text-align: center; font-weight: bold; transition: all 0.3s ease;">
-                    🛩️ Controllo Generale
-                </a>
-                <a href="qe2_final.html" style="color: white; text-decoration: none; background: #9b59b6; padding: 15px; border-radius: 10px; text-align: center; font-weight: bold; transition: all 0.3s ease;">
-                    ⚡ LED Armadio
-                </a>
-            </div>
-        </div>
-        
-        <!-- FOOTER -->
-        <div class="footer">
-            <p><strong>Sistema Casa Emergenza v2.0</strong><br>
-            Aggiornato: 02/06/2025<br>
-            Repository: <a href="https://github.com/Marco241254/casa-emergenza" style="color: #3498db;">github.com/Marco241254/casa-emergenza</a><br>
-            Responsabili: MARCO 335-1354309 | ELVIS 347-4958076 | ALESSANDRO 370-3068232</p>
-        </div>
-    </div>
-    
-    <script>
-        // Add hover effects
-        document.querySelectorAll('.component-card').forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-8px) scale(1.02)';
-            });
-            
-            card.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0) scale(1)';
-            });
-        });
-        
-        // Add click animation
-        document.querySelectorAll('.link-button').forEach(button => {
-            button.addEventListener('click', function(e) {
-                this.style.transform = 'scale(0.95)';
-                setTimeout(() => {
-                    this.style.transform = 'scale(1)';
-                }, 150);
-            });
-        });
-    </script>
+<div class="container">
+
+<h1>🏠 Casa Emergenza — TERMO_OPTIMA</h1>
+<p class="subtitle">Pomaretto (TO) · Piemonte · ~626 m s.l.m. · Aggiornato 2026-06-23</p>
+
+<!-- ==================== PANORAMICA TECNICA ==================== -->
+<h2>🗺️ Panoramica Tecnica Sistema</h2>
+
+<div class="card">
+<h3>Architettura di controllo</h3>
+<pre>
+<span style="color:#6a9955"># Cluster Proxmox (GEEKOM) — IP 192.168.1.100</span>
+  VM 100  HAOS (192.168.1.53)  ← Cervello di sistema
+  LXC 110 InfluxDB (192.168.1.48)
+  LXC 120 Grafana (192.168.1.57)
+  LXC 130 meteo-corrector (192.168.1.68)
+  LXC 131 energy-allocator
+  LXC 200 MariaDB (192.168.1.165)
+
+<span style="color:#6a9955"># Dispositivi fisici di rete</span>
+  192.168.1.5   ATW-MBS-02    Gateway Modbus PDC (porta 502)
+  192.168.1.175 ESP32 Garage  Tesla BLE (porta 6053)
+  192.168.1.176 ESP32 Cancello Tesla BLE (porta 6053)
+  192.168.1.178 NAS WD MyCloud  Backup (NFS/CIFS)
+  192.168.1.181 BEELINK        Warm standby (spento)
+
+<span style="color:#6a9955"># Router</span>
+  Ubiquiti Dream Router 7 (UDR7) — Fibra principale
+  Failover → LTE TP-Link MR600
+</pre>
+</div>
+
+<div class="card">
+<h3>🌡️ Pompa di Calore Hitachi RASM-4VNE — Dati Rapidi</h3>
+<table>
+<tr><th>Parametro</th><th>Valore</th></tr>
+<tr><td>Modello</td><td>RASM-4VNE · S/N 4QE99993</td></tr>
+<tr><td>Refrigerante</td><td>R410A</td></tr>
+<tr><td>Potenza termica</td><td>3,3 ÷ 11,0 kW (inverter 30÷100%)</td></tr>
+<tr><td>COP nominale / reale</td><td>5,00 / 3,0÷5,5</td></tr>
+<tr><td>Gateway Modbus</td><td>ATW-MBS-02 (192.168.1.5:502)</td></tr>
+<tr><td>Contatore termico</td><td>Caleffi CONTECA EASY 1¼"</td></tr>
+<tr><td>Controller</td><td>PC-ARFH1E (deve essere in CentralMode=Water)</td></tr>
+</table>
+
+<div class="alert-danger">
+<strong>Impostazione critica PC-ARFH1E:</strong> Central Mode = <strong>Water (2)</strong>, C1 = <strong>Temperatura fissa / Fix</strong>.<br>
+Se il display è spento → verificare fusibile M2 REG TERM / trasformatore 24V.
+</div>
+</div>
+
+<div class="card">
+<h3>🔌 Registri Modbus Critici per Emergenza</h3>
+<p>Notazione <strong>addr</strong> = Register − 1 (quella usata da Home Assistant).</p>
+<table>
+<tr><th>addr</th><th>Funzione</th><th>Valore OK</th><th>Se diverso</th></tr>
+<tr><td><code>1050</code></td><td>R-System Run</td><td><span class="badge badge-ok">1</span></td><td>Verificare R1 / QE1</td></tr>
+<tr><td><code>1053</code></td><td>R-OTC C1</td><td><span class="badge badge-ok">3 (Fix)</span></td><td>Scrivere addr1003 = 3</td></tr>
+<tr><td><code>1055</code></td><td>R-Setpoint C1</td><td>= addr1005</td><td>Verificare addr1003</td></tr>
+<tr><td><code>1088</code></td><td>R-CentralMode</td><td><span class="badge badge-ok">2 (Water)</span></td><td>Menu installatore PC-ARFH1E</td></tr>
+<tr><td><code>1090</code></td><td>R-OpState</td><td><span class="badge badge-ok">5, 6 o 8</span></td><td>11 = ALLARME → Elvis</td></tr>
+<tr><td><code>1094</code></td><td>R-H-LINK</td><td><span class="badge badge-ok">0 (OK)</span></td><td>Controllare cablaggio gateway</td></tr>
+<tr><td><code>1224</code></td><td>Numero allarme</td><td><span class="badge badge-ok">0</span></td><td>Annotare codice → Elvis</td></tr>
+</table>
+
+<div class="alert">
+<strong>Correzione addr1003:</strong> il valore <strong>0 NON è "temperatura fissa"</strong> — la macchina torna alla curva interna e ignora il setpoint. Deve essere sempre <strong>3 (Fix)</strong>.
+</div>
+</div>
+
+<div class="card">
+<h3>⚡ Quadro QE1/QE2 — Stato Relè</h3>
+<table>
+<tr><th>Relè</th><th>Funzione</th><th>LED normale</th><th>Azione emergenza</th></tr>
+<tr><td>R1 · 90150687a670</td><td>Abilita PDC</td><td>spento</td><td>rosso = richiesta attiva</td></tr>
+<tr><td>R2 · 1c692008dea0</td><td>Pompa P1</td><td>spento</td><td>rosso = P1 attiva · <strong>spento con PDC accesa = CRITICO</strong></td></tr>
+<tr><td>R6 · 8813bfcdbda0</td><td>Smart Grid blocco</td><td><span class="badge badge-ok">SPENTO</span></td><td><strong>ROSSO = PDC BLOCCATA</strong> → levetta R6 su OFF in QE1</td></tr>
+<tr><td>R7 · 1c692044c2ac</td><td>Modula Plus backup</td><td>spento</td><td>antibloccaggio settimanale</td></tr>
+<tr><td>EM · c45bbee1c642</td><td>Misura potenza PDC</td><td>verde stabile</td><td>—</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>🌐 Mappa IP Completa Dispositivi</h3>
+<table>
+<tr><th>IP</th><th>Dispositivo</th><th>Porta/Proto</th><th>Ruolo</th></tr>
+<tr><td><strong>192.168.1.5</strong></td><td>ATW-MBS-02</td><td>502 TCP</td><td>Gateway Modbus PDC</td></tr>
+<tr><td>192.168.1.53</td><td>Home Assistant OS</td><td>8123 HTTP</td><td>Cervello sistema</td></tr>
+<tr><td>192.168.1.100</td><td>Proxmox GEEKOM</td><td>8006 HTTPS</td><td>Virtualizzazione</td></tr>
+<tr><td>192.168.1.48</td><td>InfluxDB (LXC 110)</td><td>8086 HTTP</td><td>Storico dati</td></tr>
+<tr><td>192.168.1.57</td><td>Grafana (LXC 120)</td><td>HTTP</td><td>Dashboard</td></tr>
+<tr><td>192.168.1.68</td><td>meteo-corrector (LXC 130)</td><td>—</td><td>Previsioni FV</td></tr>
+<tr><td>192.168.1.165</td><td>MariaDB (LXC 200)</td><td>3306 MySQL</td><td>Recorder HA</td></tr>
+<tr><td>192.168.1.175</td><td>ESP32 Tesla Garage</td><td>6053 ESPHome</td><td>BLE Tesla</td></tr>
+<tr><td>192.168.1.176</td><td>ESP32 Tesla Cancello</td><td>6053 ESPHome</td><td>BLE Tesla</td></tr>
+<tr><td>192.168.1.178</td><td>NAS WD MyCloud EX2</td><td>NFS/CIFS</td><td>Backup</td></tr>
+<tr><td>192.168.1.71</td><td>Sonoff 4CH PRO R3</td><td>HTTP</td><td>Irrigazione prati</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>📋 Checklist Verifiche Rapide (ogni riavvio / emergenza)</h3>
+<ul>
+  <li>☐ <strong>addr1050</strong> = 1 (System Run)</li>
+  <li>☐ <strong>addr1053</strong> = 3 (OTC = Fix)</li>
+  <li>☐ <strong>addr1055</strong> = addr1005 (Setpoint ricevuto)</li>
+  <li>☐ <strong>addr1088</strong> = 2 (CentralMode = Water)</li>
+  <li>☐ <strong>addr1094</strong> = 0 (H-LINK OK)</li>
+  <li>☐ LED <strong>R6 spento</strong> in QE2 (se rosso → levetta OFF in QE1)</li>
+  <li>☐ LED <strong>R2 rosso</strong> quando PDC accesa (se spento → reset P1)</li>
+  <li>☐ Pressione circuito <strong>1,0÷1,5 bar</strong></li>
+  <li>☐ Display PC-ARFH1E acceso con dati C1 e ACS</li>
+</ul>
+</div>
+
+<!-- ==================== MODULI EMERGENZA ==================== -->
+<h2>🆘 Pannello Risoluzione Problemi — 12 Moduli</h2>
+
+<div class="card-grid">
+
+  <div class="module-card">
+    <h4>🔥 Riscaldamento con PDC</h4>
+    <p>Sistema pompa di calore e riscaldamento.<br>Responsabile: Elvis Martinat</p>
+    <a href="risc_con_pdc.html">VAI →</a>
+  </div>
+
+  <div class="module-card">
+    <h4>🚿 Acqua Calda</h4>
+    <p>Sistema produzione acqua calda sanitaria.<br>Responsabile: Elvis Martinat</p>
+    <a href="acqua_calda.html">VAI →</a>
+  </div>
+
+  <div class="module-card">
+    <h4>💧 Acqua Fredda</h4>
+    <p>Sistema distribuzione acqua fredda.<br>Responsabile: Elvis Martinat</p>
+    <a href="acqua_fredda.html">VAI →</a>
+  </div>
+
+  <div class="module-card">
+    <h4>🔌 Elettrico Cucina</h4>
+    <p>Impianto elettrico zona cucina.<br>Responsabile: Claudio Massello</p>
+    <a href="elettrico_cucina.html">VAI →</a>
+  </div>
+
+  <div class="module-card">
+    <h4>💡 Elettrico Piano 1°</h4>
+    <p>Impianto elettrico primo piano.<br>Responsabile: Claudio Massello</p>
+    <a href="elettrico_piano1.html">VAI →</a>
+  </div>
+
+  <div class="module-card">
+    <h4>🏠 Elettrico Mansarda</h4>
+    <p>Impianto elettrico mansarda.<br>Responsabile: Claudio Massello</p>
+    <a href="elettrico_mansarda.html">VAI →</a>
+  </div>
+
+  <div class="module-card">
+    <h4>⚙️ Elettrico Locale Tecnico</h4>
+    <p>Impianto elettrico locale tecnico.<br>Responsabile: Claudio Massello</p>
+    <a href="elettrico_tecnico.html">VAI →</a>
+  </div>
+
+  <div class="module-card">
+    <h4>⚡ Blackout Totale</h4>
+    <p>Mancanza totale di energia elettrica.<br>Responsabile: Claudio Massello</p>
+    <a href="blackout_totale.html">VAI →</a>
+  </div>
+
+  <div class="module-card">
+    <h4>🔥 Gas Cucina</h4>
+    <p>Impianto gas cucina e fornelli.<br>Responsabile: Elvis Martinat</p>
+    <a href="gas_cucina.html">VAI →</a>
+  </div>
+
+  <div class="module-card">
+    <h4>☀️ Fotovoltaico</h4>
+    <p>Sistema fotovoltaico e accumulo (16,28 kWp / 19,7 kWh).<br>Responsabile: Alessandro Reale</p>
+    <a href="fotovoltaico.html">VAI →</a>
+  </div>
+
+  <div class="module-card">
+    <h4>📶 Internet / WiFi</h4>
+    <p>Connessione internet e rete WiFi.<br>Responsabile: Marco</p>
+    <a href="internet_wifi.html">VAI →</a>
+  </div>
+
+  <div class="module-card">
+    <h4>📞 Contatti Completi</h4>
+    <p>Elenco completo numeri utili e riferimenti.</p>
+    <a href="contatti_completi.html">VAI →</a>
+  </div>
+
+</div>
+
+<!-- ==================== CONTATTI TECNICI ==================== -->
+<h2>📞 Contatti Tecnici Completi</h2>
+
+<div class="card">
+<div class="contact-grid">
+  <div class="contact-card">
+    <strong>Marco Mourglia</strong>
+    <span>📱 335-1354309<br>🌐 Internet, sistema generale, Home Assistant</span>
+  </div>
+  <div class="contact-card">
+    <strong>Elvis Martinat (BLUMAR)</strong>
+    <span>📱 347-4958076<br>🔧 Idraulica, gas, PDC, ACS</span>
+  </div>
+  <div class="contact-card">
+    <strong>Alessandro Reale (IS ENERGY)</strong>
+    <span>📱 370-3068232<br>☀️ Fotovoltaico, PDC, VMC</span>
+  </div>
+  <div class="contact-card">
+    <strong>Claudio Massello</strong>
+    <span>📱 348-6977962<br>⚡ Impianto elettrico</span>
+  </div>
+</div>
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="card" style="margin-top:40px; text-align:center; color:var(--text-dim); font-size:0.85em;">
+<p>TERMO_OPTIMA · Pomaretto (TO) · Piemonte · ~626 m s.l.m.<br>
+Documentazione integrata con dati da Home Assistant, Proxmox, Modbus ATW-MBS-02, pvlib, Tesla BLE.<br>
+Aggiornato: <strong>2026-06-23</strong></p>
+</div>
+
+</div>
 </body>
 </html>

@@ -1,437 +1,146 @@
 <!DOCTYPE html>
 <html lang="it">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Wallbox Tesla + TERA — Casa GEEKOM</title>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wallbox — Casa GEEKOM</title>
 <style>
-:root{--bg:#1a1a2e;--card:#16213e;--card2:#0f3460;--accent:#e94560;--accent2:#00d9ff;--ok:#2ecc71;--warn:#f39c12;--text:#eaeaea;--text2:#b0b0b0;--text3:#888}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;padding-bottom:3rem}
-header{background:linear-gradient(135deg,var(--card) 0%,var(--card2) 100%);padding:2rem 1rem;text-align:center;border-bottom:4px solid var(--accent);position:sticky;top:0;z-index:100}
-header h1{font-size:1.7rem;margin-bottom:.3rem}
-header .subtitle{color:var(--text2);font-size:.9rem}
-.status-bar{display:flex;justify-content:center;gap:1rem;margin-top:1rem;flex-wrap:wrap}
-.status-pill{padding:.3rem 1rem;border-radius:20px;font-size:.8rem;font-weight:600}
-.status-pill.ok{background:rgba(46,204,113,.2);color:var(--ok);border:1px solid var(--ok)}
-.status-pill.warn{background:rgba(243,156,18,.2);color:var(--warn);border:1px solid var(--warn)}
-.container{max-width:960px;margin:0 auto;padding:1rem}
-.section{background:var(--card);border-radius:12px;margin-bottom:1.5rem;overflow:hidden;border:1px solid rgba(255,255,255,.05)}
-.section-header{background:var(--card2);padding:1rem 1.2rem;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none}
-.section-header h2{font-size:1.15rem}
-.section-header .toggle{font-size:1.4rem;color:var(--accent2);transition:.2s}
-.section-header.collapsed .toggle{transform:rotate(-90deg)}
-.section-body{padding:1.2rem}
-.section-body.hidden{display:none}
-.emergency-banner{background:linear-gradient(135deg,#c0392b 0%,#e74c3c 100%);color:#fff;padding:1.5rem;border-radius:12px;margin-bottom:1.5rem;text-align:center}
-.emergency-banner h2{font-size:1.4rem;margin-bottom:.5rem}
-.emergency-banner ol{text-align:left;max-width:500px;margin:.8rem auto;font-size:.95rem}
-.emergency-banner li{margin-bottom:.4rem}
+body{font-family:system-ui,sans-serif;background:#1a1a2e;color:#eaeaea;line-height:1.7;max-width:900px;margin:0 auto;padding:1rem}
+header{text-align:center;padding:2rem 1rem;border-bottom:3px solid #e94560;margin-bottom:2rem}
+h1{font-size:1.5rem}h2{font-size:1.2rem;color:#00d9ff;margin:2rem 0 .5rem;border-bottom:1px solid #0f3460;padding-bottom:.3rem}
+h3{color:#f39c12;margin:1.5rem 0 .3rem}
+img{max-width:100%;border-radius:8px;border:2px solid #0f3460;margin:1rem 0;display:block}
 table{width:100%;border-collapse:collapse;font-size:.9rem;margin:1rem 0}
-th,td{padding:.6rem .8rem;text-align:left;border-bottom:1px solid rgba(255,255,255,.08)}
-th{background:rgba(0,217,255,.08);color:var(--accent2);font-weight:600}
-tr:hover{background:rgba(255,255,255,.03)}
-code{background:rgba(0,217,255,.1);color:var(--accent2);padding:.1rem .4rem;border-radius:4px;font-family:monospace;font-size:.85em}
-/* 5W Framework */
-.wwwww{background:var(--card2);border-radius:8px;padding:1rem;margin:1rem 0;border-left:3px solid var(--accent2)}
-.wwwww h4{color:var(--accent2);font-size:.85rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:.5rem}
-.wwwww-row{display:grid;grid-template-columns:80px 1fr;gap:.3rem 1rem;font-size:.88rem;margin-bottom:.3rem}
-.wwwww-label{color:var(--text2);font-weight:600;font-size:.8rem}
-.wwwww-value{color:var(--text)}
-/* Component cards */
-.component-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem;margin-top:1rem}
-.component-card{background:var(--card2);border-radius:8px;padding:1rem;border-left:4px solid var(--accent2)}
-.component-card.emergency{border-left-color:var(--accent)}
-.component-card.ok{border-left-color:var(--ok)}
-.component-card.warn{border-left-color:var(--warn)}
-.component-card h4{margin-bottom:.3rem;font-size:.95rem}
-.component-card p{color:var(--text2);font-size:.85rem}
-/* Photos */
-.photo-single{width:100%;max-width:600px;border-radius:8px;margin:1rem auto;display:block;border:2px solid var(--card2)}
-.photo-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem;margin:1rem 0}
-.photo-row img{width:100%;border-radius:8px;border:2px solid var(--card2)}
-.photo-caption{color:var(--text2);font-size:.82rem;margin-top:.3rem;text-align:center;font-style:italic}
-/* Steps */
-.step-list{counter-reset:step;list-style:none}
-.step-list li{counter-increment:step;padding:.7rem 0 .7rem 2.5rem;position:relative;border-bottom:1px solid rgba(255,255,255,.05)}
-.step-list li::before{content:counter(step);position:absolute;left:0;top:.7rem;width:1.8rem;height:1.8rem;background:var(--accent2);color:var(--bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem}
-.step-list li.danger::before{background:var(--accent);color:#fff}
-/* LED */
-.led-indicator{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:.5rem}
-.led-green{background:var(--ok);box-shadow:0 0 8px var(--ok)}
-.led-blue{background:var(--accent2);box-shadow:0 0 8px var(--accent2)}
-.led-red{background:var(--accent);box-shadow:0 0 8px var(--accent)}
-.led-off{background:#444}
-/* Labels */
-.label{display:inline-block;padding:.15rem .5rem;border-radius:4px;font-size:.75rem;font-weight:600;margin-right:.3rem}
-.label-red{background:rgba(233,69,96,.2);color:var(--accent);border:1px solid var(--accent)}
-.label-green{background:rgba(46,204,113,.2);color:var(--ok);border:1px solid var(--ok)}
-.label-blue{background:rgba(0,217,255,.2);color:var(--accent2);border:1px solid var(--accent2)}
-/* Schema */
-.schema{background:var(--card2);padding:1.2rem;border-radius:8px;font-family:monospace;font-size:.85rem;line-height:1.8;overflow-x:auto}
-footer{text-align:center;padding:2rem 1rem;color:var(--text2);font-size:.8rem;border-top:1px solid rgba(255,255,255,.05);margin-top:2rem}
-@media print{body{background:#fff;color:#000}.section{background:#fff;border:1px solid #ccc}.section-header{background:#f0f0f0}.section-body.hidden{display:block!important}header{position:static;background:#f0f0f0}.emergency-banner{background:#c0392b!important;color:#fff!important}.component-card{background:#f8f8f8;border-left:4px solid #333}.wwwww{background:#f8f8f8;border-left:3px solid #333}.schema{background:#f0f0f0}footer{display:none}.photo-single,.photo-row img{border:1px solid #ccc}}
-@media(max-width:600px){header h1{font-size:1.2rem}.component-grid{grid-template-columns:1fr}table{font-size:.8rem}.wwwww-row{grid-template-columns:1fr}}
+th,td{padding:.5rem .8rem;text-align:left;border-bottom:1px solid rgba(255,255,255,.08)}
+th{background:rgba(0,217,255,.08);color:#00d9ff}
+.warn{color:#e94560;font-weight:bold}
+.ok{color:#2ecc71}
+.step{counter-reset:s;list-style:none}
+.step li{counter-increment:s;padding:.5rem 0 .5rem 2.2rem;position:relative;border-bottom:1px solid rgba(255,255,255,.05)}
+.step li::before{content:counter(s);position:absolute;left:0;top:.5rem;width:1.6rem;height:1.6rem;background:#00d9ff;color:#1a1a2e;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.75rem}
+.card{background:#16213e;border-radius:8px;padding:1rem;margin:.5rem 0;border-left:3px solid #00d9ff}
+.card.red{border-left-color:#e94560}
+footer{text-align:center;padding:2rem;color:#888;font-size:.8rem;margin-top:3rem;border-top:1px solid rgba(255,255,255,.05)}
 </style>
 </head>
 <body>
 
 <header>
 <h1>Wallbox Tesla + TERA</h1>
-<p class="subtitle">Quadro QE4 &mdash; Garage &mdash; Cancello &mdash; Casa GEEKOM</p>
-<div class="status-bar">
-<span class="status-pill ok">Wallbox Garage: OK</span>
-<span class="status-pill ok">Wallbox Cancello (TERA): OK</span>
-<span class="status-pill ok">ESP32 Garage: Online</span>
-</div>
+<p style="color:#888">Quadro QE4 — Garage — Cancello — Casa GEEKOM</p>
 </header>
 
-<div class="container">
+<div style="background:linear-gradient(135deg,#c0392b,#e74c3c);color:#fff;padding:1.2rem;border-radius:12px;text-align:center;margin-bottom:2rem">
+<h2 style="color:#fff;border:none;margin:0 0 .5rem">EMERGENZA RAPIDO</h2>
+<p>Se la Tesla carica senza FV o c'e puzza di bruciato:</p>
+<p style="margin-top:.5rem"><strong>1.</strong> Vai al QE4 &rarr; premi il <strong>TASTO ROSSO</strong><br>
+<strong>2.</strong> Oppure: abbassa JXB1-63 "WALLBOX CANCELLO"<br>
+<strong>3.</strong> Il LED wallbox si spegne &rarr; zero rischio</p>
+</div>
 
-<!-- EMERGENZA RAPIDA -->
-<div class="emergency-banner">
-<h2>SPEGNIMENTO EMERGENZA RAPIDO</h2>
-<p style="font-size:.9rem;margin-bottom:1rem">Se la Tesla si carica da sola senza FV, c'&egrave; puzza di bruciato, o non sai cosa fare:</p>
-<ol>
-<li>Vai al <strong>QE4</strong> &mdash; locale tecnico / lavanderia, parete sinistra, coperchio trasparente</li>
-<li>Individua l'interruttore <strong>JXB1-63 4P C40</strong> con etichetta bianca <strong>"WALLBOX CANCELLO"</strong> (in basso a destra nel quadro)</li>
-<li>Abbassa la leva dell'interruttore &rarr; si stacca ALIMENTAZIONE a ENTRAMBE le wallbox</li>
-<li>ALTERNATIVA: premi il <strong>TASTO ROSSO</strong> nella sezione 4 del quadro (stacco emergenza)</li>
-<li>I LED delle wallbox si spengono &mdash; la Tesla non si carica pi&ugrave; &mdash; zero rischio</li>
+<h2>Quadro QE4</h2>
+<img src="qe4_quadro_new.jpg" alt="Quadro QE4">
+<div class="card"><strong>Posizione:</strong> Locale tecnico, parete sinistra, coperchio trasparente.<br>
+<strong>Componenti:</strong> JXB1-63 40A (generale wallbox) | Schneider C16 3P+N | GEYA contattore 63A PDC | ATW-MBS-02 Modbus (IP 192.168.1.5:502) | Tasto rosso emergenza | Shelly stato.<br>
+<strong>Alimentazione:</strong> 380V trifase.</div>
+
+<h2>Wallbox Garage — Tesla</h2>
+<img src="wallbox_garage_zona_new.jpg" alt="Zona wallbox garage">
+<img src="wallbox_garage_qr_new.jpg" alt="QR code wallbox">
+<div class="card"><strong>Modello:</strong> Tesla Wall Connector Gen 3 &mdash; TSN: PGT25098040684<br>
+<strong>Posizione:</strong> Parete destra garage.<br>
+<strong>Potenza:</strong> 16A trifase ~11 kW.<br>
+<strong>LED:</strong> <span class="ok">Blu fisso</span> = pronta | <span class="ok">Verde lampeggiante</span> = in carica | <span class="warn">Rosso fisso</span> = errore | Spento = no alimentazione.</div>
+
+<h2>Wallbox Cancello — TERA</h2>
+<img src="wallbox_cancello_new.jpg" alt="Wallbox TERA">
+<div class="card"><strong>Modello:</strong> TERA (italiana, colore rosa/rosso).<br>
+<strong>Posizione:</strong> Cancello carraio, sostegno metallico destra.<br>
+<strong>Connettore:</strong> Presa tipo 2 + CEE industriale rossa 3 fasi.<br>
+<strong>Cavo dal QE4:</strong> ~45 metri 5G4mm&sup2;.<br>
+<strong>Max:</strong> 16A trifase ~11 kW.</div>
+
+<h2>ESP32 Garage — FREENOVE ESP32-S3</h2>
+<img src="esp32_garage_new.jpg" alt="ESP32 scatola chiusa">
+<img src="esp32_garage_aperto_new.jpg" alt="ESP32 aperto">
+<div class="card"><strong>Scheda:</strong> FREENOVE ESP32-S3-WROOM v1.2 (WiFi+BLE dual-core).<br>
+<strong>IP:</strong> 192.168.1.175 | MAC: 88:57:21:77:02:24<br>
+<strong>Posizione:</strong> Scatola IP grigia su trave legno soffitto garage.<br>
+<strong>Alimentazione:</strong> 9.1V DC dalla scatola a sinistra del QE4 &rarr; stabilizzato a 5V.<br>
+<strong>LED:</strong> <span class="ok">Blu acceso</span> = funzionante | Spento = verificare alimentazione.<br>
+<strong>Funzione:</strong> Bridge WiFi&harr;BLE. Riceve comandi da Home Assistant e comanda la Tesla via BLE.</div>
+
+<h3>Display e alimentazione</h3>
+<img src="esp32_display_new.jpg" alt="Display ESP32">
+<img src="esp32_alimentazione_new.jpg" alt="Alimentatore 9.1V">
+
+<h2>Shelly 3EM — Misura consumo</h2>
+<img src="shelly_3em_new.jpg" alt="Shelly 3EM">
+<img src="canalina_new.jpg" alt="Canalina">
+<div class="card"><strong>Posizione:</strong> Canalina sotto il quadro QE4.<br>
+<strong>Funzione:</strong> Misura trifase a monte di entrambe le wallbox. Dati letti dal PID Tesla ogni 10 secondi.<br>
+<strong>LED:</strong> <span class="warn">Rosso acceso</span> = alimentato e funzionante.</div>
+
+<h2>Panoramica ESP32 + Tesla</h2>
+<img src="esp32_e_tesla_new.jpg" alt="ESP32 e Tesla">
+
+<h2>Funzionamento solare</h2>
+<div class="card">
+<ol class="step">
+<li>FV produce energia &rarr; HA calcola surplus (PV - consumi).</li>
+<li>PID AppDaemon decide gli ampere per la Tesla (2-16A).</li>
+<li>HA invia via WiFi &rarr; ESP32 (garage o cancello, quello vicino all'auto).</li>
+<li>ESP32 traduce WiFi &rarr; BLE &rarr; comanda Tesla.</li>
+<li>Tesla regola corrente in tempo reale sul surplus FV.</li>
 </ol>
 </div>
 
-<!-- ========== QUADRO QE4 ========== -->
-<div class="section" id="qe4">
-<div class="section-header" onclick="toggle(this)"><h2>&#128295; Quadro QE4 &mdash; Locale tecnico</h2><span class="toggle">&#9660;</span></div>
-<div class="section-body">
-
-<div class="wwwww">
-<h4>&#9679; 5W &mdash; Quadro QE4</h4>
-<div class="wwwww-row"><div class="wwwww-label">WHO</div><div class="wwwww-value">Elettricista (Claudio) per interventi; Marco per automazione; qualsiasi adulto in casa per emergenza</div></div>
-<div class="wwwww-row"><div class="wwwww-label">WHERE</div><div class="wwwww-value">Locale tecnico / lavanderia, parete sinistra, coperchio trasparente a scatto. Accanto alla porta di servizio.</div></div>
-<div class="wwwww-row"><div class="wwwww-label">WHAT</div><div class="wwwww-value">Quadro elettrico dedicato a wallbox (Tesla+TERA), PDC (Modbus+contattore), emergenza. Alimentazione 380V trifase.</div></div>
-<div class="wwwww-row"><div class="wwwww-label">WHEN</div><div class="wwwww-value">Aprire per emergenza; non toccare in condizioni normali. Verificare mensilmente che LED indicatore Modbus sia rosso acceso.</div></div>
-<div class="wwwww-row"><div class="wwwww-label">WHY</div><div class="wwwww-value">Punto di stacco centralizzato per tutto il sistema wallbox + PDC. Da qui si controlla tutta la ricarica e il riscaldamento.</div></div>
+<h2>Emergenza — Sequenze</h2>
+<div class="card red">
+<h3 style="color:#e94560;margin-top:0">HA impazzito / carica senza FV</h3>
+<ol class="step">
+<li>Vai al QE4 &rarr; premi il <strong>TASTO ROSSO</strong>.</li>
+<li>Oppure: abbassa JXB1-63 "WALLBOX CANCELLO".</li>
+<li>Usa l'app Tesla per caricare manualmente.</li>
+</ol>
+<h3 style="color:#e94560;margin-top:1rem">ESP32 morto</h3>
+<ol class="step">
+<li>Spegni alimentatore 9.1V dal QE4.</li>
+<li>Usa app Tesla per caricare.</li>
+<li>Chiama Marco: <strong>335-1354309</strong>. ESP32 di scorta: cassettiera garage.</li>
+</ol>
+<h3 style="color:#e94560;margin-top:1rem">Blackout ENEL</h3>
+<p>Tutto si spegne. La wallbox NON e' su backup batterie. Dopo ripristino ENEL: tutto riparte automaticamente.</p>
+<h3 style="color:#e94560;margin-top:1rem">Ripristino</h3>
+<ol class="step">
+<li>Rialza interruttore QE4.</li>
+<li>Attendi 30 secondi.</li>
+<li>Verifica LED blu wallbox e ESP32.</li>
+</ol>
 </div>
 
-<img src="https://marco241254.github.io/casa-emergenza/qe4_quadro.jpg" alt="Quadro QE4" class="photo-single">
-<p class="photo-caption">Vista frontale quadro QE4 aperto. Dall'alto: sezione Modbus (con ATW-MBS-02), sezione contattore PDC, sezione protezioni wallbox.</p>
-
-<div class="schema">
-<strong>SEZIONE 1 &mdash; Protezioni Wallbox</strong> (basso)<br>
-&#9492;&#9472; JXB1-63 4P C40 (ETTROIT) &mdash; <span class="label label-red">WALLBOX CANCELLO</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;Interruttore generale 40A. Stacca TUTTA la sezione wallbox.<br>
-&#9492;&#9472; Schneider iC60N C16 3P+N &mdash; <span class="label label-red">GENERALE WALLBOX</span><br>
-&nbsp;&nbsp;&nbsp;&nbsp;Magnetotermico 16A. Protegge le due linee wallbox.<br><br>
-<strong>SEZIONE 2 &mdash; Contattore PDC</strong> (centro)<br>
-&#9492;&#9472; GEYA GYHC-63M &mdash; Contattore 63A, bobina 230V<br>
-&nbsp;&nbsp;&nbsp;&nbsp;Abilita alimentazione alla pompa di calore. Comandato da R1 (Shelly).<br><br>
-<strong>SEZIONE 3 &mdash; Modbus + Smart Grid</strong> (alto sinistra)<br>
-&#9492;&#9472; Schneider iSSW 20A 230V &mdash; Comando Smart Grid<br>
-&#9492;&#9472; ATW-MBS-02 HITACHI &mdash; Gateway Modbus TCP<br>
-&nbsp;&nbsp;&nbsp;&nbsp;S/N: 7E5499924 | IP: 192.168.1.5 | Porta: 502<br>
-&nbsp;&nbsp;&nbsp;&nbsp;LED rosso = power on | LED verde (Ethernet) = comunicazione OK<br><br>
-<strong>SEZIONE 4 &mdash; Emergenza + Stato</strong> (alto destra)<br>
-&#9492;&#9472; <span class="label label-red">TASTO ROSSO</span> &mdash; Stacco emergenza manuale<br>
-&#9492;&#9472; Dispositivo bianco con <span class="label label-green">LED verde</span> &mdash; Stato/contatto Shelly
-</div>
-
-</div>
-</div>
-
-<!-- ========== WALLBOX GARAGE ========== -->
-<div class="section" id="wallbox-garage">
-<div class="section-header" onclick="toggle(this)"><h2>&#9889; Wallbox Garage &mdash; Tesla Wall Connector Gen 3</h2><span class="toggle">&#9660;</span></div>
-<div class="section-body">
-
-<div class="wwwww">
-<h4>&#9679; 5W &mdash; Tesla Wall Connector</h4>
-<div class="wwwww-row"><div class="wwwww-label">WHO</div><div class="wwwww-value">Tesla Model Y (VIN: XP7YGCES1RB482601). Controllata via BLE da ESP32 Freenove (Marco).</div></div>
-<div class="wwwww-row"><div class="wwwww-label">WHERE</div><div class="wwwww-value">Parete destra del garage, vicino alla porta d'ingresso interna. Cavo flessibile che scende verso il pavimento.</div></div>
-<div class="wwwww-row"><div class="wwwww-label">WHAT</div><div class="wwwww-value">Tesla Wall Connector Gen 3 &mdash; TSN: PGT25098040684 | Max 16A trifase (~11 kW) | Connettore Tesla a cavo fisso.</div></div>
-<div class="wwwww-row"><div class="wwwww-label">WHEN</div><div class="wwwww-value">Carica solo quando surplus FV disponibile (giorno, soleggiato). Disattivata automaticamente di notte. LED blu = pronta.</div></div>
-<div class="wwwww-row"><div class="wwwww-label">WHY</div><div class="wwwww-value">Ricarica solare della Tesla. Ogni kWh dalla roof &egrave; gratis vs 0.28&euro;/kWh da rete. Risparmio ~1500&euro;/anno stimato.</div></div>
-</div>
-
-<div class="photo-row">
-<div>
-<img src="https://marco241254.github.io/casa-emergenza/wallbox_garage_zona.jpg" alt="Zona wallbox garage">
-<p class="photo-caption">Zona completa: scatola controllo, prese, e wallbox Tesla (LED blu = pronta)</p>
-</div>
-<div>
-<img src="https://marco241254.github.io/casa-emergenza/wallbox_garage_qr.jpg" alt="QR code wallbox">
-<p class="photo-caption">Tesla Wall Connector con QR code originale TSN:PGT25098040684</p>
-</div>
-</div>
-
+<h2>Valori normali</h2>
 <table>
-<tr><th>LED Wallbox</th><th>Stato</th><th>Significato</th></tr>
-<tr><td><span class="led-indicator led-blue"></span> Blu fisso</td><td>Standby</td><td>Pronta, in attesa di veicolo</td></tr>
-<tr><td><span class="led-indicator led-blue"></span> Blu lampeggiante</td><td>Comunicazione</td><td>Sta parlando con la Tesla via BLE</td></tr>
-<tr><td><span class="led-indicator led-green"></span> Verde lampeggiante</td><td>In carica</td><td>Sto caricando (ampere variabili dal PID)</td></tr>
-<tr><td><span class="led-indicator led-red"></span> Rosso fisso</td><td>Errore</td><td>Problema &mdash; controllare app Tesla</td></tr>
-<tr><td><span class="led-indicator led-off"></span> Spento</td><td>Senza alimentazione</td><td>Controllare interruttore QE4 o emergenza</td></tr>
+<tr><th>Misura</th><th>Normale</th><th>Anomalia</th></tr>
+<tr><td>Tensione wallbox</td><td>380V trifase</td><td>&lt;360V o &gt;420V</td></tr>
+<tr><td>Corrente PID (giorno FV)</td><td>2-14A dinamico</td><td>0A o 16A fisso</td></tr>
+<tr><td>Potenza max</td><td>~11 kW</td><td>&gt;12 kW</td></tr>
+<tr><td>Shelly 3EM</td><td>Positivo in carica</td><td>Negativo</td></tr>
+<tr><td>Alimentatore display</td><td>~9.1V DC</td><td>0V o &gt;12V</td></tr>
+<tr><td>LED ESP32</td><td><span class="ok">Blu acceso</span></td><td>Spento</td></tr>
 </table>
 
-<p style="color:var(--text2);margin-top:1rem"><strong>Cavo:</strong> 5G4mm&sup2; (3 fasi + neutro + terra), ~8 metri dal QE4. <strong>Protezione:</strong> Schneider C16 3P+N nel QE4.</p>
-</div>
-</div>
-
-<!-- ========== WALLBOX CANCELLO ========== -->
-<div class="section" id="wallbox-cancello">
-<div class="section-header" onclick="toggle(this)"><h2>&#9889; Wallbox Cancello &mdash; TERA</h2><span class="toggle">&#9660;</span></div>
-<div class="section-body">
-
-<div class="wwwww">
-<h4>&#9679; 5W &mdash; TERA Wallbox Cancello</h4>
-<div class="wwwww-row"><div class="wwwww-label">WHO</div><div class="wwwww-value">Tesla Model Y (stessa auto del garage). Quando l'auto &egrave; parcheggiata al cancello, l'ESP32 cancello prende il controllo.</div></div>
-<div class="wwwww-row"><div class="wwwww-label">WHERE</div><div class="wwwww-value">Cancello carraio, sostegno metallico a destra. ~45 metri di cavo 5G4mm&sup2; dal QE4.</div></div>
-<div class="wwwww-row"><div class="wwwww-label">WHAT</div><div class="wwwww-value">TERA (wallbox italiana, colore rosa/rosso) &mdash; Presa tipo 2 + presa CEE industriale rossa 3 fasi. Max 16A trifase (~11 kW).</div></div>
-<div class="wwwww-row"><div class="wwwww-label">WHEN</div><div class="wwwww-value">Quando la Tesla &egrave; parcheggiata al cancello. Il sistema BLE attiva automaticamente l'ESP32 vicino all'auto.</div></div>
-<div class="wwwww-row"><div class="wwwww-label">WHY</div><div class="wwwww-value">Secondo punto di ricarica quando il garage &egrave; occupato o quando si arriva dal cancello. Stessa logica solare del garage.</div></div>
-</div>
-
-<img src="https://marco241254.github.io/casa-emergenza/wallbox_cancello.jpg" alt="Wallbox TERA cancello" class="photo-single">
-<p class="photo-caption">Wallbox TERA rosa al cancello &mdash; presa tipo 2 + CEE industriale rossa 3 fasi</p>
-
+<h2>Contatti</h2>
 <table>
-<tr><th>Caratteristica</th><th>TERA Cancello</th><th>Tesla Garage</th></tr>
-<tr><td>Marca / Modello</td><td>TERA (italiana)</td><td>Tesla Gen 3</td></tr>
-<tr><td>Connettore</td><td>Presa tipo 2 + CEE rossa</td><td>Cavo fisso Tesla</td></tr>
-<tr><td>Comando</td><td>Bless via ESP32 cancello</td><td>Bless via ESP32 garage</td></tr>
-<tr><td>Max corrente</td><td>16A trifase (~11 kW)</td><td>16A trifase (~11 kW)</td></tr>
-<tr><td>Cavo dal quadro</td><td>~45 metri 5G4mm&sup2;</td><td>~8 metri 5G4mm&sup2;</td></tr>
+<tr><th>Problema</th><th>Chi</th><th>Telefono</th></tr>
+<tr><td>Elettrico / scintilla / contattore</td><td>Claudio Massello</td><td>348-6977962</td></tr>
+<tr><td>ESP32 / HA / BLE / automazione</td><td>Marco</td><td>335-1354309</td></tr>
+<tr><td>Tesla non carica (problema auto)</td><td>Tesla Service</td><td>800-97-18-25</td></tr>
+<tr><td>Blackout ENEL non torna</td><td>ENEL</td><td>803500</td></tr>
 </table>
-
-</div>
-</div>
-
-<!-- ========== ESP32 GARAGE ========== -->
-<div class="section" id="esp32-garage">
-<div class="section-header" onclick="toggle(this)"><h2>&#128242; ESP32 Garage &mdash; FREENOVE ESP32-S3</h2><span class="toggle">&#9660;</span></div>
-<div class="section-body">
-
-<div class="wwwww">
-<h4>&#9679; 5W &mdash; ESP32 Tesla BLE (Garage)</h4>
-<div class="wwwww-row"><div class="wwwww-label">WHO</div><div class="wwwww-value">Gestito da Marco. Non toccare se non in emergenza (tasto rosso nel QE4). Sostituzione: cassettiera garage, cassetto "ricambi".</div></div>
-<div class="wwwww-row"><div class="wwwww-label">WHERE</div><div class="wwwww-value">Scatola IP grigia montata su trave di legno verniciata, soffitto garage, parete lato casa. Visibile aprendo scatola con 4 viti torx.</div></div>
-<div class="wwwww-row"><div class="wwwww-label">WHAT</div><div class="wwwww-value">FREENOVE ESP32-S3-WROOM v1.2 &mdash; WiFi+BLE dual-core. Bridge WiFi&larr;&rarr;BLE per comandare Tesla. IP: 192.168.1.175 | MAC: 88:57:21:77:02:24</div></div>
-<div class="wwwww-row"><div class="wwwww-label">WHEN</div><div class="wwwww-value">Sempre attivo. LED blu = funzionante. Se spento &gt;60s senza WiFi si riavvia. Non caricare se offline.</div></div>
-<div class="wwwww-row"><div class="wwwww-label">WHY</div><div class="wwwww-value">Traduce i comandi WiFi da Home Assistant in segnali BLE verso la Tesla. Senza questo l'automazione solare non funziona.</div></div>
-</div>
-
-<div class="photo-row">
-<div>
-<img src="https://marco241254.github.io/casa-emergenza/esp32_garage.jpg" alt="ESP32 scatola chiusa">
-<p class="photo-caption">Scatola IP grigia montata su trave di legno soffitto garage</p>
-</div>
-<div>
-<img src="https://marco241254.github.io/casa-emergenza/esp32_garage_aperto.jpg" alt="ESP32 aperto">
-<p class="photo-caption">FREENOVE ESP32-S3-WROOM v1.2 con LED blu acceso e morsetti colorati</p>
-</div>
-</div>
-
-<table>
-<tr><th>Elemento</th><th>Descrizione</th></tr>
-<tr><td>Scatola</td><td>Contenitore IP grigio, 4 viti torx, montata su trave legno soffitto</td></tr>
-<tr><td>Scheda</td><td>FREENOVE ESP32-S3-WROOM v1.2 &mdash; breakout board completa con morsetti a vite colorati (rossi/gialli/verdi)</td></tr>
-<tr><td>Chip</td><td>ESP32-S3-WROOM-1 (WiFi 2.4GHz + BLE 5.0, dual-core 240MHz)</td></tr>
-<tr><td>Alimentazione</td><td><strong>9.1V DC</strong> dalla scatola alimentatore a sinistra (convertitore AC-DC con display rosso) &rarr; stabilizzato a 5V interno</td></tr>
-<tr><td>LED stato</td><td>LED <strong>blu</strong> acceso = ESP funzionante e connesso | LED rosso = errore/alimentazione</td></tr>
-<tr><td>Pressacavi</strong></td><td>3 pressacavi a chiave sul coperchio grigio (cavo USB, ingresso alimentazione, uscita segnale)</td></tr>
-<tr><td>Sacchetto</td><td>Tappi per pressacavi inclusi in sacchetto trasparente dentro scatola</td></tr>
-</table>
-
-<div class="photo-row">
-<div>
-<img src="https://marco241254.github.io/casa-emergenza/esp32_display.jpg" alt="Display ESP32">
-<p class="photo-caption">Display ESP32 con dati Tesla: velocita, SOC, stato BLE</p>
-</div>
-<div>
-<img src="https://marco241254.github.io/casa-emergenza/esp32_alimentazione.jpg" alt="Alimentazione">
-<p class="photo-caption">Scatola alimentatore a sinistra del QE4 &mdash; display rosso indica 9.1V DC (alimenta ESP32 + altri dispositivi)</p>
-</div>
-</div>
-
-<div class="component-grid" style="margin-top:1rem">
-<div class="component-card ok"><h4>Stato normale</h4><p>LED blu acceso, <code>binary_sensor.tesla_ble_pronta</code> = ON, ping &lt; 10ms</p></div>
-<div class="component-card warn"><h4>Attenzione</h4><p>LED spento = verificare alimentazione 9.1V dalla scatola a sinistra del QE4</p></div>
-<div class="component-card emergency"><h4>Pericolo</h4><p>Non scollegare cavi a ESP acceso. Usare tasto rosso QE4 prima di manutenzione.</p></div>
-</div>
-
-</div>
-</div>
-
-<!-- ========== ALIMENTATORE 9.1V ========== -->
-<div class="section" id="alimentatore">
-<div class="section-header" onclick="toggle(this)"><h2>&#9889; Alimentatore 9.1V &mdash; Scatola a sinistra QE4</h2><span class="toggle">&#9660;</span></div>
-<div class="section-body">
-
-<div class="wwwww">
-<h4>&#9679; 5W &mdash; Alimentatore DC 9.1V</h4>
-<div class="wwwww-row"><div class="wwwww-label">WHO</div><div class="wwwww-value">Alimenta ESP32 Tesla BLE + altri dispositivi 5V nel garage. Controllato da Marco.</div></div>
-<div class="wwwww-row"><div class="wwwww-label">WHERE</div><div class="wwwww-value">Scatola trasparente montata su parete a <strong>sinistra del QE4</strong>, dentro il locale tecnico. Display rosso visibile dal coperchio.</div></div>
-<div class="wwwww-row"><div class="wwwww-label">WHAT</div><div class="wwwww-value">Convertitore AC&rarr;DC con display digitale rosso. Output: <strong>9.1V DC</strong> (regolabile). Stabilizza a 5V per ESP32.</div></div>
-<div class="wwwww-row"><div class="wwwww-label">WHEN</div><div class="wwwww-value">Sempre acceso. Verificare che display indichi ~9.1V (non 0V = spento, non &gt;12V = sovratensione).</div></div>
-<div class="wwwww-row"><div class="wwwww-label">WHY</div><div class="wwwww-value">L'ESP32 ha bisogno di 5V stabilizzati. Questo alimentatore fornisce 9.1V al regolatore che poi scende a 5V. Senza questo l'ESP32 non funziona.</div></div>
-</div>
-
-<img src="https://marco241254.github.io/casa-emergenza/esp32_alimentazione.jpg" alt="Alimentatore 9.1V" class="photo-single" style="max-width:500px">
-<p class="photo-caption">Scatola alimentatore a sinistra del QE4 &mdash; il display rosso mostra la tensione di uscita DC</p>
-
-<p style="margin-top:1rem"><strong>NOTA:</strong> Il display rosso sulla scatola indica la tensione di uscita. Deve essere <strong>~9.1V</strong>. Se mostra 0V = alimentatore spento o fusibile saltato. Se mostra &gt;12V = pericolo sovratensione per ESP32.</p>
-
-</div>
-</div>
-
-<!-- ========== SHELLY 3EM ========== -->
-<div class="section" id="shelly-3em">
-<div class="section-header" onclick="toggle(this)"><h2>&#128268; Shelly 3EM &mdash; Misura consumo</h2><span class="toggle">&#9660;</span></div>
-<div class="section-body">
-
-<div class="wwwww">
-<h4>&#9679; 5W &mdash; Shelly 3EM</h4>
-<div class="wwwww-row"><div class="wwwww-label">WHO</div><div class="wwwww-value">Legge Home Assistant per il PID Tesla. Dati visibili su dashboard energia.</div></div>
-<div class="wwwww-row"><div class="wwwww-label">WHERE</div><div class="wwwww-value">Canalina sotto il quadro QE4. Scatola nera rettangolare con LED rosso acceso. QR code sul coperchio.</div></div>
-<div class="wwwww-row"><div class="wwwww-label">WHAT</div><div class="wwwww-value">Shelly 3EM (nero) &mdash; Misura trifase a monte di ENTRAMBE le wallbox. LED rosso = alimentato. WiFi integrato.</div></div>
-<div class="wwwww-row"><div class="wwwww-label">WHEN</div><div class="wwwww-value">Sempre attivo. Il PID Tesla legge questo sensore ogni 10 secondi per calcolare ampere disponibili.</div></div>
-<div class="wwwww-row"><div class="wwwww-label">WHY</div><div class="wwwww-value">Senza questa misura il PID non sa quanta corrente sta assorbendo la Tesla. Fondamentale per il controllo solare.</div></div>
-</div>
-
-<img src="https://marco241254.github.io/casa-emergenza/shelly_3em.jpg" alt="Shelly 3EM" class="photo-single" style="max-width:450px">
-<p class="photo-caption">Shelly 3EM nero nella canalina sotto il quadro QE4 &mdash; LED rosso acceso, QR code sul coperchio</p>
-
-<img src="https://marco241254.github.io/casa-emergenza/canalina.jpg" alt="Canalina" class="photo-single" style="max-width:500px">
-<p class="photo-caption">Canalina con cavi marrone/blu/bianco e dispositivi sotto il quadro QE4</p>
-
-</div>
-</div>
-
-<!-- ========== FUNZIONAMENTO ========== -->
-<div class="section" id="funzionamento">
-<div class="section-header" onclick="toggle(this)"><h2>&#9851; Funzionamento Normale (Catena solare)</h2><span class="toggle">&#9660;</span></div>
-<div class="section-body">
-
-<div class="schema">
-FV produce energia &rarr; HA calcola surplus (PV - consumi casa) &rarr; PID AppDaemon decide ampere &rarr; HA invia via WiFi &rarr; ESP32 (garage/cancello) &rarr; BLE &rarr; Tesla regola carica in tempo reale
-</div>
-
-<ol class="step-list" style="margin-top:1rem">
-<li>Il fotovoltaico produce energia &mdash; i sensori misurano produzione e consumo</li>
-<li>Home Assistant calcola il surplus FV disponibile</li>
-<li>Il controllore PID (AppDaemon, <code>tesla_pid_garage.py</code>) decide gli ampere per la Tesla</li>
-<li>HA manda il comando via WiFi all'ESP32 pi&ugrave; vicino all'auto (garage o cancello)</li>
-<li>L'ESP32 traduce WiFi &rarr; BLE e comanda la Tesla</li>
-<li>La Tesla regola la corrente in tempo reale (2-16A dinamico)</li>
-<li>Se il surplus cala &rarr; la Tesla riduce gli ampere o si ferma automaticamente</li>
-<li>Se il surplus cresce &rarr; la Tesla aumenta fino a max 16A (11 kW)</li>
-</ol>
-
-<p style="color:var(--text2);margin-top:1rem"><strong>NOTA:</strong> Il PID usa <code>simple-pid</code> con Kp=0.35, Ki=0.0025. La Tesla riceve al max 1 comando/minuto, max &plusmn;1A per comando. Questo evita oscillazioni.</p>
-
-</div>
-</div>
-
-<!-- ========== EMERGENZA MANUALE ========== -->
-<div class="section" id="emergenza">
-<div class="section-header" onclick="toggle(this)"><h2>&#128680; Emergenza &mdash; Sequenze Manuali</h2><span class="toggle">&#9660;</span></div>
-<div class="section-body">
-
-<h3 style="color:var(--accent);margin-bottom:.5rem">&#128308; HA impazzito, carica senza FV, o non risponde</h3>
-<ol class="step-list">
-<li class="danger">Vai al QE4 (locale tecnico, parete sinistra)</li>
-<li class="danger">Premi il <strong>TASTO ROSSO</strong> nella sezione 4 del quadro</li>
-<li class="danger">Oppure: abbassa l'interruttore JXB1-63 "WALLBOX CANCELLO"</li>
-<li>&rarr; L'ESP32 perde alimentazione, BLE si disconnette</li>
-<li>Apri l'app Tesla sul telefono e controlla la carica manualmente</li>
-<li>Per ricaricare senza HA: app Tesla &rarr; avvia carica (usa limiti sicuri)</li>
-</ol>
-
-<h3 style="color:var(--accent);margin:1.5rem 0 .5rem">&#9888; ESP32 bruciato / morto / non risponde</h3>
-<ol class="step-list">
-<li>Spegni l'alimentatore 9.1V dall'interruttore dedicato nel QE4</li>
-<li>Usa l'app Tesla per caricare (la wallbox funziona comunque)</li>
-<li>Chiama Marco: <strong>335-1354309</strong></li>
-<li>ESP32 di scorta: cassettiera garage, cassetto "ricambi"</li>
-</ol>
-
-<h3 style="color:var(--accent);margin:1.5rem 0 .5rem">&#9889; Blackout ENEL totale</h3>
-<ol class="step-list">
-<li>Tutto si spegne &mdash; niente da fare per la Tesla</li>
-<li>La wallbox NON &egrave; su backup batterie (linea ENEL diretta)</li>
-<li>Dopo ripristino ENEL: tutto riparte automaticamente entro 60-120 secondi</li>
-<li>Verifica LED blu wallbox e LED blu ESP32 (apri scatola)</li>
-</ol>
-
-<h3 style="color:var(--ok);margin:1.5rem 0 .5rem">&#9989; Ripristino dopo emergenza</h3>
-<ol class="step-list">
-<li>Rialza l'interruttore JXB1-63 nel QE4 (se l'avevi abbassato)</li>
-<li>Rialza l'alimentatore 9.1V (se l'avevi spento)</li>
-<li>Attendi 30 secondi</li>
-<li>Verifica LED blu sulle wallbox</li>
-<li>Verifica LED blu sulla scheda ESP32 (apri scatola)</li>
-<li>Verifica su HA che <code>binary_sensor.tesla_ble_pronta</code> sia ON</li>
-</ol>
-
-</div>
-</div>
-
-<!-- ========== VALORI NORMALI ========== -->
-<div class="section" id="valori">
-<div class="section-header" onclick="toggle(this)"><h2>&#128202; Valori Normali vs Anomali</h2><span class="toggle">&#9660;</span></div>
-<div class="section-body">
-
-<table>
-<tr><th>Misura</th><th>Normale</th><th>Anomalia</th><th>Azione</th></tr>
-<tr><td>Tensione wallbox</td><td>380V AC trifase</td><td>&lt; 360V o &gt; 420V</td><td>Chiamare elettricista</td></tr>
-<tr><td>Corrente max</td><td>16A/fase</td><td>&gt; 16A/fase</td><td>Stacco emergenza QE4</td></tr>
-<tr><td>Potenza max</td><td>~11 kW</td><td>&gt; 12 kW</td><td>Verificare PID</td></tr>
-<tr><td>Corrente PID (giorno FV)</td><td>2-14A dinamico</td><td>0A = non carica; 16A fisso = PID morto</td><td>Verificare ESP32 + HA</td></tr>
-<tr><td>Shelly 3EM</td><td>Positivo in carica</td><td>Negativo = anomalia</td><td>Verificare wiring</td></tr>
-<tr><td>Alimentatore display</td><td>~9.1V DC</td><td>0V = spento; &gt;12V = pericolo</td><td>Verificare fusibile/stacco</td></tr>
-<tr><td>Ping ESP32</td><td>&lt; 10ms da HA</td><td>Timeout = offline</td><td>Verificare WiFi + alimentazione</td></tr>
-<tr><td>LED ESP32</td><td>Blu acceso</td><td>Spento = morto; Rosso = errore</td><td>Verificare alimentazione 9.1V</td></tr>
-<tr><td>LED ATW-MBS-02</td><td>Rosso acceso</td><td>Spento = gateway morto</td><td>Verificare Ethernet + alimentazione</td></tr>
-</table>
-
-</div>
-</div>
-
-<!-- ========== CONTATTI ========== -->
-<div class="section" id="contatti">
-<div class="section-header" onclick="toggle(this)"><h2>&#128222; Chi Chiamare</h2><span class="toggle">&#9660;</span></div>
-<div class="section-body">
-
-<table>
-<tr><th>Problema</th><th>Chi chiamare</th><th>Telefono</th><th>Quando</th></tr>
-<tr><td>Wallbox non alimentata / scintilla / odore bruciato / contattore</td><td><strong>Claudio Massello</strong> (elettricista)</td><td>348-6977962</td><td>Immediatamente</td></tr>
-<tr><td>ESP32 non funziona / HA non comanda / BLE / PID / automazione</td><td><strong>Marco</strong></td><td>335-1354309</td><td>Se emergenza: stacca QE4, poi chiama</td></tr>
-<tr><td>Wallbox TERA difettosa</td><td>Assistenza TERA Italia</td><td>&mdash;</td><td>Orari ufficio</td></tr>
-<tr><td>Tesla non si carica (problema auto)</td><td>Tesla Service Italia</td><td>800-97-18-25</td><td>24h</td></tr>
-<tr><td>Blackout ENEL (non torna)</td><td>ENEL Distribuzione</td><td>803500</td><td>24h</td></tr>
-</table>
-
-</div>
-</div>
-
-</div>
 
 <footer>
-<p>Casa GEEKOM &mdash; Documentazione Hardware Wallbox &mdash; Aggiornato 2026-06-23</p>
-<p style="margin-top:.3rem;font-size:.7rem">Fotografie originali del sito &mdash; QR code generati per ogni componente &mdash; Framework 5W per tracciabilit&agrave;</p>
+<p>Casa GEEKOM &mdash; Documentazione Wallbox &mdash; 2026-06-23</p>
 </footer>
-
-<script>
-function toggle(el){
-const body=el.nextElementSibling;
-body.classList.toggle('hidden');
-el.classList.toggle('collapsed');
-}
-if(window.innerWidth<700){
-document.querySelectorAll('.section-body').forEach((b,i)=>{if(i>0){b.classList.add('hidden');b.previousElementSibling.classList.add('collapsed');}});
-}
-</script>
 
 </body>
 </html>
